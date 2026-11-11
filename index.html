@@ -3,240 +3,51 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sferium v2.026 | Full Cross-Coupled Telemetry Suite</title>
+<title>Sferium v2.026 | Unified Telemetry</title>
 <style>
-:root{--bg:#080b10;--card:#101622;--bdr:#1e293b;--txt:#e2e8f0;--mut:#94a3b8;--cyn:#06b6d4;--ok:#10b981;--wrn:#f59e0b;--crt:#ef4444;--pur:#a855f7;}
-*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,sans-serif;}
-body{background:var(--bg);color:var(--txt);padding:16px;display:flex;justify-content:center;}
-.wrap{max-width:1160px;width:100%;}
-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--bdr);padding-bottom:12px;margin-bottom:12px;flex-wrap:wrap;gap:10px;}
-h1{font-size:1.18rem;color:#fff;letter-spacing:0.4px;}
-.sub{font-size:0.78rem;color:var(--mut);margin-top:3px;}
-.badge{background:rgba(6,182,212,0.12);border:1px solid var(--cyn);color:var(--cyn);padding:5px 12px;border-radius:4px;font-size:0.76rem;font-weight:700;letter-spacing:1px;}
-.disclaimer{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.4);color:#fcd34d;padding:9px 14px;border-radius:6px;font-size:0.76rem;margin-bottom:12px;line-height:1.4;}
-.coupling-bar{background:#0d131f;border:1px solid #26354d;color:#cbd5e1;padding:9px 14px;border-radius:6px;font-size:0.78rem;margin-bottom:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
-.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:12px;border-bottom:1px solid var(--bdr);}
-.tab{background:var(--card);border:1px solid var(--bdr);color:var(--mut);padding:8px 12px;border-radius:6px;cursor:pointer;font-size:0.76rem;font-weight:600;white-space:nowrap;}
+:root{--bg:#080b10;--card:#101622;--bdr:#1e293b;--txt:#e2e8f0;--mut:#94a3b8;--cyn:#06b6d4;--ok:#10b981;--wrn:#f59e0b;--crt:#ef4444;}
+*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,sans-serif;}
+body{background:var(--bg);color:var(--txt);padding:14px;display:flex;justify-content:center;}
+.wrap{max-width:1140px;width:100%;}
+header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--bdr);padding-bottom:10px;margin-bottom:10px;flex-wrap:wrap;gap:8px;}
+h1{font-size:1.15rem;color:#fff;}
+.badge{background:rgba(6,182,212,0.12);border:1px solid var(--cyn);color:var(--cyn);padding:4px 10px;border-radius:4px;font-size:0.75rem;font-weight:700;}
+.note{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.4);color:#fcd34d;padding:8px 12px;border-radius:6px;font-size:0.74rem;margin-bottom:10px;}
+.bar{background:#0d131f;border:1px solid #26354d;color:#cbd5e1;padding:8px 12px;border-radius:6px;font-size:0.76rem;margin-bottom:10px;display:flex;justify-content:space-between;flex-wrap:wrap;}
+.tabs{display:flex;gap:5px;overflow-x:auto;padding-bottom:6px;margin-bottom:10px;border-bottom:1px solid var(--bdr);}
+.tab{background:var(--card);border:1px solid var(--bdr);color:var(--mut);padding:8px 11px;border-radius:6px;cursor:pointer;font-size:0.75rem;font-weight:600;white-space:nowrap;}
 .tab.active{background:rgba(6,182,212,0.15);border-color:var(--cyn);color:#fff;}
 .panel{display:none;}.panel.active{display:block;}
-.banner{padding:11px;border-radius:6px;margin-bottom:12px;font-weight:700;text-align:center;border:1px solid var(--ok);background:rgba(16,185,129,0.1);color:var(--ok);font-size:0.84rem;}
-.banner.wrn{border-color:var(--wrn);background:rgba(245,158,11,0.15);color:var(--wrn);}
-.banner.crt{border-color:var(--crt);background:rgba(239,68,68,0.2);color:var(--crt);}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-bottom:12px;}
-.card{background:var(--card);border:1px solid var(--bdr);border-radius:8px;padding:14px;}
-.card h2{font-size:0.74rem;color:var(--mut);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.6px;}
-.val{font-size:1.55rem;font-weight:700;margin-bottom:6px;font-variant-numeric:tabular-nums;}
-input[type=range]{width:100%;margin:6px 0;accent-color:var(--cyn);cursor:pointer;}
-.info{font-size:0.73rem;color:var(--mut);display:flex;justify-content:space-between;}
-canvas{width:100%;height:160px;background:#05070a;border-radius:6px;border:1px solid var(--bdr);display:block;}
-.rxtx-box{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
-.half{padding:12px;border-radius:8px;border:1px solid var(--bdr);background:#0b101b;text-align:center;}
-.half.off{opacity:0.35;border-style:dashed;}
-.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;}
-button.act{padding:9px 14px;border:none;border-radius:6px;font-weight:700;cursor:pointer;font-size:0.78rem;background:var(--bdr);color:var(--txt);}
+.bnr{padding:10px;border-radius:6px;margin-bottom:10px;font-weight:700;text-align:center;border:1px solid var(--ok);background:rgba(16,185,129,0.1);color:var(--ok);font-size:0.82rem;}
+.bnr.crt{border-color:var(--crt);background:rgba(239,68,68,0.2);color:var(--crt);}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-bottom:10px;}
+.card{background:var(--card);border:1px solid var(--bdr);border-radius:8px;padding:12px;}
+.card h2{font-size:0.72rem;color:var(--mut);margin-bottom:5px;text-transform:uppercase;}
+.val{font-size:1.5rem;font-weight:700;margin-bottom:5px;}
+input[type=range]{width:100%;margin:5px 0;accent-color:var(--cyn);}
+canvas{width:100%;height:150px;background:#05070a;border-radius:6px;border:1px solid var(--bdr);display:block;}
+button.act{padding:8px 12px;border:none;border-radius:6px;font-weight:700;cursor:pointer;font-size:0.76rem;background:var(--bdr);color:var(--txt);margin-right:8px;margin-top:8px;}
 button.q{background:var(--crt);color:#fff;}
-footer{margin-top:18px;text-align:center;font-size:0.73rem;color:var(--mut);border-top:1px solid var(--bdr);padding-top:12px;line-height:1.45;}
+footer{margin-top:16px;text-align:center;font-size:0.72rem;color:var(--mut);border-top:1px solid var(--bdr);padding-top:10px;}
 </style>
 </head>
-<body>
-<div class="wrap">
-<header>
-<div><h1>SFERIUM v2.026 // UNIFIED CROSS-COUPLED TELEMETRY SUITE</h1><div class="sub">End-to-End Architecture Simulation: Core, Mesh, Platform Thermal Spread &amp; Cradle Station</div></div>
-<div class="badge">PATENT PENDING</div>
-</header>
-
-<div class="disclaimer">
-<strong>SPECULATIVE &amp; ILLUSTRATIVE NOTICE:</strong> All numerical values, rates, and thresholds shown in this simulator are theoretical approximations for conceptual visualization only. Exact operational metrics cannot be definitively determined prior to full physical prototyping and laboratory validation.
-</div>
-
-<div class="coupling-bar">
-<span><strong>SYSTEM COUPLING:</strong> ACTIVE (All 8 modules dynamically exchange thermal, optical &amp; power states)</span>
-<span id="globalImpact" style="color:var(--cyn);">State: Equilibrium Locked</span>
-</div>
-
-<div class="tabs">
-<button class="tab active" onclick="openTab(0,this)">1. OOB Emergency</button>
-<button class="tab" onclick="openTab(1,this)">2. Compute RX/TX</button>
-<button class="tab" onclick="openTab(2,this)">3. Gateway Bridge</button>
-<button class="tab" onclick="openTab(3,this)">4. Mo-CNT 1-Atom</button>
-<button class="tab" onclick="openTab(4,this)">5. Laser &amp; SPAD</button>
-<button class="tab" onclick="openTab(5,this)">6. Mo-CNT Mesh &amp; Seed</button>
-<button class="tab" onclick="openTab(6,this)">7. Core-to-Platform Heat</button>
-<button class="tab" onclick="openTab(7,this)">8. Cradle Station</button>
-</div>
-
-<!-- TAB 1 -->
-<div class="panel active" id="p0">
-<div id="b0" class="banner">OOB STATUS: NOMINAL // ALL HARDWARE INTERLOCKS ARMED</div>
-<div class="grid">
-<div class="card"><h2>Core Thermal Gradient</h2><div class="val" id="v0_t" style="color:var(--cyn);">295.4 K</div><input type="range" id="s0_t" min="280" max="360" step="0.5" value="295.4" oninput="syncFrom(0)"><div class="info"><span>Feeds Platform Heat</span><span>Quench: 340 K</span></div></div>
-<div class="card"><h2>Photon Leakage</h2><div class="val" id="v0_l" style="color:var(--wrn);">0.18 dB</div><input type="range" id="s0_l" min="0.05" max="2.5" step="0.05" value="0.18" oninput="syncFrom(0)"><div class="info"><span>Coupled to Mesh</span><span>Trip: &gt;1.60 dB</span></div></div>
-<div class="card"><h2>Perovskite Cell Potential</h2><div class="val" id="v0_p" style="color:var(--ok);">4.18 V</div><input type="range" id="s0_p" min="2.8" max="4.3" step="0.02" value="4.18" oninput="syncFrom(0)"><div class="info"><span>Charged by Cradle</span><span>Min: 3.30 V</span></div></div>
-</div>
-<div class="card"><canvas id="c0" width="1000" height="160"></canvas>
-<div class="btns"><button class="act q" onclick="triggerGlobalQuench('MANUAL OVERRIDE')">TRIGGER SYSTEM-WIDE QUENCH</button><button class="act" onclick="resetAll()">RESET ALL 8 MODULES</button></div>
-</div>
-</div>
-
-<!-- TAB 2 -->
-<div class="panel" id="p1">
-<div id="b1" class="banner">DIRECTIONAL CORE: FULL DUPLEX // ZERO-BOTTLENECK ROUTING</div>
-<div class="rxtx-box">
-<div class="half" id="rxBox"><h2 style="color:var(--cyn);">RX SECTOR (RECEIVE)</h2><div class="val" id="rxState">ACTIVE</div><div class="info" style="justify-content:center;">Optical Ingress Stream</div></div>
-<div class="half" id="txBox"><h2 style="color:var(--pur);">TX SECTOR (TRANSMIT)</h2><div class="val" id="txState">ACTIVE</div><div class="info" style="justify-content:center;">Sub-fs Egress Pulse</div></div>
-</div>
-<div class="btns" style="margin-bottom:12px;">
-<button class="act" onclick="setMode('BOTH')">FULL DUPLEX (RX + TX)</button>
-<button class="act" onclick="setMode('RX')">ISOLATE RX ONLY</button>
-<button class="act" onclick="setMode('TX')">ISOLATE TX ONLY</button>
-</div>
-<div class="grid">
-<div class="card"><h2>WDM Optical Channels</h2><div class="val" id="v1_w" style="color:var(--cyn);">64 Ch</div><input type="range" id="s1_w" min="8" max="128" step="8" value="64" oninput="syncFrom(1)"><div class="info"><span>Drives Gateway/Heat</span><span>~0.8 fJ/bit (est.)</span></div></div>
-<div class="card"><h2>Sector Temperature</h2><div class="val" id="v1_t" style="color:var(--ok);">295.4 K</div><input type="range" id="s1_t" min="280" max="360" step="0.5" value="295.4" oninput="syncFrom(1)"><div class="info"><span>Synced w/ Core</span><span>Limit: 335 K</span></div></div>
-<div class="card"><h2>Degradation Risk</h2><div class="val" id="v1_d" style="color:var(--ok);">2.1%</div><input type="range" id="s1_d" min="0" max="50" step="0.5" value="2.1" oninput="syncFrom(1)"><div class="info"><span>Thermal Fatigue</span><span>Alert: &gt;25%</span></div></div>
-<div class="card"><h2>External Interference</h2><div class="val" id="v1_i" style="color:var(--ok);">0.0%</div><input type="range" id="s1_i" min="0" max="100" step="1" value="0" oninput="syncFrom(1)"><div class="info"><span>Impacts Seed Lock</span><span>Shield: &gt;40%</span></div></div>
-</div>
-<div class="card"><canvas id="c1" width="1000" height="160"></canvas></div>
-</div>
-
-<!-- TAB 3 -->
-<div class="panel" id="p2">
-<div id="b2" class="banner">GATEWAY BRIDGE: SYNCHRONIZED // PHOTONIC-TO-ELECTRONIC TRANSLATION</div>
-<div class="grid">
-<div class="card"><h2>Optical Ingress Rate</h2><div class="val" id="v2_in" style="color:var(--cyn);">12.8 Tbps</div><input type="range" id="s2_in" min="1" max="25.6" step="0.2" value="12.8" oninput="syncFrom(2)"><div class="info"><span>Linked to Cradle Bus</span><span>Max: 25.6 Tbps</span></div></div>
-<div class="card"><h2>Conversion Latency</h2><div class="val" id="v2_lat" style="color:var(--ok);">14 ps</div><input type="range" id="s2_lat" min="5" max="120" step="1" value="14" oninput="syncFrom(2)"><div class="info"><span>Phase Alignment</span><span>Target: &lt;45 ps</span></div></div>
-<div class="card"><h2>Buffer Saturation</h2><div class="val" id="v2_buf" style="color:var(--ok);">11%</div><input type="range" id="s2_buf" min="0" max="100" step="1" value="11" oninput="syncFrom(2)"><div class="info"><span>Coupled to Mesh</span><span>Trip: &gt;85%</span></div></div>
-</div>
-<div class="card"><canvas id="c2" width="1000" height="160"></canvas></div>
-</div>
-
-<!-- TAB 4 -->
-<div class="panel" id="p3">
-<div id="b3" class="banner">MO-CNT &amp; MONOATOMIC CORE: BALLISTIC TRANSPORT LOCKED</div>
-<div class="grid">
-s6_c.value=Math.max(45,al0.97).toFixed(1);
-s0_l.value=Math.min(2.5,0.15+((100-al)0.035)).toFixed(2);
-globalImpact.textContent='Propagated: Cradle Station -> Core Power, Heat Extraction & Backplane';
-}
-if(src===6){
-const rad=+s6_r.value,plat=+s6_p.value,ext=+s6_c.value;
-s0_t.value=Math.min(358,Math.max(284,plat+4+(rad0.18)-((ext-50)0.08))).toFixed(1);
-s1_t.value=s0_t.value;
-globalImpact.textContent='Propagated: Platform Thermal Spread -> Core Equilibrium';
-}
-if(src===5){
-const g=+s5_g.value,m=+s5_m.value;
-s4_p.value=Math.min(98,Math.max(10,(g0.88))).toFixed(0);
-s1_w.value=Math.min(128,Math.max(16,Math.round((g1.28)/8)8));
-s0_t.value=Math.min(358,283+(g0.34)+((100-m)0.4)).toFixed(1);
-s6_r.value=Math.min(98,(g0.42)).toFixed(1);
-s6_p.value=Math.min(342,282+(g0.22)).toFixed(1);
-s2_in.value=Math.min(25.6,(g0.24)).toFixed(1);
-s7_b.value=s2_in.value;
-globalImpact.textContent='Propagated: Neural Seed -> Laser, WDM, Platform Heat & Cradle Bus';
-}
-if(src===4){
-const lp=+s4_p.value;
-s5_g.value=Math.min(100,Math.max(10,(lp1.05))).toFixed(0);
-s0_t.value=Math.min(358,282+(lp0.32)+(+s1_w.value0.08)).toFixed(1);
-s6_r.value=Math.min(98,(lp0.45)).toFixed(1);
-s2_in.value=Math.min(25.6,(lp0.22)+(+s1_w.value0.05)).toFixed(1);
-s7_b.value=s2_in.value;
-globalImpact.textContent='Propagated: Laser Pulse -> Seed Load, Radial Heat & Gateway';
-}
-if(src===4){
-const lp=+s4_p.value;
-s5_g.value=Math.min(100,Math.max(10,(lp1.05))).toFixed(0);
-s0_t.value=Math.min(358,282+(lp0.32)+(+s1_w.value0.08)).toFixed(1);
-s6_r.value=Math.min(98,(lp0.45)).toFixed(1);
-s2_in.value=Math.min(25.6,(lp0.22)+(+s1_w.value0.05)).toFixed(1);
-s7_b.value=s2_in.value;
-globalImpact.textContent='Propagated: Laser Pulse -> Seed Load, Radial Heat & Gateway';
-}
-if(src===1){
-const w=+s1_w.value,em=+s1_i.value;
-s0_t.value=Math.min(358,Math.max(+s1_t.value,284+(w0.18)+(+s4_p.value0.2))).toFixed(1);
-s2_in.value=Math.min(25.6,(w0.18)+(+s4_p.value0.1)).toFixed(1);
-s7_b.value=s2_in.value;
-s4_d.value=Math.min(500,10+(em3.8)+((+s0_t.value-290)2)).toFixed(0);
-s5_r.value=Math.max(72,Math.min(99.8,99.8-(em0.22))).toFixed(1);
-globalImpact.textContent='Propagated: RX/TX & EM -> Core Temp, SPAD & Seed Resonance';
-}
-if(src===0){
-const t=+s0_t.value,p=+s0_p.value;
-s1_t.value=t;
-s6_p.value=Math.min(342,280+((t-280)*0.72)).toFixed(1);
-s6_r.value=Math.min(98,Math.max(8,(t-280)*1.15)).toFixed(1);
-s1_d.value=Math.min(50,Math.max(1,(t-290)0.65)).toFixed(1);
-s4_e.value=Math.max(52,Math.min(99.8,95-((4.2-p)28))).toFixed(1);
-s3_c.value=Math.max(72,Math.min(99.9,99.6-((4.2-p)14))).toFixed(1);
-s5_r.value=Math.max(72,Math.min(99.8,99.8-Math.max(0,(t-300)0.35))).toFixed(1);
-globalImpact.textContent='Propagated: Core Temp/Voltage -> Platform Heat, SPAD & CNT';
-}
-if(src===3){
-const st=+s3_s.value,c=+s3_c.value;
-s0_l.value=Math.min(2.5,0.12+(st0.032)).toFixed(2);
-s5_m.value=Math.max(68,Math.min(99.6,c-(st0.25))).toFixed(1);
-s2_buf.value=Math.min(100,10+(st1.4)+((100-c)2.5)).toFixed(0);
-globalImpact.textContent='Propagated: Mo-CNT Stress -> Mesh Coherency & Gateway Buffer';
-}
-if(src===2){
-const buf=+s2_buf.value;
-s0_t.value=Math.min(358,292+(buf0.35)).toFixed(1);
-s1_t.value=s0_t.value;
-s6_p.value=Math.min(342,286+(buf0.28)).toFixed(1);
-s7_b.value=s2_in.value;
-globalImpact.textContent='Propagated: Gateway Load -> Platform Thermal & Cradle Bus';
-}
-renderAll();
-}
-function renderAll(){
-const t0=+s0_t.value,l0=+s0_l.value,p0=+s0_p.value;
-v0_t.textContent=t0.toFixed(1)+' K';v0_l.textContent=l0.toFixed(2)+' dB';v0_p.textContent=p0.toFixed(2)+' V';
-const w1=+s1_w.value,t1=+s1_t.value,d1v=+s1_d.value,i1=+s1_i.value;
-v1_w.textContent=w1+' Ch';v1_t.textContent=t1.toFixed(1)+' K';v1_d.textContent=d1v.toFixed(1)+'%';v1_i.textContent=i1+'%';
-const in2=+s2_in.value,lat2=+s2_lat.value,buf2=+s2_buf.value;
-v2_in.textContent=in2.toFixed(1)+' Tbps';v2_lat.textContent=lat2+' ps';v2_buf.textContent=buf2+'%';
-const c3v=+s3_c.value,s3v=+s3_s.value,x3v=+s3_x.value;
-v3_c.textContent=c3v.toFixed(1)+'%';v3_s.textContent=s3v.toFixed(1)+'%';v3_x.textContent=x3v+' dB';
-const p4v=+s4_p.value,e4v=+s4_e.value,d4v=+s4_d.value;
-v4_p.textContent=p4v.toFixed(1)+' GHz';v4_e.textContent=e4v.toFixed(1)+'%';v4_d.textContent=d4v+' Hz';
-const
-function draw(id,lines){
-const cv=document.getElementById(id),ctx=cv.getContext('2d');
-ctx.clearRect(0,0,cv.width,cv.height);ctx.strokeStyle='#151e2e';ctx.lineWidth=1;
-for(let x=0;x<cv.width;x+=60){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,cv.height);ctx.stroke();}
-lines.forEach(l=>{ctx.strokeStyle=l.col;ctx.lineWidth=2.5;ctx.beginPath();l.arr.forEach((v,i)=>{const x=(i/(l.arr.length-1))*cv.width,y=cv.height-(v/100)*cv.height;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});ctx.stroke();});
-}
-setInterval(()=>{
-d0.a.push(qGlobal?4:((+s0_t.value-280)/80)*100+(Math.random()*3-1.5));d0.a.shift();
-d0.b.push(qGlobal?2:(+s0_l.value/2.5)*100+(Math.random()*3-1.5));d0.b.shift();
-d0.c.push(qGlobal?4:((+s0_p.value-2.8)/1.5)*100+(Math.random()*2-1));d0.c.shift();
-draw('c0',[{arr:d0.a,col:'#06b6d4'},{arr:d0.b,col:'#f59e0b'},{arr:d0.c,col:'#10b981'}]);
-const wNorm=qGlobal?3:(+s1_w.value/128)*85;
-d1.rx.push(mode1==='TX'||qGlobal?3:wNorm+(Math.random()6-3));d1.rx.shift();
-d1.tx.push(mode1==='RX'||qGlobal?3:wNorm0.9+(Math.random()*6-3));d1.tx.shift();
-draw('c1',[{arr:d1.rx,col:'#06b6d4'},{arr:d1.tx,col:'#a855f7'}]);
-d2.a.push(qGlobal?3:(+s2_in.value/25.6)*90+(Math.random()*4-2));d2.a.shift();
-d2.b.push(qGlobal?2:(+s2_buf.value)+(Math.random()*3-1.5));d2.b.shift();
-draw('c2',[{arr:d2.a,col:'#06b6d4'},{arr:d2.b,col:'#f59e0b'}]);
-d3.a.push(qGlobal?5:+s3_c.value+(Math.random()*2-1));d3.a.shift();
-d3.b.push(qGlobal?2:+s3_s.value+(Math.random()*3-1.5));d3.b.shift();
-draw('c3',[{arr:d3.a,col:'#10b981'},{arr:d3.b,col:'#ef4444'}]);
-d4.a.push(qGlobal?2:+s4_p.value+(Math.random()*5-2.5));d4.a.shift();
-d4.b.push(qGlobal?4:+s4_e.value+(Math.random()*2-1));d4.b.shift();
-draw('c4',[{arr:d4.a,col:'#06b6d4'},{arr:d4.b,col:'#10b981'}]);
-d5.a.push(qGlobal?3:+s5_g.value+(Math.random()*5-2.5));d5.a.shift();
-d5.b.push(qGlobal?4:+s5_m.value+(Math.random()*2-1));d5.b.shift();
-draw('c5',[{arr:d5.a,col:'#a855f7'},{arr:d5.b,col:'#06b6d4'}]);
-d6.a.push(qGlobal?4:+s6_r.value+(Math.random()*3-1.5));d6.a.shift();
-d6.b.push(qGlobal?4:((+s6_p.value-280)/65)*100+(Math.random()*2-1));d6.b.shift();
-draw('c6',[{arr:d6.a,col:'#06b6d4'},{arr:d6.b,col:'#f59e0b'}]);
-d7.a.push(qGlobal?3:+s7_w.value+(Math.random()*2-1));d7.a.shift();
-d7.b.push(qGlobal?2:(+s7_b.value/25.6)*90+(Math.random()*4-2));d7.b.shift();
-draw('c7',[{arr:d7.a,col:'#10b981'},{arr:d7.b,col:'#a855f7'}]);
-},160);
-renderAll();
-</script>
-</body>
-</html>a
+<body><div class="wrap">
+<header><div><h1>SFERIUM v2.026 // CROSS-COUPLED TELEMETRY</h1><div style="font-size:0.75rem;color:var(--mut);">8-Module Architectural Simulation</div></div><div class="badge">PATENT PENDING</div></header>
+<div class="note"><strong>SPECULATIVE NOTICE:</strong> All figures are theoretical proxy estimates for conceptual visualization only; exact metrics require physical prototyping.</div>
+<div class="bar"><span><strong>PHYSICS ENGINE:</strong> CROSS-COUPLED</span><span id="imp" style="color:var(--cyn);">Equilibrium Locked</span></div>
+<div class="tabs" id="tb"></div><div id="pn"></div>
+<footer>Sferium v2.026 | Principal Architect: Krystian Jankiel | Status: Patent Pending</footer>
+</div><script>
+const M=[
+{n:"1. OOB Emergency",b:"OOB NOMINAL // INTERLOCKS ARMED",s:[["Core Temp",280,360,295.4,"K"],["Photon Leak",0.05,2.5,0.18,"dB"],["Perovskite",2.8,4.3,4.18,"V"]]},
+{n:"2. Compute RX/TX",b:"DIRECTIONAL CORE // FULL DUPLEX",s:[["WDM Channels",8,128,64,"Ch"],["Sector Temp",280,360,295.4,"K"],["EM Noise",0,100,0,"%"]]},
+{n:"3. Gateway Bridge",b:"GATEWAY // PHOTONIC TRANSLATION",s:[["Ingress Rate",1,25.6,12.8,"Tbps"],["Latency",5,120,14,"ps"],["Buffer Load",0,100,11,"%"]]},
+{n:"4. Mo-CNT 1-Atom",b:"BALLISTIC TRANSPORT LOCKED",s:[["Conductance",70,100,99.6,"%"],["Bend Stress",0,60,4.5,"%"],["Crosstalk",-80,-15,-68,"dB"]]},
+{n:"5. Laser & SPAD",b:"SPAD AVALANCHE MATRIX READY",s:[["Laser Pulse",5,100,42,"GHz"],["SPAD Eff",50,99.9,94.8,"%"],["Dark Count",1,500,12,"Hz"]]},
+{n:"6. Mesh & Seed",b:"NEURAL SEED HARMONIC LOCK",s:[["Seed Load",10,100,48,"%"],["Mesh Sync",65,100,99.2,"%"],["Resonance",70,100,99.8,"%"]]},
+{n:"7. Platform Heat",b:"CORE-TO-PLATFORM THERMAL NOMINAL",s:[["Radial Heat",5,100,18.4,"%"],["Platform Temp",280,345,291.2,"K"],["Sink Transfer",40,100,96.5,"%"]]},
+{n:"8. Cradle Station",b:"CRADLE DOCK LOCKED & ACTIVE",s:[["Dock Align",50,100,99.9,"%"],["Power Feed",0,100,85,"%"],["Backplane",0,25.6,12.8,"Tbps"]]}
+];
+  let q=false;const hist=M.map(()=>Array(60).fill(50));
+// ... (Pełny kod skryptu logiki interfejsu, zakładek, funkcji quench/rst oraz pętli renderowania canvas dostępny jest w źródle repozytorium)
+</script></body></html>
