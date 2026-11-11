@@ -579,7 +579,7 @@
       </div>
       <div class="notice">
         <strong>SPECULATIVE / ILLUSTRATIVE MODEL</strong><br />
-        This interface presents a hypothetical, demonstration-only telemetry model. Its parameters and couplings are not a verified engineering specification.
+        The interface presents a hypothetical telemetry model for demonstration purposes only. It is not a verified engineering specification or hardware control system.
       </div>
     </header>
 
@@ -620,7 +620,9 @@
         <span>ARCHITECT: <strong>KRYSTIAN JANKIEL</strong></span>
         <span id="footerMode">MODE: COUPLED SIMULATION</span>
       </div>
-      <div class="footer-note">This demonstrator is intended for illustrative visualization of system behavior under complex cross-coupled conditions.</div>
+      <div class="footer-note">
+        This demonstrator is intended for illustrative visualization of system behavior under complex cross-coupled conditions.
+      </div>
     </footer>
   </div>
 
@@ -649,499 +651,406 @@
         chart: "RX/TX CHANNEL ACTIVITY // SIMULATED",
         controls: [
           { id: "rxChannels", label: "WDM channels · RX", key: "RX_WDM_CHANNELS", min: 1, max: 16, value: 8, unit: "ch", step: 1 },
-          { id: "rxTemp", label: "Receiver temperature", key: "RX_RECEIVER_TEMP", min: 0, max: 100, value: 38, unit: "°C", hazard: "high", weight: 1 },
-          { id: "degradation", label: "Degradation risk", key: "RX_DEGRADATION_RISK", min: 0, max: 100, value: 8, unit: "%", hazard: "high", weight: 1.2 },
-          { id: "txChannels", label: "WDM channels · TX", key: "TX_WDM_CHANNELS", min: 1, max: 16, value: 8, unit: "ch", step: 1 },
-          { id: "interference", label: "TX interference", key: "TX_INTERFERENCE", min: 0, max: 100, value: 10, unit: "%", hazard: "high", weight: 1.1 }
+          { id: "rxTemp", label: "Receiver junction temperature", key: "RX_JUNCTION_TEMP", min: 0, max: 120, value: 41, unit: "°C", hazard: "high" },
+          { id: "txLoad", label: "Transmit path load", key: "TX_PATH_LOAD", min: 0, max: 100, value: 62, unit: "%", hazard: "high" }
         ],
-        reads: ["Channel balance", "Crosstalk interference", "Derived degradation"]
+        reads: ["Path integrity", "Voltage spread", "Thermal drift"]
       },
       {
         id: "gateway",
-        title: "Gateway Bridge",
-        eyebrow: "03 // OPTICAL-LOGIC BRIDGE",
-        description: "Optical signal transfer through a conversion layer and buffer.",
-        chart: "GATEWAY SIGNAL // SIMULATED",
+        title: "Gateway Node",
+        eyebrow: "03 // EDGE ROUTING GATEWAY",
+        description: "Mesh traffic balancing, packet route load, and gateway channel stress.",
+        chart: "ROUTE DISTRIBUTION // SIMULATED",
         controls: [
-          { id: "opticalInput", label: "Optical input", key: "OPTICAL_INPUT_LEVEL", min: 0, max: 100, value: 45, unit: "%", hazard: "high", weight: 1 },
-          { id: "conversionLatency", label: "Conversion latency", key: "CONVERSION_LATENCY", min: 0, max: 100, value: 24, unit: "µs", hazard: "high", weight: 1 },
-          { id: "bufferSaturation", label: "Buffer saturation", key: "BUFFER_SATURATION", min: 0, max: 100, value: 20, unit: "%", hazard: "high", weight: 1.3 }
+          { id: "routeLoad", label: "Route pressure", key: "ROUTE_PRESSURE", min: 0, max: 100, value: 54, unit: "%" },
+          { id: "packetLoss", label: "Packet drift", key: "PACKET_DRIFT", min: 0, max: 100, value: 18, unit: "%" },
+          { id: "burstWindow", label: "Burst window", key: "BURST_WINDOW", min: 0, max: 100, value: 72, unit: "%" }
         ],
-        reads: ["Bridge load", "End-to-end latency", "Buffer headroom"]
+        reads: ["Queue depth", "Latency variance", "Telemetry priority"]
       },
       {
         id: "cnt",
-        title: "Mo-CNT 1-Atom",
-        eyebrow: "04 // ATOMIC-SCALE CONDUCTOR",
-        description: "Illustrative model of conductivity, cladding stress, and crosstalk.",
-        chart: "CONDUCTIVITY TRACE // SIMULATED",
+        title: "Mo-CNT Matrix",
+        eyebrow: "04 // CARBON NANOTUBE FLUX",
+        description: "Matrix conduction, electron drift, and synthetic strain balancing.",
+        chart: "CNT CONDUCTANCE // SIMULATED",
         controls: [
-          { id: "conductivity", label: "Ballistic conductivity", key: "BALLISTIC_CONDUCTIVITY", min: 0, max: 100, value: 78, unit: "%", hazard: "low", weight: 1.1 },
-          { id: "claddingStress", label: "Cladding stress", key: "CLADDING_STRESS", min: 0, max: 100, value: 22, unit: "%", hazard: "high", weight: 1 },
-          { id: "quantumCrosstalk", label: "Quantum crosstalk", key: "QUANTUM_CROSSTALK", min: 0, max: 100, value: 15, unit: "%", hazard: "high", weight: 1.1 }
+          { id: "conductance", label: "Conductance index", key: "CNT_CONDUCTANCE", min: 0, max: 100, value: 66, unit: "%" },
+          { id: "strain", label: "Strain offset", key: "CNT_STRAIN", min: 0, max: 100, value: 39, unit: "%" },
+          { id: "ionBias", label: "Ion bias drift", key: "ION_BIAS_DRIFT", min: 0, max: 100, value: 27, unit: "%" }
         ],
-        reads: ["Derived throughput", "Effective stress", "Crosstalk level"]
+        reads: ["Flux spread", "Carrier phase", "Grain alignment"]
       },
       {
         id: "laser",
-        title: "Laser & SPAD",
-        eyebrow: "05 // PHOTONIC DETECTION",
-        description: "Pulse density, detection efficiency, and modeled dark-count rate.",
-        chart: "PHOTON DETECTION // SIMULATED",
+        title: "Laser Relay",
+        eyebrow: "05 // PHASE-LOCKED ARRAY",
+        description: "Laser relay phase variance, beam coherence, and amplification drift.",
+        chart: "LASER COHERENCE // SIMULATED",
         controls: [
-          { id: "laserDensity", label: "Laser pulse density", key: "LASER_PULSE_DENSITY", min: 0, max: 100, value: 28, unit: "%", hazard: "high", weight: 1.2 },
-          { id: "spadEfficiency", label: "SPAD efficiency", key: "SPAD_DETECTION_EFFICIENCY", min: 0, max: 100, value: 72, unit: "%", hazard: "low", weight: 1 },
-          { id: "darkCounts", label: "Dark-count rate", key: "DARK_COUNT_RATE", min: 0, max: 100, value: 12, unit: "kcps", hazard: "high", weight: 1.2 }
+          { id: "phaseSync", label: "Phase sync", key: "PHASE_SYNC", min: 0, max: 100, value: 61, unit: "%" },
+          { id: "beamQuality", label: "Beam quality", key: "BEAM_QUALITY", min: 0, max: 100, value: 73, unit: "%" },
+          { id: "gainDrift", label: "Gain drift", key: "GAIN_DRIFT", min: 0, max: 100, value: 18, unit: "%" }
         ],
-        reads: ["Detection quality", "Photonic load", "Dark noise"]
+        reads: ["Beacon focus", "Optical gain", "Phase noise"]
       },
       {
         id: "mesh",
-        title: "Mo-CNT Mesh & Seed",
-        eyebrow: "06 // NEURAL SEED / MESH",
-        description: "Coupling seed excitation with mesh coherence and phase resonance.",
-        chart: "MESH COHERENCE // SIMULATED",
+        title: "Mesh Fabric",
+        eyebrow: "06 // DISTRIBUTED MESH",
+        description: "Cross-mesh circulation, neighbor resilience, and route redundancy.",
+        chart: "MESH RESONANCE // SIMULATED",
         controls: [
-          { id: "seedExcitation", label: "Neural seed excitation", key: "NEURAL_SEED_EXCITATION", min: 0, max: 100, value: 50, unit: "%", hazard: "high", weight: 1 },
-          { id: "meshCoherence", label: "Mesh coherence", key: "MESH_COHERENCE", min: 0, max: 100, value: 78, unit: "%", hazard: "low", weight: 1.1 },
-          { id: "phaseResonance", label: "Phase resonance", key: "PHASE_RESONANCE", min: 0, max: 100, value: 25, unit: "%", hazard: "high", weight: 1.1 }
+          { id: "meshLoad", label: "Mesh load", key: "MESH_LOAD", min: 0, max: 100, value: 58, unit: "%" },
+          { id: "redundancy", label: "Redundancy", key: "REDUNDANCY", min: 0, max: 100, value: 61, unit: "%" },
+          { id: "neighborSync", label: "Neighbor sync", key: "NEIGHBOR_SYNC", min: 0, max: 100, value: 46, unit: "%" }
         ],
-        reads: ["Mesh coherence", "Phase deviation", "Seed load"]
+        reads: ["Node health", "Peer sync", "Fault margin"]
       },
       {
         id: "thermal",
-        title: "Core-to-Platform Heat",
-        eyebrow: "07 // THERMAL DISTRIBUTION",
-        description: "Heat propagation, platform dissipation, and thermal transfer.",
-        chart: "THERMAL TRANSFER // SIMULATED",
+        title: "Thermal Core",
+        eyebrow: "07 // THERMAL REGULATION",
+        description: "Temperature spread, sink efficiency, and coolant micro-cycling.",
+        chart: "THERMAL PROFILE // SIMULATED",
         controls: [
-          { id: "heatSpread", label: "Heat spread", key: "CORE_HEAT_SPREAD", min: 0, max: 100, value: 45, unit: "%", hazard: "low", weight: 1 },
-          { id: "platformDissipation", label: "Platform dissipation", key: "PLATFORM_DISSIPATION", min: 0, max: 100, value: 40, unit: "%", hazard: "low", weight: 1.1 },
-          { id: "thermalTransfer", label: "Thermal transfer", key: "THERMAL_TRANSFER", min: 0, max: 100, value: 55, unit: "%", hazard: "low", weight: 1 }
+          { id: "sinkEff", label: "Sink efficiency", key: "SINK_EFFICIENCY", min: 0, max: 100, value: 71, unit: "%" },
+          { id: "tempSpread", label: "Thermal spread", key: "TEMP_SPREAD", min: 0, max: 120, value: 43, unit: "°C" },
+          { id: "coolantFlow", label: "Coolant flow", key: "COOLANT_FLOW", min: 0, max: 100, value: 64, unit: "%" }
         ],
-        reads: ["Core / platform delta", "Dissipation headroom", "Thermal coupling"]
+        reads: ["Thermal stress", "Flow reserve", "Stability band"]
       },
       {
         id: "cradle",
-        title: "Cradle Station",
-        eyebrow: "08 // DOCK / BACKPLANE",
-        description: "Docking interlock, perovskite power, and backplane connectivity.",
-        chart: "BACKPLANE LINK // SIMULATED",
+        title: "Cradle Link",
+        eyebrow: "08 // STRUCTURAL CRADLE",
+        description: "Vibration damping, platform alignment, and suspension coupling.",
+        chart: "CRADLE DAMPING // SIMULATED",
         controls: [
-          { id: "dockLock", label: "Docking interlock", key: "DOCK_INTERLOCK", min: 0, max: 100, value: 88, unit: "%", hazard: "low", weight: 1.2 },
-          { id: "perovskitePower", label: "Perovskite power", key: "PEROVSKITE_POWER", min: 0, max: 100, value: 50, unit: "%", hazard: "high", weight: 1 },
-          { id: "backplaneLink", label: "Backplane link", key: "BACKPLANE_LINK", min: 0, max: 100, value: 70, unit: "%", hazard: "low", weight: 1 }
+          { id: "vibe", label: "Vibration load", key: "VIBRATION_LOAD", min: 0, max: 100, value: 29, unit: "%" },
+          { id: "alignment", label: "Alignment drift", key: "ALIGNMENT_DRIFT", min: 0, max: 100, value: 21, unit: "%" },
+          { id: "damping", label: "Damping reserve", key: "DAMPING_RESERVE", min: 0, max: 100, value: 73, unit: "%" }
         ],
-        reads: ["Dock integrity", "Power margin", "Link quality"]
+        reads: ["Support margin", "Surge damping", "Alignment lock"]
       }
     ];
 
-    const defaults = {};
-    modules.forEach(module => {
-      module.controls.forEach(control => {
-        defaults[control.id] = control.value;
-      });
-    });
-
     const state = {
-      ...defaults,
       activeTab: 0,
+      resetPending: false,
       quenched: false,
-      duplex: true
+      risk: 0,
+      chartData: []
     };
 
-    const tabsEl = document.getElementById("tabs");
-    const panelEl = document.getElementById("mainPanel");
-    const readoutsEl = document.getElementById("readouts");
+    const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
-    const clamp = (value, min = 0, max = 100) => Math.max(min, Math.min(max, value));
+    function getModule() {
+      return modules[state.activeTab];
+    }
 
-    function hazardOf(control) {
-      if (!control.hazard) return 0;
-      const ratio = (state[control.id] - control.min) / (control.max - control.min);
-      return control.hazard === "low" ? 1 - ratio : ratio;
+    function getModuleValues() {
+      const module = getModule();
+      const values = {};
+      module.controls.forEach(control => {
+        const input = document.querySelector(`[data-control-id="${control.id}"]`);
+        values[control.id] = input ? Number(input.value) : control.value;
+      });
+      return values;
     }
 
     function calculateRisk() {
-      let total = 0;
-      let weights = 0;
-      modules.forEach(module => {
-        module.controls.forEach(control => {
-          if (control.hazard) {
-            total += hazardOf(control) * control.weight;
-            weights += control.weight;
-          }
-        });
-      });
-
-      const severity = (total / Math.max(1, weights)) * 100;
-      const penalty = Math.max(0, state.coreTemp - 60) * 0.28;
-      const saturationPenalty = Math.max(0, state.bufferSaturation - 70) * 0.22;
-      const coupledPenalty = state.duplex ? 4 : 0 + (state.quenched ? 14 : 0);
-      return clamp(Math.round(severity + penalty + saturationPenalty + coupledPenalty), 0, 100);
+      const values = getModuleValues();
+      const localRisk = Object.values(values).reduce((sum, value) => sum + Number(value || 0), 0) / Math.max(Object.keys(values).length, 1);
+      const globalNoise = Math.sin(Date.now() / 1100) * 12;
+      state.risk = clamp(Math.round(localRisk + globalNoise), 0, 100);
+      return state.risk;
     }
 
-    function getCrossLoad() {
-      return {
-        optical: clamp(Math.round((state.photonLeak * 0.28 + state.laserDensity * 0.24 + state.opticalInput * 0.18 + state.rxChannels * 1.2) / 1.8)),
-        compute: clamp(Math.round((state.rxTemp * 0.25 + state.degradation * 0.24 + state.interference * 0.17 + state.txChannels * 1.0) / 1.4)),
-        network: clamp(Math.round((state.bufferSaturation * 0.32 + state.conversionLatency * 0.18 + state.backplaneLink * 0.18 + state.opticalInput * 0.16) / 1.7)),
-        mesh: clamp(Math.round((state.seedExcitation * 0.26 + state.phaseResonance * 0.22 + state.meshCoherence * 0.15 + state.quantumCrosstalk * 0.2) / 1.5)),
-        thermal: clamp(Math.round((state.coreTemp * 0.26 + state.heatSpread * 0.18 + state.platformDissipation * 0.2 + state.thermalTransfer * 0.18) / 1.6))
-      };
+    function updateClock() {
+      const clock = document.getElementById("clock");
+      if (!clock) return;
+      clock.textContent = new Date().toISOString().slice(11, 19) + " UTC";
+    }
+
+    function setRiskDisplay() {
+      const riskValue = document.getElementById("riskValue");
+      const riskLabel = document.getElementById("riskLabel");
+      const meter = document.getElementById("globalMeter");
+      if (!riskValue || !riskLabel || !meter) return;
+
+      const risk = calculateRisk();
+      riskValue.textContent = `${risk} / 100`;
+      riskLabel.textContent = risk > 80 ? "CRITICAL" : risk > 60 ? "ELEVATED" : risk > 35 ? "WATCH" : "NOMINAL";
+      meter.style.width = `${risk}%`;
+      meter.style.background = risk > 80 ? "linear-gradient(90deg, var(--red), #ff8c7a)" : risk > 60 ? "linear-gradient(90deg, var(--amber), var(--red))" : "linear-gradient(90deg, var(--cyan), var(--blue))";
+
+      const shell = document.getElementById("app");
+      shell.classList.toggle("quenched", risk > 80);
+      document.getElementById("systemState").textContent = risk > 80 ? "QUENCH LOCKED" : "SIMULATION ONLINE";
+    }
+
+    function createTabButton(module, index) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "tab";
+      button.setAttribute("role", "tab");
+      button.setAttribute("aria-selected", index === state.activeTab ? "true" : "false");
+      button.setAttribute("tabindex", index === state.activeTab ? "0" : "-1");
+      button.innerHTML = `<span class="tab-index">${String(index + 1).padStart(2, "0")}</span>${module.title}`;
+      button.addEventListener("click", () => {
+        state.activeTab = index;
+        renderTabs();
+        renderPanel();
+        setRiskDisplay();
+      });
+      return button;
     }
 
     function renderTabs() {
-      tabsEl.innerHTML = modules.map((module, index) => `
-        <button
-          class="tab"
-          id="tab-${module.id}"
-          type="button"
-          role="tab"
-          aria-selected="${index === state.activeTab}"
-          aria-controls="panel-content"
-          tabindex="${index === state.activeTab ? 0 : -1}"
-          data-index="${index}"
-        >
-          <span class="tab-index">${String(index + 1).padStart(2, "0")}</span>${module.title}
-        </button>
-      `).join("");
-
-      tabsEl.querySelectorAll(".tab").forEach((button) => {
-        button.addEventListener("click", () => selectTab(Number(button.dataset.index)));
-        button.addEventListener("keydown", (event) => {
-          if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
-            event.preventDefault();
-            const direction = event.key === "ArrowRight" ? 1 : -1;
-            const next = (state.activeTab + direction + modules.length) % modules.length;
-            selectTab(next);
-            document.getElementById(`tab-${modules[next].id}`)?.focus();
-          }
-        });
+      const tabs = document.getElementById("tabs");
+      if (!tabs) return;
+      tabs.innerHTML = "";
+      modules.forEach((module, index) => {
+        tabs.appendChild(createTabButton(module, index));
       });
     }
 
-    function formatValue(control, value = state[control.id]) {
-      return `${Number(value).toFixed(control.step === 1 ? 0 : 1)} <small>${control.unit}</small>`;
+    function formatValue(value, unit, decimals = 0) {
+      const number = Number(value || 0);
+      return `${number.toFixed(decimals)}${unit || ""}`;
     }
 
-    function drawModuleChart(module) {
-      const canvas = document.getElementById("moduleChart");
-      if (!canvas) return;
+    function renderReadouts() {
+      const readoutsRoot = document.getElementById("readouts");
+      if (!readoutsRoot) return;
+      const module = getModule();
+      const values = getModuleValues();
+      const reads = module.reads.map((label, idx) => {
+        const control = module.controls[idx % module.controls.length];
+        const value = values[control.id] || control.value;
+        return `
+          <div class="readout">
+            <div class="readout-row">
+              <span class="readout-label">${label}</span>
+              <span class="readout-value">${Math.round(value)}%</span>
+            </div>
+            <div class="readout-note">${control.key} // ${formatValue(value, "%")}</div>
+          </div>
+        `;
+      }).join("");
+      readoutsRoot.innerHTML = reads;
+    }
 
+    function drawChart() {
+      const canvas = document.getElementById("scopeChart");
+      if (!canvas) return;
       const ctx = canvas.getContext("2d");
       const rect = canvas.getBoundingClientRect();
-      if (!rect.width) return;
-
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = Math.floor(rect.width * dpr);
-      canvas.height = Math.floor(rect.height * dpr);
+      const width = Math.max(300, rect.width || 500);
+      const height = Math.max(180, rect.height || 180);
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-      const width = rect.width;
-      const height = rect.height;
       ctx.clearRect(0, 0, width, height);
+
+      const module = getModule();
+      const values = getModuleValues();
+      const series = module.controls.map(control => clamp(Number(values[control.id] || control.value), 0, 100));
+
+      const left = 20;
+      const right = 12;
+      const top = 12;
+      const bottom = 20;
+      const plotWidth = width - left - right;
+      const plotHeight = height - top - bottom;
 
       ctx.strokeStyle = "rgba(129,157,166,0.18)";
       ctx.lineWidth = 1;
-      for (let i = 0; i <= 4; i++) {
-        const y = (height * i) / 4;
+      for (let t = 0; t <= 4; t++) {
+        const y = top + (plotHeight / 4) * t;
         ctx.beginPath();
-        ctx.moveTo(0, y + 0.5);
-        ctx.lineTo(width, y + 0.5);
+        ctx.moveTo(left, y);
+        ctx.lineTo(width - right, y);
         ctx.stroke();
       }
 
-      const samples = module.controls.map(control => {
-        const value = Number(state[control.id]);
-        const normalized = clamp((value - control.min) / Math.max(1, control.max - control.min), 0, 1);
-        return normalized * 100;
+      const colors = ["#62e5d0", "#70b7ff", "#ffbf69", "#a78bfa", "#ff6678" ];
+      const points = series.map((entry, index) => {
+        const x = left + (index / Math.max(series.length - 1, 1)) * plotWidth;
+        const y = top + (1 - entry / 100) * plotHeight;
+        return { x, y };
       });
 
-      const center = height * 0.5;
       ctx.beginPath();
-      ctx.moveTo(0, center);
-      samples.forEach((sample, index) => {
-        const x = (index / Math.max(1, samples.length - 1)) * (width - 20) + 10;
-        const y = center - (sample - 50) * 0.7;
-        if (index === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
+      points.forEach((point, index) => {
+        if (index === 0) ctx.moveTo(point.x, point.y);
+        else ctx.lineTo(point.x, point.y);
       });
-
-      ctx.strokeStyle = state.quenched ? "#ff6678" : "#62e5d0";
       ctx.lineWidth = 2.2;
-      ctx.shadowColor = state.quenched ? "rgba(255, 102, 120, 0.4)" : "rgba(98, 229, 208, 0.4)";
-      ctx.shadowBlur = 12;
+      ctx.strokeStyle = colors[state.activeTab % colors.length];
+      ctx.shadowColor = colors[state.activeTab % colors.length];
+      ctx.shadowBlur = 14;
       ctx.stroke();
       ctx.shadowBlur = 0;
 
-      samples.forEach((sample, index) => {
-        const x = (index / Math.max(1, samples.length - 1)) * (width - 20) + 10;
-        const y = center - (sample - 50) * 0.7;
+      points.forEach((point, index) => {
         ctx.beginPath();
-        ctx.fillStyle = index % 2 === 0 ? "#70b7ff" : "#62e5d0";
-        ctx.arc(x, y, 4.2, 0, Math.PI * 2);
+        ctx.arc(point.x, point.y, 3, 0, Math.PI * 2);
+        ctx.fillStyle = colors[index % colors.length];
         ctx.fill();
-
-        ctx.fillStyle = "rgba(234, 241, 243, 0.75)";
-        ctx.font = "10px SFMono-Regular, Consolas, monospace";
-        ctx.textAlign = "center";
-        ctx.fillText(String(index + 1), x, height - 5);
       });
-
-      ctx.fillStyle = "rgba(157, 176, 183, 0.75)";
-      ctx.font = "10px SFMono-Regular, Consolas, monospace";
-      ctx.textAlign = "left";
-      ctx.fillText(module.chart, 12, 18);
     }
 
     function renderPanel() {
-      const module = modules[state.activeTab];
-
-      panelEl.innerHTML = `
-        <div class="panel-heading" id="panel-content">
+      const panel = document.getElementById("mainPanel");
+      if (!panel) return;
+      const module = getModule();
+      panel.innerHTML = `
+        <div class="panel-heading">
           <div class="eyebrow">${module.eyebrow}</div>
           <h2>${module.title}</h2>
           <p class="panel-description">${module.description}</p>
         </div>
 
         <div class="control-grid">
-          ${module.controls.map(control => `
-            <div class="control-card" data-control="${control.id}">
+          ${module.controls.map((control) => `
+            <div class="control-card">
               <div class="control-top">
                 <div>
                   <div class="control-label">${control.label}</div>
                   <span class="control-key">${control.key}</span>
                 </div>
-                <div class="control-value" id="value-${control.id}">${formatValue(control)}</div>
+                <div class="control-value">${Math.round(control.value)}<small>${control.unit || "%"}</small></div>
               </div>
-
-              <input
-                id="control-${control.id}"
-                type="range"
-                min="${control.min}"
-                max="${control.max}"
-                step="${control.step || 1}"
-                value="${state[control.id]}"
-                aria-label="${control.label}"
-              />
-
-              <div class="range-limits">
-                <span>${control.min}</span>
-                <span>${control.max}</span>
-              </div>
-
+              <input type="range" data-control-id="${control.id}" min="${control.min}" max="${control.max}" step="${control.step || 1}" value="${control.value}" aria-label="${control.label}" />
+              <div class="range-limits"><span>${control.min}${control.unit || ""}</span><span>${control.max}${control.unit || ""}</span></div>
               <div class="coupling">
-                <span>Coupling</span>
-                <div class="mini-meter"><span id="coupling-${control.id}"></span></div>
+                <span>COUPLING</span>
+                <span class="mini-meter"><span style="width:${clamp(control.value, 0, 100)}%"></span></span>
               </div>
             </div>
           `).join("")}
         </div>
 
-        <div class="duplex-row">
-          <span>Channel directionality</span>
-          <label class="switch">
-            <input id="duplexSwitch" type="checkbox" ${state.duplex ? "checked" : ""} />
-            <span>${state.duplex ? "Full duplex" : "Simplex"}</span>
-          </label>
+        <div class="module-actions">
+          <button class="button" type="button" data-action="stabilize">Stabilize</button>
+          <button class="button" type="button" data-action="boost">Boost flux</button>
+          <button class="button danger" type="button" data-action="quench">Local quench</button>
         </div>
 
-        <div class="module-actions">
-          <button class="button" id="localQuench" type="button">Local quench</button>
-          <button class="button" id="localReset" type="button">Reset module</button>
+        <div class="duplex-row">
+          <span>SIMULATED LINK // ${module.chart}</span>
+          <label class="switch"><input type="checkbox" checked /> Duplex</label>
         </div>
 
         <div class="scope">
           <div class="scope-head">
-            <span>Module signal scope</span>
-            <span>${module.chart}</span>
+            <span>Cross-coupled signal</span>
+            <span>LIVE</span>
           </div>
           <div class="scope-body">
-            <canvas id="moduleChart"></canvas>
+            <canvas id="scopeChart" aria-label="Scope chart"></canvas>
           </div>
         </div>
       `;
 
-      renderTabs();
-
-      module.controls.forEach(control => {
-        const input = document.getElementById(`control-${control.id}`);
-        const output = document.getElementById(`value-${control.id}`);
-        const meter = document.getElementById(`coupling-${control.id}`);
-
-        if (input) {
-          input.addEventListener("input", (event) => {
-            state[control.id] = Number(event.target.value);
-            updateDynamic();
-          });
-        }
-
-        if (output) output.innerHTML = formatValue(control);
-        if (meter) meter.style.width = `${clamp((state[control.id] / control.max) * 100, 0, 100)}%`;
-      });
-
-      const duplex = document.getElementById("duplexSwitch");
-      if (duplex) {
-        duplex.addEventListener("change", () => {
-          state.duplex = duplex.checked;
-          duplex.nextElementSibling.textContent = state.duplex ? "Full duplex" : "Simplex";
-          updateDynamic();
+      panel.querySelectorAll('input[type="range"]').forEach((input) => {
+        input.addEventListener("input", () => {
+          const id = input.dataset.controlId;
+          const control = module.controls.find(item => item.id === id);
+          if (!control) return;
+          control.value = Number(input.value);
+          renderReadouts();
+          drawChart();
+          setRiskDisplay();
         });
-      }
+      });
 
-      const localQuench = document.getElementById("localQuench");
-      const localReset = document.getElementById("localReset");
-      if (localQuench) localQuench.addEventListener("click", quenchLocal);
-      if (localReset) localReset.addEventListener("click", resetLocal);
+      panel.querySelectorAll("[data-action]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const action = button.dataset.action;
+          if (action === "stabilize") {
+            module.controls.forEach(control => control.value = clamp(control.value * 0.9, control.min, control.max));
+          }
+          if (action === "boost") {
+            module.controls.forEach(control => control.value = clamp(control.value + 8, control.min, control.max));
+          }
+          if (action === "quench") {
+            state.quenched = true;
+            module.controls.forEach(control => control.value = clamp(control.value - 18, control.min, control.max));
+          }
+          renderPanel();
+          renderReadouts();
+          drawChart();
+          setRiskDisplay();
+        });
+      });
 
-      drawModuleChart(module);
+      renderReadouts();
+      drawChart();
     }
 
-    function selectTab(index) {
-      state.activeTab = index;
-      renderPanel();
-    }
+    function bindGlobalActions() {
+      document.getElementById("resetAll").addEventListener("click", () => {
+        modules.forEach(module => {
+          module.controls.forEach(control => {
+            control.value = Number(control.min) + (Number(control.max) - Number(control.min)) * 0.35;
+          });
+        });
+        state.quenched = false;
+        renderPanel();
+        renderReadouts();
+        drawChart();
+        setRiskDisplay();
+      });
 
-    function couplingInfluence(control) {
-      const load = getCrossLoad();
-      const index = modules.findIndex(module => module.controls.some(item => item.id === control.id));
-      const weights = [load.optical, load.compute, load.network, load.compute, load.optical, load.mesh, load.thermal, load.network];
-      const coupled = weights[Math.min(index, weights.length - 1)];
-      return clamp(Math.round((coupled + (control.hazard === "low" ? 8 : 16)) / 2));
-    }
-
-    function renderReadouts(module, risk, cross) {
-      const derivedA = Math.round((cross.optical + cross.compute) / 2);
-      const derivedB = Math.round((cross.thermal + cross.network) / 2);
-      const derivedC = Math.round((cross.compute + cross.network + risk) / 3);
-
-      const rows = [
-        [module.reads[0], `${derivedA}%`, "Cross-coupled derived value"],
-        [module.reads[1], `${derivedB}%`, "Thermal and network coupling"],
-        [module.reads[2], `${derivedC}%`, "Module integrity estimate"],
-        ["Global stress index", `${risk}%`, "Combined model of all 8 nodes"],
-        ["Optical load", `${cross.optical}%`, "OOB + laser + gateway"],
-        ["Thermal load", `${cross.thermal}%`, "Core-to-platform transfer"]
-      ];
-
-      readoutsEl.innerHTML = rows.map(([label, value, note]) => `
-        <div class="readout">
-          <div class="readout-row">
-            <span class="readout-label">${label}</span>
-            <span class="readout-value">${value}</span>
-          </div>
-          <div class="readout-note">${note}</div>
-        </div>
-      `).join("") + `
-        <div class="readout">
-          <div class="readout-row">
-            <span class="readout-label">Interlock</span>
-            <span class="status-pill ${state.quenched ? "critical" : risk >= 55 ? "warning" : ""}">${state.quenched ? "SAFE HOLD" : risk >= 55 ? "WATCH" : "NOMINAL"}</span>
-          </div>
-          <div class="readout-note">Illustrative model state</div>
-        </div>
-      `;
-    }
-
-    function updateDynamic() {
-      const risk = calculateRisk();
-      const cross = getCrossLoad();
-      const module = modules[state.activeTab];
-      const hardLimit = state.coreTemp >= 112 || state.bufferSaturation >= 98 || state.photonLeak >= 97;
-
-      if (!state.quenched && hardLimit) {
+      document.getElementById("globalQuench").addEventListener("click", () => {
+        modules.forEach(module => module.controls.forEach(control => {
+          control.value = clamp(Number(control.value) - 25, Number(control.min), Number(control.max));
+        }));
         state.quenched = true;
+        renderPanel();
+        renderReadouts();
+        drawChart();
+        setRiskDisplay();
+      });
+    }
+
+    function animateLoop() {
+      const risk = calculateRisk();
+      const currentModule = getModule();
+      currentModule.controls.forEach(control => {
+        const drift = Math.sin(Date.now() / 900 + control.value) * 1.8;
+        control.value = clamp(control.value + drift * 0.15, Number(control.min), Number(control.max));
+      });
+      renderReadouts();
+      drawChart();
+      setRiskDisplay();
+      document.getElementById("footerMode").textContent = `MODE: ${state.quenched ? "QUENCH LOCK" : "COUPLED SIMULATION"}`;
+      if (risk > 80) {
+        document.getElementById("systemState").textContent = "QUENCH LOCKED";
       }
-
-      document.getElementById("systemState").textContent = state.quenched ? "SYSTEM QUENCHED" : "SIMULATION ONLINE";
-      document.getElementById("app").classList.toggle("quenched", state.quenched);
-      document.getElementById("riskValue").textContent = `${risk} / 100`;
-      document.getElementById("globalMeter").style.width = `${risk}%`;
-      document.querySelector(".meter").setAttribute("aria-valuenow", String(risk));
-
-      const label = risk >= 75 ? "CRITICAL" : risk >= 45 ? "ELEVATED" : risk >= 20 ? "WATCH" : "NOMINAL";
-      document.getElementById("riskLabel").textContent = label;
-      document.getElementById("footerMode").textContent = `MODE: ${state.quenched ? "EMERGENCY QUENCH" : state.duplex ? "FULL DUPLEX" : "SIMPLEX"}`;
-
-      module.controls.forEach(control => {
-        const input = document.getElementById(`control-${control.id}`);
-        const output = document.getElementById(`value-${control.id}`);
-        if (input) input.value = state[control.id];
-        if (output) output.innerHTML = formatValue(control);
-
-        const meter = document.getElementById(`coupling-${control.id}`);
-        if (meter) {
-          const influence = couplingInfluence(control);
-          meter.style.width = `${influence}%`;
-          meter.style.background = influence > 70 ? "var(--amber)" : "var(--cyan)";
-        }
-      });
-
-      renderReadouts(module, risk, cross);
-      drawModuleChart(module);
+      requestAnimationFrame(animateLoop);
     }
 
-    function quenchSystem() {
-      state.quenched = true;
-      const safe = {
-        coreTemp: 24,
-        photonLeak: 4,
-        cellPotential: 25,
-        rxTemp: 28,
-        degradation: 4,
-        interference: 5,
-        bufferSaturation: 8,
-        claddingStress: 10,
-        quantumCrosstalk: 7,
-        laserDensity: 8,
-        darkCounts: 5,
-        seedExcitation: 20,
-        phaseResonance: 8,
-        perovskitePower: 28,
-        rxChannels: 3,
-        txChannels: 3
-      };
-
-      Object.entries(safe).forEach(([key, value]) => {
-        if (key in state) state[key] = Math.min(state[key], value);
-      });
-
-      updateDynamic();
-    }
-
-    function quenchLocal() {
-      state.coreTemp = Math.min(state.coreTemp, 24);
-      state.photonLeak = Math.min(state.photonLeak, 4);
-      state.cellPotential = Math.min(state.cellPotential, 25);
-      updateDynamic();
-    }
-
-    function resetLocal() {
-      modules[state.activeTab].controls.forEach(control => {
-        state[control.id] = defaults[control.id];
-      });
-      state.quenched = false;
+    function init() {
+      renderTabs();
       renderPanel();
+      setRiskDisplay();
+      bindGlobalActions();
+      updateClock();
+      setInterval(updateClock, 1000);
+      requestAnimationFrame(animateLoop);
     }
 
-    function resetAll() {
-      Object.assign(state, defaults, { activeTab: 0, quenched: false, duplex: true });
-      renderPanel();
-    }
+    window.addEventListener("resize", () => {
+      drawChart();
+    });
 
-    function updateClock() {
-      document.getElementById("clock").textContent = `${new Date().toISOString().slice(11, 19)} UTC`;
-    }
-
-    document.getElementById("globalQuench").addEventListener("click", quenchSystem);
-    document.getElementById("resetAll").addEventListener("click", resetAll);
-
-    updateClock();
-    setInterval(updateClock, 1000);
-    renderPanel();
-    updateDynamic();
-    window.addEventListener("resize", () => drawModuleChart(modules[state.activeTab]));
+    init();
   </script>
 </body>
 </html>
