@@ -5,79 +5,106 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sferium v2.026 | OOB Emergency Telemetry</title>
 <style>
-:root{--bg:#0b0e14;--card:#131822;--bdr:#232d3f;--txt:#e2e8f0;--mut:#94a3b8;--cyn:#06b6d4;--ok:#10b981;--wrn:#f59e0b;--crt:#ef4444;}
+:root{--bg:#090c12;--card:#111622;--bdr:#1e293b;--txt:#e2e8f0;--mut:#94a3b8;--cyn:#06b6d4;--ok:#10b981;--wrn:#f59e0b;--crt:#ef4444;}
 *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,sans-serif;}
-body{background:var(--bg);color:var(--txt);padding:20px;display:flex;justify-content:center;}
-.wrap{max-width:960px;width:100%;}
-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--bdr);padding-bottom:15px;margin-bottom:20px;flex-wrap:wrap;gap:10px;}
-h1{font-size:1.3rem;color:#fff;}
-.sub{font-size:0.85rem;color:var(--mut);margin-top:4px;}
-.badge{background:rgba(6,182,212,0.15);border:1px solid var(--cyn);color:var(--cyn);padding:5px 12px;border-radius:4px;font-size:0.8rem;font-weight:700;letter-spacing:1px;}
-.banner{padding:14px;border-radius:6px;margin-bottom:20px;font-weight:700;text-align:center;border:1px solid var(--ok);background:rgba(16,185,129,0.1);color:var(--ok);}
+body{background:var(--bg);color:var(--txt);padding:18px;display:flex;justify-content:center;}
+.wrap{max-width:1040px;width:100%;}
+header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--bdr);padding-bottom:14px;margin-bottom:18px;flex-wrap:wrap;gap:10px;}
+h1{font-size:1.25rem;color:#fff;letter-spacing:0.5px;}
+.sub{font-size:0.82rem;color:var(--mut);margin-top:3px;}
+.badge{background:rgba(6,182,212,0.12);border:1px solid var(--cyn);color:var(--cyn);padding:5px 12px;border-radius:4px;font-size:0.78rem;font-weight:700;letter-spacing:1px;}
+.banner{padding:14px;border-radius:6px;margin-bottom:18px;font-weight:700;text-align:center;border:1px solid var(--ok);background:rgba(16,185,129,0.1);color:var(--ok);letter-spacing:0.5px;}
 .banner.wrn{border-color:var(--wrn);background:rgba(245,158,11,0.15);color:var(--wrn);}
 .banner.crt{border-color:var(--crt);background:rgba(239,68,68,0.2);color:var(--crt);}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:15px;margin-bottom:15px;}
-.card{background:var(--card);border:1px solid var(--bdr);border-radius:8px;padding:18px;}
-.card h2{font-size:0.9rem;color:var(--mut);margin-bottom:10px;text-transform:uppercase;}
-.val{font-size:1.9rem;font-weight:700;margin-bottom:8px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-bottom:16px;}
+.card{background:var(--card);border:1px solid var(--bdr);border-radius:8px;padding:16px;}
+.card h2{font-size:0.82rem;color:var(--mut);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.6px;}
+.val{font-size:1.75rem;font-weight:700;margin-bottom:6px;font-variant-numeric:tabular-nums;}
 input[type=range]{width:100%;margin:8px 0;accent-color:var(--cyn);cursor:pointer;}
-.info{font-size:0.8rem;color:var(--mut);display:flex;justify-content:space-between;}
-canvas{width:100%;height:140px;background:#090c10;border-radius:6px;border:1px solid var(--bdr);display:block;}
-.btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:15px;}
+.info{font-size:0.76rem;color:var(--mut);display:flex;justify-content:space-between;}
+.legend{display:flex;gap:16px;font-size:0.78rem;margin-bottom:10px;flex-wrap:wrap;}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;}
+canvas{width:100%;height:180px;background:#06080c;border-radius:6px;border:1px solid var(--bdr);display:block;}
+.log{background:#06080c;border:1px solid var(--bdr);border-radius:6px;padding:12px;height:110px;overflow-y:auto;font-family:monospace;font-size:0.78rem;color:#cbd5e1;margin-top:12px;line-height:1.45;}
+.btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px;}
 button{padding:12px 18px;border:none;border-radius:6px;font-weight:700;cursor:pointer;font-size:0.85rem;}
 .btn-q{background:var(--crt);color:#fff;flex:1;}
 .btn-r{background:var(--bdr);color:var(--txt);}
-footer{margin-top:25px;text-align:center;font-size:0.75rem;color:var(--mut);border-top:1px solid var(--bdr);padding-top:15px;}
+footer{margin-top:22px;text-align:center;font-size:0.74rem;color:var(--mut);border-top:1px solid var(--bdr);padding-top:14px;}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header>
-<div><h1>SFERIUM v2.026 // OOB DIAGNOSTIC TELEMETRY</h1><div class="sub">Hardware-Level Interlock &amp; Volumetric Core Supervision</div></div>
+<div><h1>SFERIUM v2.026 // OOB DIAGNOSTIC &amp; QUENCH TELEMETRY</h1><div class="sub">Hardware-Level Interlock &amp; Volumetric Core Supervision (Estimated Proxy Model)</div></div>
 <div class="badge">PATENT PENDING</div>
 </header>
 <div id="bnr" class="banner">SYSTEM STATUS: NOMINAL // ALL INTERLOCKS ARMED</div>
 <div class="grid">
-<div class="card"><h2>Core Thermal Gradient (ΔT)</h2><div class="val" id="tv">24.0%</div><input type="range" id="ts" min="10" max="100" value="24"><div class="info"><span>Nominal: &lt;65%</span><span>Quench: 85%</span></div></div>
-<div class="card"><h2>Photon Leakage Divergence</h2><div class="val" id="lv">1.2%</div><input type="range" id="ls" min="0" max="20" step="0.2" value="1.2"><div class="info"><span>Coherence Loss</span><span>Critical: &gt;12%</span></div></div>
-<div class="card"><h2>Perovskite Cell Charging</h2><div class="val" id="pv">98.5%</div><input type="range" id="ps" min="40" max="100" step="0.5" value="98.5"><div class="info"><span>Lattice Stability</span><span>Min: 70%</span></div></div>
+<div class="card"><h2>Core Thermal Gradient</h2><div class="val" id="tv" style="color:var(--cyn);">295.4 K</div><input type="range" id="ts" min="280" max="360" step="0.5" value="295.4"><div class="info"><span>Nominal: &lt;320 K</span><span>Quench: 340 K</span></div></div>
+<div class="card"><h2>Photon Leakage Divergence</h2><div class="val" id="lv" style="color:var(--wrn);">0.18 dB</div><input type="range" id="ls" min="0.05" max="2.50" step="0.05" value="0.18"><div class="info"><span>Wave Coherence</span><span>Critical: &gt;1.60 dB</span></div></div>
+<div class="card"><h2>Perovskite Cell Potential</h2><div class="val" id="pv" style="color:var(--ok);">4.18 V</div><input type="range" id="ps" min="2.80" max="4.30" step="0.02" value="4.18"><div class="info"><span>Lattice Charge</span><span>Min Safe: 3.30 V</span></div></div>
+<div class="card"><h2>Mo-CNT Bus &amp; SPAD Array</h2><div class="val" id="bv" style="color:var(--ok);">99.4%</div><input type="range" id="bs" min="60" max="100" step="0.5" value="99.4"><div class="info"><span>Ballistic Integrity</span><span>Trip: &lt;78.0%</span></div></div>
 </div>
-<div class="card" style="margin-bottom:15px;"><h2>Real-Time Thermal &amp; Optical Stability Waveform</h2><canvas id="cv" width="900" height="140"></canvas></div>
-<div class="card"><h2>Hardware Interlock Overrides &amp; SPAD Fuse Matrix</h2>
-<div style="font-size:0.85rem;color:var(--mut);">SPAD Array: <strong id="sp" style="color:var(--ok);">ARMED</strong> | Mo-CNT Bus: <strong id="cn" style="color:var(--ok);">BALLISTIC LOCK</strong></div>
-<div class="btns"><button class="btn-q" onclick="quench()">TRIGGER MANUAL EMERGENCY QUENCH</button><button class="btn-r" onclick="rst()">RESET &amp; RE-ARM INTERLOCKS</button></div>
+<div class="card" style="margin-bottom:16px;">
+<h2>Multi-Channel Real-Time Telemetry Oscilloscope</h2>
+<div class="legend">
+<span><i class="dot" style="background:var(--cyn);"></i>Thermal Load (K)</span>
+<span><i class="dot" style="background:var(--wrn);"></i>Photon Leakage (dB)</span>
+<span><i class="dot" style="background:var(--ok);"></i>Perovskite Stability (V)</span>
 </div>
-<footer>Sferium v2.026 Architecture | Principal Architect: Krystian Jankiel | Status: Patent Pending (UPRP / USPTO Standards)<br>Displays scaled proxy metrics for public demonstration purposes.</footer>
+<canvas id="cv" width="960" height="180"></canvas>
+</div>
+<div class="card">
+<h2>Hardware Interlock Overrides &amp; Live Diagnostic Log</h2>
+<div style="font-size:0.84rem;color:var(--mut);">SPAD Fuse Matrix: <strong id="sp" style="color:var(--ok);">ARMED (100% CONTINUITY)</strong> | Optical Routing: <strong id="cn" style="color:var(--ok);">SUB-FS LOCKED</strong></div>
+<div class="log" id="lg"></div>
+<div class="btns"><button class="btn-q" onclick="quench('MANUAL OVERRIDE TRIGGERED BY OPERATOR')">TRIGGER MANUAL EMERGENCY QUENCH</button><button class="btn-r" onclick="rst()">RESET &amp; RE-ARM INTERLOCKS</button></div>
+</div>
+<footer>Sferium v2.026 Architecture | Principal Architect: Krystian Jankiel | Status: Patent Pending (UPRP / USPTO Standards)<br>Note: Displays estimated proxy telemetry values for public demonstration purposes.</footer>
 </div>
 <script>
-const ts=document.getElementById('ts'),ls=document.getElementById('ls'),ps=document.getElementById('ps'),tv=document.getElementById('tv'),lv=document.getElementById('lv'),pv=document.getElementById('pv'),bnr=document.getElementById('bnr'),sp=document.getElementById('sp'),cn=document.getElementById('cn'),cv=document.getElementById('cv'),ctx=cv.getContext('2d');
-let q=false,hist=Array(60).fill(24);
+const ts=document.getElementById('ts'),ls=document.getElementById('ls'),ps=document.getElementById('ps'),bs=document.getElementById('bs'),tv=document.getElementById('tv'),lv=document.getElementById('lv'),pv=document.getElementById('pv'),bv=document.getElementById('bv'),bnr=document.getElementById('bnr'),sp=document.getElementById('sp'),cn=document.getElementById('cn'),lg=document.getElementById('lg'),cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+let q=false,hT=Array(70).fill(25),hL=Array(70).fill(10),hP=Array(70).fill(85);
+function addLog(m){const d=new Date().toTimeString().split(' ')[0];lg.innerHTML=`<div>[${d}] ${m}</div>`+lg.innerHTML;}
+addLog('OOB Watchdog initialized. Sub-femtosecond optical interlocks active.');
 function upd(){
 if(q)return;
-const t=+ts.value,l=+ls.value,p=+ps.value;
-tv.textContent=t.toFixed(1)+'%';lv.textContent=l.toFixed(1)+'%';pv.textContent=p.toFixed(1)+'%';
-tv.style.color=t>=85?'var(--crt)':t>=65?'var(--wrn)':'var(--txt)';
-lv.style.color=l>=12?'var(--crt)':l>=7?'var(--wrn)':'var(--txt)';
-pv.style.color=p<=70?'var(--crt)':p<=82?'var(--wrn)':'var(--txt)';
-if(t>=85||l>=12||p<=70){quench();}
-else if(t>=65||l>=7||p<=82){bnr.className='banner wrn';bnr.textContent='WARNING: THERMAL / OPTICAL DRIFT DETECTED';sp.textContent='HIGH LOAD';sp.style.color='var(--wrn)';}
-else{bnr.className='banner';bnr.textContent='SYSTEM STATUS: NOMINAL // ALL INTERLOCKS ARMED';sp.textContent='ARMED';sp.style.color='var(--ok)';cn.textContent='BALLISTIC LOCK';cn.style.color='var(--ok)';}
+const t=+ts.value,l=+ls.value,p=+ps.value,b=+bs.value;
+tv.textContent=t.toFixed(1)+' K';lv.textContent=l.toFixed(2)+' dB';pv.textContent=p.toFixed(2)+' V';bv.textContent=b.toFixed(1)+'%';
+if(t>=340)return quench(`THERMAL RUNAWAY PREVENTED (${t.toFixed(1)} K >= 340 K)`);
+if(l>=1.60)return quench(`PHOTON LEAKAGE BREACH (${l.toFixed(2)} dB >= 1.60 dB)`);
+if(p<=3.30)return quench(`PEROVSKITE LATTICE DROP (${p.toFixed(2)} V <= 3.30 V)`);
+if(b<=78.0)return quench(`MO-CNT BUS DEGRADATION (${b.toFixed(1)}% <= 78.0%)`);
+if(t>=320||l>=1.00||p<=3.60||b<=86.0){
+if(bnr.className!=='banner wrn')addLog('WARNING: Parameter drift detected. Engaging active phase compensation.');
+bnr.className='banner wrn';bnr.textContent='WARNING: PARAMETER DRIFT DETECTED // COMPENSATING';sp.textContent='ELEVATED LOAD';sp.style.color='var(--wrn)';
+}else{
+bnr.className='banner';bnr.textContent='SYSTEM STATUS: NOMINAL // ALL INTERLOCKS ARMED';sp.textContent='ARMED (100% CONTINUITY)';sp.style.color='var(--ok)';cn.textContent='SUB-FS LOCKED';cn.style.color='var(--ok)';
+}}
+function quench(reason){
+if(q)return;q=true;
+bnr.className='banner crt';bnr.textContent='CRITICAL BREACH // HARDWARE EMERGENCY QUENCH EXECUTED';
+sp.textContent='TRIPPED (ISOLATED)';sp.style.color='var(--crt)';cn.textContent='BEAM QUENCHED';cn.style.color='var(--crt)';
+addLog(`CRITICAL: ${reason}. Hardware power bus severed in <1.2 us.`);
 }
-function quench(){q=true;bnr.className='banner crt';bnr.textContent='CRITICAL THRESHOLD BREACHED // EMERGENCY QUENCH EXECUTED';sp.textContent='TRIPPED';sp.style.color='var(--crt)';cn.textContent='DE-ENERGIZED';cn.style.color='var(--crt)';}
-function rst(){q=false;ts.value=24;ls.value=1.2;ps.value=98.5;upd();}
-ts.oninput=upd;ls.oninput=upd;ps.oninput=upd;
+function rst(){q=false;ts.value=295.4;ls.value=0.18;ps.value=4.18;bs.value=99.4;addLog('System reset. Hardware interlocks re-armed.');upd();}
+ts.oninput=upd;ls.oninput=upd;ps.oninput=upd;bs.oninput=upd;
+function drawLine(arr,col){ctx.strokeStyle=col;ctx.lineWidth=2.5;ctx.beginPath();arr.forEach((v,i)=>{const x=(i/(arr.length-1))*cv.width,y=cv.height-(v/100)*cv.height;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});ctx.stroke();}
 setInterval(()=>{
-const val=q?6:+ts.value+(Math.random()*3-1.5);
-hist.push(Math.max(2,Math.min(98,val)));hist.shift();
+const tNorm=q?8:((+ts.value-280)/80)*100+(Math.random()*4-2);
+const lNorm=q?2:((+ls.value)/2.5)*100+(Math.random()*3-1.5);
+const pNorm=q?5:((+ps.value-2.8)/1.5)*100+(Math.random()*2-1);
+hT.push(Math.max(3,Math.min(97,tNorm)));hT.shift();
+hL.push(Math.max(3,Math.min(97,lNorm)));hL.shift();
+hP.push(Math.max(3,Math.min(97,pNorm)));hP.shift();
 ctx.clearRect(0,0,cv.width,cv.height);
-ctx.strokeStyle='#1e293b';ctx.lineWidth=1;
-for(let i=0;i<cv.width;i+=50){ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i,cv.height);ctx.stroke();}
-ctx.strokeStyle=q?'#ef4444':'#06b6d4';ctx.lineWidth=3;ctx.beginPath();
-hist.forEach((v,i)=>{const x=(i/(hist.length-1))*cv.width,y=cv.height-(v/100)*cv.height;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
-ctx.stroke();
-},180);
+ctx.strokeStyle='#162032';ctx.lineWidth=1;
+for(let i=0;i<cv.width;i+=60){ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i,cv.height);ctx.stroke();}
+for(let j=0;j<cv.height;j+=45){ctx.beginPath();ctx.moveTo(0,j);ctx.lineTo(cv.width,j);ctx.stroke();}
+drawLine(hT,'#06b6d4');drawLine(hL,'#f59e0b');drawLine(hP,'#10b981');
+},160);
 upd();
 </script>
 </body>
 </html>
-2
