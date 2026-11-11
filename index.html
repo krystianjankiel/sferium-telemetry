@@ -9,7 +9,7 @@
   <style>
     :root { color-scheme: dark; font-family: system-ui, sans-serif; background: #090c0f; color: #eaf1f3; }
     body { margin: 0; min-height: 100vh; }
-    #appFrame { display: block; width: 100%; min-height: 100vh; border: 0; }
+    #appFrame { display: block; width: 100%; height: 100vh; min-height: 100vh; border: 0; }
     #loadError { margin: 2rem auto; max-width: 720px; padding: 1.25rem; border: 1px solid #7d3a47; color: #ff9aa5; font: 14px/1.6 monospace; }
   </style>
 </head>
@@ -19,13 +19,19 @@
   <script>
     "use strict";
     const sourceUrl = "https://raw.githubusercontent.com/krystianjankiel/sferium-telemetry/2723f2526d76b5fe688dc91ce68d90f4fa1ea314/index.html";
+    const appFrame = document.getElementById("appFrame");
+
+    window.addEventListener("message", event => {
+      if (event.source !== appFrame.contentWindow || event.data?.type !== "sferium:resize") return;
+      const height = Number(event.data.height);
+      if (Number.isFinite(height) && height > 0) appFrame.style.height = `${Math.ceil(height)}px`;
+    });
 
     function addCombinedTelemetry() {
-      const section = document.getElementById("combinedTelemetry");
       const canvas = document.getElementById("combinedTelemetryChart");
-      if (!section || !canvas || typeof getCrossLoad !== "function") return;
-
+      if (!canvas || typeof getCrossLoad !== "function") return;
       const ctx = canvas.getContext("2d");
+      if (!ctx) return;
       const categories = [
         { id: "optical", label: "OPTYCZNE", color: "#62e5d0" },
         { id: "compute", label: "OBLICZENIOWE", color: "#70b7ff" },
@@ -33,15 +39,10 @@
         { id: "mesh", label: "MESH", color: "#a78bfa" },
         { id: "thermal", label: "TERMICZNE", color: "#ff6678" }
       ];
-      const moduleCategory = {
-        oob: "thermal", compute: "compute", gateway: "network", cnt: "mesh",
-        laser: "optical", mesh: "mesh", thermal: "thermal", cradle: "network"
-      };
+      const moduleCategory = { oob: "thermal", compute: "compute", gateway: "network", cnt: "mesh", laser: "optical", mesh: "mesh", thermal: "thermal", cradle: "network" };
       const historyLength = 120;
       const history = Object.fromEntries(categories.map(({ id }) => [id, []]));
-      let phase = 0;
-      let lastFrame = 0;
-      let lastSample = 0;
+      let phase = 0, lastFrame = 0, lastSample = 0;
 
       function resizeCanvas() {
         const rect = canvas.getBoundingClientRect();
@@ -58,33 +59,24 @@
         const elapsed = lastFrame ? Math.min((now - lastFrame) / 1000, 0.1) : 0.033;
         lastFrame = now;
         phase += elapsed * 2.2;
-
         const loads = getCrossLoad();
-        const activeCategory = moduleCategory[modules[state.activeTab].id] || "optical";
+        const activeCategory = moduleCategory[modules[state.activeTab]?.id] || "optical";
         const risk = calculateRisk();
         if (now - lastSample >= 80) {
           categories.forEach(({ id }, index) => {
             const drift = Math.sin(phase + index * 1.37) * 2.2 + Math.sin(phase * 0.47 + index) * 1.1;
-            const value = clamp(loads[id] + drift, 0, 100);
-            history[id].push(value);
+            history[id].push(clamp(loads[id] + drift, 0, 100));
             if (history[id].length > historyLength) history[id].shift();
           });
           lastSample = now;
         }
-
         const rect = canvas.getBoundingClientRect();
-        const width = rect.width;
-        const height = rect.height;
+        const { width, height } = rect;
         if (!width || !height) return;
         if (canvas.width !== Math.floor(width * Math.min(window.devicePixelRatio || 1, 2))) resizeCanvas();
         ctx.clearRect(0, 0, width, height);
-
-        const left = 38;
-        const right = 12;
-        const top = 14;
-        const bottom = 22;
-        const plotWidth = width - left - right;
-        const plotHeight = height - top - bottom;
+        const left = 38, right = 12, top = 14, bottom = 22;
+        const plotWidth = width - left - right, plotHeight = height - top - bottom;
         ctx.font = "10px SFMono-Regular, Consolas, monospace";
         ctx.textAlign = "right";
         ctx.textBaseline = "middle";
@@ -92,14 +84,10 @@
           const y = top + plotHeight * (1 - tick / 100);
           ctx.strokeStyle = "rgba(129,157,166,0.16)";
           ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(left, y + 0.5);
-          ctx.lineTo(width - right, y + 0.5);
-          ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(left, y + 0.5); ctx.lineTo(width - right, y + 0.5); ctx.stroke();
           ctx.fillStyle = "rgba(157,176,183,0.7)";
           ctx.fillText(String(tick), left - 8, y);
         }
-
         categories.forEach(({ id, color }) => {
           const values = history[id];
           if (values.length < 2) return;
@@ -108,8 +96,7 @@
           values.forEach((value, index) => {
             const x = left + (index / (historyLength - 1)) * plotWidth;
             const y = top + (1 - value / 100) * plotHeight;
-            if (index === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
+            if (index === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
           });
           ctx.strokeStyle = color;
           ctx.lineWidth = selected ? 2.8 : 1.25;
@@ -120,17 +107,14 @@
           ctx.shadowBlur = 0;
           ctx.globalAlpha = 1;
         });
-
-        const latest = categories.map(({ id, label, color }) => {
-          const value = history[id].length ? history[id][history[id].length - 1] : loads[id];
+        document.getElementById("telemetryLegend").innerHTML = categories.map(({ id, label, color }) => {
+          const value = history[id].length ? history[id].at(-1) : loads[id];
           return `<span class="telemetry-readout ${id === activeCategory ? "is-active" : ""}" style="--series-color:${color}"><i></i>${label}<b>${Math.round(value)}%</b></span>`;
         }).join("");
-        document.getElementById("telemetryLegend").innerHTML = latest;
         document.getElementById("telemetryActive").textContent = `AKTYWNA LINIA: ${categories.find(item => item.id === activeCategory).label}`;
         document.getElementById("telemetryRisk").textContent = `STRES ${risk}/100`;
         document.getElementById("telemetryClock").textContent = new Date().toISOString().slice(11, 19) + " UTC";
       }
-
       new ResizeObserver(resizeCanvas).observe(canvas);
       resizeCanvas();
       requestAnimationFrame(draw);
@@ -143,7 +127,7 @@
       })
       .then(html => {
         const style = `
-          .combined-telemetry { margin: 0 0 16px; border: 1px solid #2a3941; background: rgba(16,22,26,.94); box-shadow: 0 0 0 1px rgba(98,229,208,.12), 0 14px 32px rgba(0,0,0,.24); }
+          .combined-telemetry { margin:0 0 16px; border:1px solid #2a3941; background:rgba(16,22,26,.94); box-shadow:0 0 0 1px rgba(98,229,208,.12),0 14px 32px rgba(0,0,0,.24); }
           .combined-telemetry-head { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:8px 16px; padding:12px 16px; border-bottom:1px solid #253238; color:#8d9ea4; font:10px "SFMono-Regular",Consolas,monospace; letter-spacing:.09em; }
           .combined-telemetry-head strong { color:#62e5d0; font-weight:500; }
           .combined-telemetry-body { padding:12px 16px 14px; }
@@ -162,15 +146,33 @@
           </section>`;
         html = html.replace("</style>", `${style}\n</style>`);
         html = html.replace('<nav class="tabs"', `${markup}\n<nav class="tabs"`);
-        const enhancement = `\n    (${addCombinedTelemetry.toString()})();\n`;
+        const enhancements = `
+          (${addCombinedTelemetry.toString()})();
+          (() => {
+            let scheduled = false;
+            const sendHeight = () => {
+              if (scheduled) return;
+              scheduled = true;
+              requestAnimationFrame(() => {
+                scheduled = false;
+                const height = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
+                parent.postMessage({ type: "sferium:resize", height }, "*");
+              });
+            };
+            new ResizeObserver(sendHeight).observe(document.documentElement);
+            new MutationObserver(sendHeight).observe(document.body, { childList: true, subtree: true, attributes: true });
+            window.addEventListener("load", sendHeight);
+            window.addEventListener("resize", sendHeight);
+            sendHeight();
+          })();
+        `;
         const scriptEnd = html.lastIndexOf("</script>");
-        if (scriptEnd < 0 || !html.includes('id="tabs"')) throw new Error("Unexpected simulator source");
-        html = html.slice(0, scriptEnd) + enhancement + html.slice(scriptEnd);
-        document.getElementById("appFrame").srcdoc = html;
+        if (scriptEnd < 0 || !html.includes('id="tabs"') || !html.includes("function getCrossLoad")) throw new Error("Unexpected simulator source");
+        appFrame.srcdoc = html.slice(0, scriptEnd) + enhancements + html.slice(scriptEnd);
       })
       .catch(error => {
         console.error("Unable to load the pinned simulator source:", error);
-        document.getElementById("appFrame").hidden = true;
+        appFrame.hidden = true;
         document.getElementById("loadError").hidden = false;
       });
   </script>
