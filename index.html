@@ -1,175 +1,1189 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0a0d10">
-  <meta name="description" content="An illustrative, interactive Sferium telemetry simulator.">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0a0d10" />
+  <meta name="description" content="An illustrative, interactive Sferium telemetry simulator." />
   <title>SFERIUM v2.026 // Unified Cross-Coupled Telemetry Suite</title>
   <style>
     :root {
       color-scheme: dark;
-      --bg: #090c0f; --panel: #10161a; --line: #28363d; --muted: #82939a;
-      --text: #e5edef; --cyan: #62e5d0; --blue: #70b7ff; --amber: #ffbf69;
-      --red: #ff6678; --green: #83e6a3;
+      --bg: #090c0f;
+      --panel: rgba(16, 22, 26, 0.94);
+      --panel-strong: rgba(12, 17, 20, 0.97);
+      --line: #2a3941;
+      --line-soft: #1d2a2f;
+      --muted: #8d9ea4;
+      --text: #eaf1f3;
+      --cyan: #62e5d0;
+      --blue: #70b7ff;
+      --amber: #ffbf69;
+      --red: #ff6678;
+      --green: #83e6a3;
+      --purple: #a78bfa;
       --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
       --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --shadow: 0 0 0 1px rgba(98, 229, 208, 0.14), 0 18px 40px rgba(0, 0, 0, 0.32);
     }
+
     * { box-sizing: border-box; }
-    body { margin: 0; min-height: 100vh; background: radial-gradient(ellipse at 75% -20%, rgba(35,83,87,.18), transparent 55%), linear-gradient(180deg,#0b1013 0%,var(--bg) 60%); color: var(--text); font-family: var(--sans); }
+
+    html, body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(98, 229, 208, 0.08), transparent 25%),
+        radial-gradient(circle at 80% 0%, rgba(112, 183, 255, 0.08), transparent 25%),
+        linear-gradient(180deg, #0a0f12 0%, #0a0d10 25%, #090c0f 100%);
+      color: var(--text);
+      font-family: var(--sans);
+    }
+
+    body { line-height: 1.45; }
     button, input { font: inherit; }
-    .shell { width: min(1500px,100%); margin: 0 auto; padding: 28px clamp(14px,3vw,42px) 20px; }
-    .topline,.brand-row,.footer-row,.readout-row { display:flex; align-items:center; justify-content:space-between; gap:16px; }
-    .topline { border-bottom:1px solid var(--line); padding-bottom:12px; color:var(--muted); font:11px var(--mono); letter-spacing:.12em; text-transform:uppercase; }
-    .live-label { color:var(--cyan); } .live-dot { display:inline-block; width:7px; height:7px; margin-right:7px; border-radius:50%; background:var(--cyan); box-shadow:0 0 12px var(--cyan); }
-    header { padding:22px 0 20px; } .brand-row { align-items:flex-start; }
-    h1 { margin:0; font-size:clamp(24px,4vw,43px); line-height:1.08; letter-spacing:-.045em; font-weight:720; }
-    h1 span { display:block; margin-top:9px; color:var(--cyan); font:500 clamp(10px,1.35vw,14px) var(--mono); letter-spacing:.13em; }
-    .patent { flex:0 0 auto; padding:8px 10px; border:1px solid #6f5934; color:var(--amber); font:10px var(--mono); letter-spacing:.12em; white-space:nowrap; }
-    .notice { margin-top:20px; padding:12px 14px; border:1px solid #344249; border-left:3px solid var(--amber); background:rgba(255,191,105,.045); color:#b6c2c5; font-size:12px; line-height:1.55; }
-    .notice strong { color:var(--amber); font:11px var(--mono); letter-spacing:.08em; }
-    .system-bar { display:grid; grid-template-columns:minmax(180px,1.2fr) minmax(200px,2fr) auto; align-items:center; gap:18px; padding:14px 16px; border:1px solid var(--line); background:rgba(16,22,26,.92); margin:4px 0 18px; }
-    .system-title { color:var(--muted); font:10px var(--mono); letter-spacing:.12em; } .system-title b { display:block; margin-top:5px; color:var(--text); font-size:13px; letter-spacing:.04em; }
-    .risk-wrap { display:grid; gap:7px; } .risk-meta { display:flex; justify-content:space-between; color:var(--muted); font:10px var(--mono); letter-spacing:.08em; }
-    .meter,.mini-meter { overflow:hidden; height:6px; border-radius:10px; background:#253138; } .meter>span,.mini-meter>span { display:block; width:0; height:100%; background:var(--cyan); transition:width .25s ease,background .25s ease; }
-    .system-actions,.module-actions { display:flex; flex-wrap:wrap; gap:8px; }
-    .button { min-height:36px; padding:0 12px; border:1px solid #3a4a51; background:#172126; color:var(--text); cursor:pointer; font:10px var(--mono); letter-spacing:.08em; transition:.15s ease; }
-    .button:hover { border-color:var(--cyan); color:var(--cyan); } .button.danger { border-color:#783846; color:#ff9aa5; } .button.danger:hover { background:#391c24; border-color:var(--red); }
-    .button:focus-visible,.tab:focus-visible,input:focus-visible { outline:2px solid var(--cyan); outline-offset:3px; }
-    .tabs { display:flex; gap:6px; overflow-x:auto; padding:0 0 12px; scrollbar-width:thin; scrollbar-color:#35474e transparent; }
-    .tab { flex:0 0 auto; padding:10px 12px; border:1px solid var(--line); background:#101619; color:#9aabb0; cursor:pointer; font:10px var(--mono); letter-spacing:.035em; }
-    .tab:hover { color:var(--text); border-color:#52636a; } .tab[aria-selected="true"] { border-color:#3b8f87; background:#122421; color:var(--cyan); }
-    .tab-index { color:#61737a; margin-right:5px; }
-    .workspace { display:grid; grid-template-columns:minmax(0,1fr) 280px; gap:14px; align-items:start; }
-    .main-panel,.side-panel { border:1px solid var(--line); background:rgba(16,22,26,.94); } .main-panel { min-height:440px; }
-    .panel-heading { padding:20px 20px 15px; border-bottom:1px solid var(--line); }
-    .eyebrow { color:var(--cyan); font:10px var(--mono); letter-spacing:.14em; text-transform:uppercase; }
-    h2 { margin:7px 0 5px; font-size:clamp(19px,2vw,25px); letter-spacing:-.025em; } .panel-description { margin:0; color:var(--muted); font-size:12px; }
-    .control-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; padding:16px; }
-    .control-card { padding:14px; border:1px solid #26343a; background:linear-gradient(145deg,rgba(22,31,36,.86),rgba(15,21,24,.8)); }
-    .control-top { display:flex; justify-content:space-between; gap:10px; align-items:flex-start; } .control-label { color:#c6d2d5; font-size:12px; font-weight:600; }
-    .control-key { display:block; margin-top:5px; color:#73868c; font:9px var(--mono); letter-spacing:.035em; }
-    .control-value { flex:0 0 auto; color:var(--cyan); font:13px var(--mono); text-align:right; white-space:nowrap; } .control-value small { color:#829398; font-size:9px; }
-    input[type="range"] { display:block; width:100%; height:20px; margin:14px 0 9px; accent-color:var(--cyan); cursor:pointer; }
-    .range-limits { display:flex; justify-content:space-between; color:#64767c; font:9px var(--mono); }
-    .coupling { display:flex; align-items:center; gap:8px; padding-top:10px; color:#829398; font:9px var(--mono); } .mini-meter { flex:1; height:4px; }
-    .module-actions { padding:0 16px 16px; }
-    .duplex-row { display:flex; align-items:center; justify-content:space-between; gap:12px; margin:14px 16px 0; padding:12px; border:1px solid #26343a; color:#a9b8bc; font:10px var(--mono); }
-    .switch { display:inline-flex; align-items:center; gap:8px; cursor:pointer; color:var(--cyan); } .switch input { accent-color:var(--cyan); }
-    .scope { margin:0 16px 16px; border:1px solid #26343a; background:#080d10; }
-    .scope-head { display:flex; justify-content:space-between; gap:10px; padding:9px 10px; border-bottom:1px solid #1c292e; color:#84979d; font:9px var(--mono); letter-spacing:.08em; }
-    canvas { display:block; width:100%; height:150px; }
-    .side-panel { padding:16px; } .side-title { margin:0 0 14px; color:#aab9bd; font:10px var(--mono); letter-spacing:.12em; }
-    .readout { padding:12px 0; border-top:1px solid #253238; } .readout-row { align-items:baseline; }
-    .readout-label { color:#8b9ba0; font-size:11px; } .readout-value { color:var(--text); font:12px var(--mono); } .readout-note { margin-top:5px; color:#607278; font:9px var(--mono); }
-    .coupling-map { margin-top:14px; padding:12px; border:1px solid #26343a; background:#0c1215; }
-    .coupling-map h3 { margin:0 0 8px; color:var(--cyan); font:9px var(--mono); letter-spacing:.1em; } .coupling-map p { margin:0; color:#829398; font:10px/1.6 var(--mono); }
-    .status-pill { display:inline-block; padding:5px 7px; border:1px solid #32614f; color:var(--green); font:9px var(--mono); letter-spacing:.08em; }
-    .status-pill.warning { border-color:#70562f; color:var(--amber); } .status-pill.critical { border-color:#783846; color:var(--red); }
-    footer { margin-top:18px; padding-top:14px; border-top:1px solid var(--line); color:#72848a; font:10px var(--mono); }
-    .footer-row { flex-wrap:wrap; } footer strong { color:#b6c4c7; font-weight:500; } .footer-note { margin-top:9px; color:#718086; line-height:1.5; }
-    .quenched .live-dot { background:var(--red); box-shadow:0 0 12px var(--red); } .quenched .live-label { color:var(--red); }
-    @media (max-width:900px) { .workspace { grid-template-columns:1fr; } .side-panel { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 20px; } .side-title,.coupling-map { grid-column:1/-1; } }
-    @media (max-width:600px) { .shell { padding-top:16px; } .topline { font-size:9px; } .brand-row { gap:10px; } .patent { font-size:8px; padding:7px; } .system-bar { grid-template-columns:1fr; gap:12px; } .control-grid { grid-template-columns:1fr; padding:10px; } .panel-heading { padding:16px 14px 12px; } .module-actions { padding:0 10px 12px; } .duplex-row { margin:12px 10px 0; } .scope { margin:0 10px 12px; } .side-panel { display:block; } .footer-row { align-items:flex-start; flex-direction:column; gap:7px; } }
-    @media (prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto!important; transition-duration:.01ms!important; } }
+
+    .shell {
+      width: min(1500px, 100%);
+      margin: 0 auto;
+      padding: 28px clamp(14px, 3vw, 42px) 28px;
+    }
+
+    .topline, .brand-row, .footer-row, .readout-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .topline {
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 12px;
+      color: var(--muted);
+      font: 11px var(--mono);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .live-label { color: var(--cyan); }
+    .live-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      margin-right: 7px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 12px var(--cyan);
+    }
+
+    header { padding: 22px 0 20px; }
+    .brand-row { align-items: flex-start; }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(24px, 4vw, 43px);
+      line-height: 1.08;
+      letter-spacing: -0.045em;
+      font-weight: 720;
+    }
+
+    h1 span {
+      display: block;
+      margin-top: 9px;
+      color: var(--cyan);
+      font: 500 clamp(10px, 1.35vw, 14px) var(--mono);
+      letter-spacing: 0.13em;
+    }
+
+    .patent {
+      flex: 0 0 auto;
+      padding: 8px 10px;
+      border: 1px solid #7a6638;
+      color: var(--amber);
+      background: rgba(255, 191, 105, 0.02);
+      font: 10px var(--mono);
+      letter-spacing: 0.12em;
+      white-space: nowrap;
+    }
+
+    .notice {
+      margin-top: 20px;
+      padding: 12px 14px;
+      border: 1px solid #334752;
+      border-left: 3px solid var(--amber);
+      background: rgba(255, 191, 105, 0.05);
+      color: #b9c5c8;
+      font-size: 12px;
+      line-height: 1.55;
+      box-shadow: inset 0 0 0 1px rgba(255, 191, 105, 0.05);
+    }
+
+    .notice strong {
+      color: var(--amber);
+      font: 11px var(--mono);
+      letter-spacing: 0.08em;
+    }
+
+    .system-bar {
+      display: grid;
+      grid-template-columns: minmax(180px, 1.2fr) minmax(200px, 2fr) auto;
+      align-items: center;
+      gap: 18px;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(13, 18, 22, 0.96), rgba(9, 12, 15, 0.96));
+      box-shadow: var(--shadow);
+    }
+
+    .system-title {
+      color: var(--muted);
+      font: 10px var(--mono);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .system-title b {
+      display: block;
+      margin-top: 5px;
+      color: var(--text);
+      font-size: 13px;
+      letter-spacing: 0.04em;
+    }
+
+    .risk-wrap { display: grid; gap: 7px; }
+    .risk-meta {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font: 10px var(--mono);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .meter, .mini-meter {
+      overflow: hidden;
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(79, 95, 103, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .meter > span, .mini-meter > span {
+      display: block;
+      width: 0;
+      height: 100%;
+      background: linear-gradient(90deg, var(--cyan), var(--blue));
+      box-shadow: 0 0 14px rgba(98, 229, 208, 0.38);
+      transition: width 0.2s ease;
+    }
+
+    .system-actions, .module-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .button {
+      min-height: 36px;
+      padding: 0 12px;
+      border: 1px solid #3a4a51;
+      background: linear-gradient(180deg, #172126, #111b20);
+      color: var(--text);
+      cursor: pointer;
+      font: 10px var(--mono);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: 0.15s ease;
+    }
+
+    .button:hover {
+      border-color: var(--cyan);
+      color: var(--cyan);
+      transform: translateY(-1px);
+    }
+
+    .button.danger {
+      border-color: #7d3a47;
+      color: #ff9aa5;
+    }
+
+    .button.danger:hover {
+      background: #391c24;
+      border-color: var(--red);
+    }
+
+    .button:focus-visible, .tab:focus-visible, input:focus-visible {
+      outline: 2px solid var(--cyan);
+      outline-offset: 3px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding: 0 0 12px;
+      scrollbar-width: thin;
+      scrollbar-color: #35474e transparent;
+    }
+
+    .tab {
+      flex: 0 0 auto;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      background: #101619;
+      color: #9aabb0;
+      cursor: pointer;
+      font: 10px var(--mono);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      transition: 0.15s ease;
+    }
+
+    .tab:hover {
+      color: var(--text);
+      border-color: #52636a;
+    }
+
+    .tab[aria-selected="true"] {
+      border-color: #3b8f87;
+      background: rgba(18, 36, 33, 0.96);
+      color: var(--cyan);
+      box-shadow: inset 0 0 0 1px rgba(98, 229, 208, 0.15);
+    }
+
+    .tab-index {
+      color: #61737a;
+      margin-right: 5px;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 280px;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .main-panel, .side-panel {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .main-panel { min-height: 440px; }
+
+    .panel-heading {
+      padding: 20px 20px 15px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(14, 17, 20, 0.75), rgba(13, 17, 18, 0.3));
+    }
+
+    .eyebrow {
+      color: var(--cyan);
+      font: 10px var(--mono);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin: 7px 0 5px;
+      font-size: clamp(19px, 2vw, 25px);
+      letter-spacing: -0.025em;
+    }
+
+    .panel-description {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .control-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      padding: 16px;
+    }
+
+    .control-card {
+      padding: 14px;
+      border: 1px solid #26343a;
+      background: linear-gradient(145deg, rgba(22, 31, 36, 0.86), rgba(15, 21, 24, 0.8));
+    }
+
+    .control-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .control-label {
+      color: #c6d2d5;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .control-key {
+      display: block;
+      margin-top: 5px;
+      color: #73868c;
+      font: 9px var(--mono);
+      letter-spacing: 0.035em;
+    }
+
+    .control-value {
+      flex: 0 0 auto;
+      color: var(--cyan);
+      font: 13px var(--mono);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .control-value small {
+      color: #829398;
+      font-size: 9px;
+    }
+
+    input[type="range"] {
+      display: block;
+      width: 100%;
+      height: 20px;
+      margin: 14px 0 9px;
+      accent-color: var(--cyan);
+      cursor: pointer;
+    }
+
+    .range-limits {
+      display: flex;
+      justify-content: space-between;
+      color: #64767c;
+      font: 9px var(--mono);
+    }
+
+    .coupling {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-top: 10px;
+      color: #829398;
+      font: 9px var(--mono);
+    }
+
+    .mini-meter {
+      flex: 1;
+      height: 4px;
+      border-radius: 999px;
+    }
+
+    .module-actions { padding: 0 16px 16px; }
+
+    .duplex-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 14px 16px 0;
+      padding: 12px;
+      border: 1px solid #26343a;
+      color: #a9b8bc;
+      font: 10px var(--mono);
+      background: rgba(9, 14, 17, 0.9);
+    }
+
+    .switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      color: var(--cyan);
+    }
+
+    .switch input { accent-color: var(--cyan); }
+
+    .scope {
+      margin: 0 16px 16px;
+      border: 1px solid #26343a;
+      background: #080d10;
+      overflow: hidden;
+    }
+
+    .scope-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 9px 10px;
+      border-bottom: 1px solid #1c292e;
+      color: #84979d;
+      font: 9px var(--mono);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: rgba(17, 24, 28, 0.9);
+    }
+
+    .scope-body {
+      padding: 12px;
+      background: linear-gradient(180deg, rgba(9, 15, 17, 0.6), rgba(8, 12, 14, 0.9));
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 180px;
+      border-radius: 10px;
+      background: linear-gradient(180deg, rgba(16, 22, 26, 0.85), rgba(9, 12, 14, 0.92));
+      border: 1px solid rgba(98, 229, 208, 0.08);
+    }
+
+    .side-panel { padding: 16px; }
+
+    .side-title {
+      margin: 0 0 14px;
+      color: #aab9bd;
+      font: 10px var(--mono);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .readout {
+      padding: 12px 0;
+      border-top: 1px solid #253238;
+    }
+
+    .readout-row { align-items: baseline; }
+
+    .readout-label {
+      color: #8b9ba0;
+      font-size: 11px;
+    }
+
+    .readout-value {
+      color: var(--text);
+      font: 12px var(--mono);
+    }
+
+    .readout-note {
+      margin-top: 5px;
+      color: #607278;
+      font: 9px var(--mono);
+    }
+
+    .coupling-map {
+      margin-top: 14px;
+      padding: 12px;
+      border: 1px solid #26343a;
+      background: linear-gradient(180deg, rgba(9, 14, 17, 0.9), rgba(12, 17, 20, 0.95));
+    }
+
+    .coupling-map h3 {
+      margin: 0 0 8px;
+      color: var(--cyan);
+      font: 9px var(--mono);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .coupling-map p {
+      margin: 0;
+      color: #829398;
+      font: 10px/1.6 var(--mono);
+    }
+
+    .status-pill {
+      display: inline-block;
+      padding: 5px 7px;
+      border: 1px solid #32614f;
+      color: var(--green);
+      font: 9px var(--mono);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .status-pill.warning {
+      border-color: #70562f;
+      color: var(--amber);
+    }
+
+    .status-pill.critical {
+      border-color: #783846;
+      color: var(--red);
+    }
+
+    footer {
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+      color: #72848a;
+      font: 10px var(--mono);
+    }
+
+    .footer-row { flex-wrap: wrap; }
+    footer strong { color: #b6c4c7; font-weight: 500; }
+    .footer-note {
+      margin-top: 9px;
+      color: #718086;
+      line-height: 1.5;
+    }
+
+    .quenched .live-dot {
+      background: var(--red);
+      box-shadow: 0 0 12px var(--red);
+    }
+
+    .quenched .live-label { color: var(--red); }
+
+    @media (max-width: 900px) {
+      .workspace { grid-template-columns: 1fr; }
+      .side-panel {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0 20px;
+      }
+      .side-title, .coupling-map { grid-column: 1 / -1; }
+    }
+
+    @media (max-width: 600px) {
+      .shell { padding-top: 16px; }
+      .topline { font-size: 9px; }
+      .brand-row { gap: 10px; }
+      .patent { font-size: 8px; padding: 7px; }
+      .system-bar { grid-template-columns: 1fr; gap: 12px; }
+      .control-grid { grid-template-columns: 1fr; }
+      .side-panel { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="shell" id="app">
     <div class="topline">
-      <span><span class="live-dot"></span><span class="live-label" id="systemState">SIMULATION ONLINE</span></span>
-      <span>TELEMETRY BUS // 8 NODES</span><span id="clock">--:--:-- UTC</span>
+      <span>
+        <span class="live-dot"></span>
+        <span class="live-label" id="systemState">SIMULATION ONLINE</span>
+      </span>
+      <span>TELEMETRY BUS // 8 NODES</span>
+      <span id="clock">--:--:-- UTC</span>
     </div>
+
     <header>
-      <div class="brand-row"><h1>SFERIUM<span>v2.026 // UNIFIED CROSS-COUPLED TELEMETRY SUITE</span></h1><div class="patent">PATENT PENDING</div></div>
-      <div class="notice"><strong>SPECULATIVE / ILLUSTRATIVE MODEL</strong><br>This interface presents a hypothetical, demonstration-only telemetry model. Its parameters and couplings are not a verified description of a device and are not instructions for operating real equipment. All values are illustrative.</div>
+      <div class="brand-row">
+        <h1>SFERIUM<span>v2.026 // UNIFIED CROSS-COUPLED TELEMETRY SUITE</span></h1>
+        <div class="patent">PATENT PENDING</div>
+      </div>
+      <div class="notice">
+        <strong>SPECULATIVE / ILLUSTRATIVE MODEL</strong><br />
+        This interface presents a hypothetical, demonstration-only telemetry model. Its parameters and couplings are not a verified engineering specification.
+      </div>
     </header>
+
     <section class="system-bar" aria-label="Global system status">
       <div class="system-title">GLOBAL SAFETY INDEX<b id="riskValue">-- / 100</b></div>
-      <div class="risk-wrap"><div class="risk-meta"><span>COUPLED STRESS</span><span id="riskLabel">NOMINAL</span></div><div class="meter" role="progressbar" aria-label="Global risk index" aria-valuemin="0" aria-valuemax="100"><span id="globalMeter"></span></div></div>
-      <div class="system-actions"><button class="button danger" id="globalQuench" type="button">SYSTEM-WIDE QUENCH</button><button class="button" id="resetAll" type="button">RESET ALL</button></div>
+      <div class="risk-wrap">
+        <div class="risk-meta">
+          <span>COUPLED STRESS</span>
+          <span id="riskLabel">NOMINAL</span>
+        </div>
+        <div class="meter" role="progressbar" aria-label="Global risk index" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <span id="globalMeter"></span>
+        </div>
+      </div>
+      <div class="system-actions">
+        <button class="button danger" id="globalQuench" type="button">System-wide quench</button>
+        <button class="button" id="resetAll" type="button">Reset all</button>
+      </div>
     </section>
+
     <nav class="tabs" id="tabs" role="tablist" aria-label="Telemetry modules"></nav>
+
     <main class="workspace">
       <section class="main-panel" id="mainPanel" role="tabpanel" aria-live="polite"></section>
-      <aside class="side-panel" aria-label="Live couplings and status"><h3 class="side-title">LIVE COUPLED READOUT</h3><div id="readouts"></div><div class="coupling-map"><h3>CROSS-COUPLING BUS</h3><p>Each node influences the load on the others. Derived readouts are calculated from the combined state of all eight modules.</p></div></aside>
+      <aside class="side-panel" aria-label="Live couplings and status">
+        <h3 class="side-title">LIVE COUPLED READOUT</h3>
+        <div id="readouts"></div>
+        <div class="coupling-map">
+          <h3>Cross-coupling bus</h3>
+          <p>Signal coherence is derived from coupled load, thermal drift, and distributed channel variance. The effect is modeled as a weighted interaction across the telemetry stack.</p>
+        </div>
+      </aside>
     </main>
-    <footer><div class="footer-row"><span>SUITE // SFERIUM v2.026</span><span>ARCHITECT: <strong>KRYSTIAN JANKIEL</strong></span><span id="footerMode">MODE: COUPLED SIMULATION</span></div><div class="footer-note">Demonstration of an interface and example relationships only. This is not a measurement tool, safety system, or hardware controller.</div></footer>
+
+    <footer>
+      <div class="footer-row">
+        <span>SUITE // SFERIUM v2.026</span>
+        <span>ARCHITECT: <strong>KRYSTIAN JANKIEL</strong></span>
+        <span id="footerMode">MODE: COUPLED SIMULATION</span>
+      </div>
+      <div class="footer-note">
+        This demonstrator is intended for illustrative visualization of system behavior under complex cross-coupled conditions.
+      </div>
+    </footer>
   </div>
+
   <script>
     "use strict";
+
     const modules = [
-      { id:"oob", title:"OOB Emergency", eyebrow:"01 // OUT-OF-BAND SAFETY", description:"Emergency monitoring of core losses, photon leakage, and cell potential.", chart:"CORE OSCILLOSCOPE // SIMULATED", controls:[
-        {id:"coreTemp",label:"Core temperature",key:"CORE_THERMAL_LOAD",min:0,max:120,value:34,unit:"°C",hazard:"high",weight:1.4},
-        {id:"photonLeak",label:"Photon leakage",key:"PHOTON_CONTAINMENT",min:0,max:100,value:12,unit:"%",hazard:"high",weight:1.3},
-        {id:"cellPotential",label:"Perovskite cell potential",key:"PV_CELL_POTENTIAL",min:0,max:100,value:48,unit:"%",hazard:"high",weight:1}
-      ],reads:["Critical nodes","Combined load","Interlock state"]},
-      {id:"compute",title:"Compute RX/TX",eyebrow:"02 // OPTICAL COMPUTE FABRIC",description:"WDM channels, receiver temperature, and modeled RX/TX path degradation.",chart:"RX/TX CHANNEL ACTIVITY // SIMULATED",controls:[
-        {id:"rxChannels",label:"WDM channels · RX",key:"RX_WDM_CHANNELS",min:1,max:16,value:8,unit:"ch",step:1},
-        {id:"rxTemp",label:"Receiver temperature",key:"RX_RECEIVER_TEMP",min:0,max:100,value:38,unit:"°C",hazard:"high",weight:1},
-        {id:"degradation",label:"Degradation risk",key:"RX_DEGRADATION_RISK",min:0,max:100,value:8,unit:"%",hazard:"high",weight:1.2},
-        {id:"txChannels",label:"WDM channels · TX",key:"TX_WDM_CHANNELS",min:1,max:16,value:8,unit:"ch",step:1},
-        {id:"interference",label:"TX interference",key:"TX_INTERFERENCE",min:0,max:100,value:10,unit:"%",hazard:"high",weight:1.1}
-      ],reads:["Channel balance","Crosstalk interference","Derived degradation"]},
-      {id:"gateway",title:"Gateway Bridge",eyebrow:"03 // OPTICAL-LOGIC BRIDGE",description:"Optical signal transfer through a conversion layer and buffer.",chart:"GATEWAY SIGNAL // SIMULATED",controls:[
-        {id:"opticalInput",label:"Optical input",key:"OPTICAL_INPUT_LEVEL",min:0,max:100,value:45,unit:"%",hazard:"high",weight:1},
-        {id:"conversionLatency",label:"Conversion latency",key:"CONVERSION_LATENCY",min:0,max:100,value:24,unit:"µs",hazard:"high",weight:1},
-        {id:"bufferSaturation",label:"Buffer saturation",key:"BUFFER_SATURATION",min:0,max:100,value:20,unit:"%",hazard:"high",weight:1.3}
-      ],reads:["Bridge load","End-to-end latency","Buffer headroom"]},
-      {id:"cnt",title:"Mo-CNT 1-Atom",eyebrow:"04 // ATOMIC-SCALE CONDUCTOR",description:"Illustrative model of conductivity, cladding stress, and crosstalk.",chart:"CONDUCTIVITY TRACE // SIMULATED",controls:[
-        {id:"conductivity",label:"Ballistic conductivity",key:"BALLISTIC_CONDUCTIVITY",min:0,max:100,value:78,unit:"%",hazard:"low",weight:1.1},
-        {id:"claddingStress",label:"Cladding stress",key:"CLADDING_STRESS",min:0,max:100,value:22,unit:"%",hazard:"high",weight:1},
-        {id:"quantumCrosstalk",label:"Quantum crosstalk",key:"QUANTUM_CROSSTALK",min:0,max:100,value:15,unit:"%",hazard:"high",weight:1.1}
-      ],reads:["Derived throughput","Effective stress","Crosstalk level"]},
-      {id:"laser",title:"Laser & SPAD",eyebrow:"05 // PHOTONIC DETECTION",description:"Pulse density, detection efficiency, and modeled dark-count rate.",chart:"PHOTON DETECTION // SIMULATED",controls:[
-        {id:"laserDensity",label:"Laser pulse density",key:"LASER_PULSE_DENSITY",min:0,max:100,value:28,unit:"%",hazard:"high",weight:1.2},
-        {id:"spadEfficiency",label:"SPAD efficiency",key:"SPAD_DETECTION_EFFICIENCY",min:0,max:100,value:72,unit:"%",hazard:"low",weight:1},
-        {id:"darkCounts",label:"Dark-count rate",key:"DARK_COUNT_RATE",min:0,max:100,value:12,unit:"kcps",hazard:"high",weight:1.2}
-      ],reads:["Detection quality","Photonic load","Dark noise"]},
-      {id:"mesh",title:"Mo-CNT Mesh & Seed",eyebrow:"06 // NEURAL SEED / MESH",description:"Coupling seed excitation with mesh coherence and phase resonance.",chart:"MESH COHERENCE // SIMULATED",controls:[
-        {id:"seedExcitation",label:"Neural seed excitation",key:"NEURAL_SEED_EXCITATION",min:0,max:100,value:50,unit:"%",hazard:"high",weight:1},
-        {id:"meshCoherence",label:"Mesh coherence",key:"MESH_COHERENCE",min:0,max:100,value:78,unit:"%",hazard:"low",weight:1.1},
-        {id:"phaseResonance",label:"Phase resonance",key:"PHASE_RESONANCE",min:0,max:100,value:25,unit:"%",hazard:"high",weight:1.1}
-      ],reads:["Mesh coherence","Phase deviation","Seed load"]},
-      {id:"thermal",title:"Core-to-Platform Heat",eyebrow:"07 // THERMAL DISTRIBUTION",description:"Heat propagation, platform dissipation, and thermal transfer.",chart:"THERMAL TRANSFER // SIMULATED",controls:[
-        {id:"heatSpread",label:"Heat spread",key:"CORE_HEAT_SPREAD",min:0,max:100,value:45,unit:"%",hazard:"low",weight:1},
-        {id:"platformDissipation",label:"Platform dissipation",key:"PLATFORM_DISSIPATION",min:0,max:100,value:40,unit:"%",hazard:"low",weight:1.1},
-        {id:"thermalTransfer",label:"Thermal transfer",key:"THERMAL_TRANSFER",min:0,max:100,value:55,unit:"%",hazard:"low",weight:1}
-      ],reads:["Core / platform delta","Dissipation headroom","Thermal coupling"]},
-      {id:"cradle",title:"Cradle Station",eyebrow:"08 // DOCK / BACKPLANE",description:"Docking interlock, perovskite power, and backplane connectivity.",chart:"BACKPLANE LINK // SIMULATED",controls:[
-        {id:"dockLock",label:"Docking interlock",key:"DOCK_INTERLOCK",min:0,max:100,value:88,unit:"%",hazard:"low",weight:1.2},
-        {id:"perovskitePower",label:"Perovskite power",key:"PEROVSKITE_POWER",min:0,max:100,value:50,unit:"%",hazard:"high",weight:1},
-        {id:"backplaneLink",label:"Backplane link",key:"BACKPLANE_LINK",min:0,max:100,value:70,unit:"%",hazard:"low",weight:1}
-      ],reads:["Dock integrity","Power margin","Link quality"]}
+      {
+        id: "oob",
+        title: "OOB Emergency",
+        eyebrow: "01 // OUT-OF-BAND SAFETY",
+        description: "Emergency monitoring of core losses, photon leakage, and cell potential.",
+        chart: "CORE OSCILLOSCOPE // SIMULATED",
+        controls: [
+          { id: "coreTemp", label: "Core temperature", key: "CORE_THERMAL_LOAD", min: 0, max: 120, value: 34, unit: "°C", hazard: "high", weight: 1.4 },
+          { id: "photonLeak", label: "Photon leakage", key: "PHOTON_CONTAINMENT", min: 0, max: 100, value: 12, unit: "%", hazard: "high", weight: 1.3 },
+          { id: "cellPotential", label: "Perovskite cell potential", key: "PV_CELL_POTENTIAL", min: 0, max: 100, value: 48, unit: "%", hazard: "high", weight: 1 }
+        ],
+        reads: ["Critical nodes", "Combined load", "Interlock state"]
+      },
+      {
+        id: "compute",
+        title: "Compute RX/TX",
+        eyebrow: "02 // OPTICAL COMPUTE FABRIC",
+        description: "WDM channels, receiver temperature, and modeled RX/TX path degradation.",
+        chart: "RX/TX CHANNEL ACTIVITY // SIMULATED",
+        controls: [
+          { id: "rxChannels", label: "WDM channels · RX", key: "RX_WDM_CHANNELS", min: 1, max: 16, value: 8, unit: "ch", step: 1 },
+          { id: "rxTemp", label: "Receiver temperature", key: "RX_RECEIVER_TEMP", min: 0, max: 100, value: 38, unit: "°C", hazard: "high", weight: 1 },
+          { id: "degradation", label: "Degradation risk", key: "RX_DEGRADATION_RISK", min: 0, max: 100, value: 8, unit: "%", hazard: "high", weight: 1.2 },
+          { id: "txChannels", label: "WDM channels · TX", key: "TX_WDM_CHANNELS", min: 1, max: 16, value: 8, unit: "ch", step: 1 },
+          { id: "interference", label: "TX interference", key: "TX_INTERFERENCE", min: 0, max: 100, value: 10, unit: "%", hazard: "high", weight: 1.1 }
+        ],
+        reads: ["Channel balance", "Crosstalk interference", "Derived degradation"]
+      },
+      {
+        id: "gateway",
+        title: "Gateway Bridge",
+        eyebrow: "03 // OPTICAL-LOGIC BRIDGE",
+        description: "Optical signal transfer through a conversion layer and buffer.",
+        chart: "GATEWAY SIGNAL // SIMULATED",
+        controls: [
+          { id: "opticalInput", label: "Optical input", key: "OPTICAL_INPUT_LEVEL", min: 0, max: 100, value: 45, unit: "%", hazard: "high", weight: 1 },
+          { id: "conversionLatency", label: "Conversion latency", key: "CONVERSION_LATENCY", min: 0, max: 100, value: 24, unit: "µs", hazard: "high", weight: 1 },
+          { id: "bufferSaturation", label: "Buffer saturation", key: "BUFFER_SATURATION", min: 0, max: 100, value: 20, unit: "%", hazard: "high", weight: 1.3 }
+        ],
+        reads: ["Bridge load", "End-to-end latency", "Buffer headroom"]
+      },
+      {
+        id: "cnt",
+        title: "Mo-CNT 1-Atom",
+        eyebrow: "04 // ATOMIC-SCALE CONDUCTOR",
+        description: "Illustrative model of conductivity, cladding stress, and crosstalk.",
+        chart: "CONDUCTIVITY TRACE // SIMULATED",
+        controls: [
+          { id: "conductivity", label: "Ballistic conductivity", key: "BALLISTIC_CONDUCTIVITY", min: 0, max: 100, value: 78, unit: "%", hazard: "low", weight: 1.1 },
+          { id: "claddingStress", label: "Cladding stress", key: "CLADDING_STRESS", min: 0, max: 100, value: 22, unit: "%", hazard: "high", weight: 1 },
+          { id: "quantumCrosstalk", label: "Quantum crosstalk", key: "QUANTUM_CROSSTALK", min: 0, max: 100, value: 15, unit: "%", hazard: "high", weight: 1.1 }
+        ],
+        reads: ["Derived throughput", "Effective stress", "Crosstalk level"]
+      },
+      {
+        id: "laser",
+        title: "Laser & SPAD",
+        eyebrow: "05 // PHOTONIC DETECTION",
+        description: "Pulse density, detection efficiency, and modeled dark-count rate.",
+        chart: "PHOTON DETECTION // SIMULATED",
+        controls: [
+          { id: "laserDensity", label: "Laser pulse density", key: "LASER_PULSE_DENSITY", min: 0, max: 100, value: 28, unit: "%", hazard: "high", weight: 1.2 },
+          { id: "spadEfficiency", label: "SPAD efficiency", key: "SPAD_DETECTION_EFFICIENCY", min: 0, max: 100, value: 72, unit: "%", hazard: "low", weight: 1 },
+          { id: "darkCounts", label: "Dark-count rate", key: "DARK_COUNT_RATE", min: 0, max: 100, value: 12, unit: "kcps", hazard: "high", weight: 1.2 }
+        ],
+        reads: ["Detection quality", "Photonic load", "Dark noise"]
+      },
+      {
+        id: "mesh",
+        title: "Mo-CNT Mesh & Seed",
+        eyebrow: "06 // NEURAL SEED / MESH",
+        description: "Coupling seed excitation with mesh coherence and phase resonance.",
+        chart: "MESH COHERENCE // SIMULATED",
+        controls: [
+          { id: "seedExcitation", label: "Neural seed excitation", key: "NEURAL_SEED_EXCITATION", min: 0, max: 100, value: 50, unit: "%", hazard: "high", weight: 1 },
+          { id: "meshCoherence", label: "Mesh coherence", key: "MESH_COHERENCE", min: 0, max: 100, value: 78, unit: "%", hazard: "low", weight: 1.1 },
+          { id: "phaseResonance", label: "Phase resonance", key: "PHASE_RESONANCE", min: 0, max: 100, value: 25, unit: "%", hazard: "high", weight: 1.1 }
+        ],
+        reads: ["Mesh coherence", "Phase deviation", "Seed load"]
+      },
+      {
+        id: "thermal",
+        title: "Core-to-Platform Heat",
+        eyebrow: "07 // THERMAL DISTRIBUTION",
+        description: "Heat propagation, platform dissipation, and thermal transfer.",
+        chart: "THERMAL TRANSFER // SIMULATED",
+        controls: [
+          { id: "heatSpread", label: "Heat spread", key: "CORE_HEAT_SPREAD", min: 0, max: 100, value: 45, unit: "%", hazard: "low", weight: 1 },
+          { id: "platformDissipation", label: "Platform dissipation", key: "PLATFORM_DISSIPATION", min: 0, max: 100, value: 40, unit: "%", hazard: "low", weight: 1.1 },
+          { id: "thermalTransfer", label: "Thermal transfer", key: "THERMAL_TRANSFER", min: 0, max: 100, value: 55, unit: "%", hazard: "low", weight: 1 }
+        ],
+        reads: ["Core / platform delta", "Dissipation headroom", "Thermal coupling"]
+      },
+      {
+        id: "cradle",
+        title: "Cradle Station",
+        eyebrow: "08 // DOCK / BACKPLANE",
+        description: "Docking interlock, perovskite power, and backplane connectivity.",
+        chart: "BACKPLANE LINK // SIMULATED",
+        controls: [
+          { id: "dockLock", label: "Docking interlock", key: "DOCK_INTERLOCK", min: 0, max: 100, value: 88, unit: "%", hazard: "low", weight: 1.2 },
+          { id: "perovskitePower", label: "Perovskite power", key: "PEROVSKITE_POWER", min: 0, max: 100, value: 50, unit: "%", hazard: "high", weight: 1 },
+          { id: "backplaneLink", label: "Backplane link", key: "BACKPLANE_LINK", min: 0, max: 100, value: 70, unit: "%", hazard: "low", weight: 1 }
+        ],
+        reads: ["Dock integrity", "Power margin", "Link quality"]
+      }
     ];
-    const defaults={}; modules.forEach(m=>m.controls.forEach(c=>defaults[c.id]=c.value));
-    const state={...defaults,activeTab:0,quenched:false,duplex:true};
-    const tabsEl=document.getElementById("tabs"),panelEl=document.getElementById("mainPanel"),readoutsEl=document.getElementById("readouts");
-    const clamp=(v,min=0,max=100)=>Math.max(min,Math.min(max,v));
-    function hazardOf(c){if(!c.hazard)return 0;const ratio=(state[c.id]-c.min)/(c.max-c.min);return c.hazard==="low"?1-ratio:ratio;}
-    function calculateRisk(){let total=0,weights=0;modules.forEach(m=>m.controls.forEach(c=>{if(c.hazard){total+=hazardOf(c)*c.weight;weights+=c.weight;}}));const penalty=Math.max(0,state.coreTemp-60)*.13+Math.max(0,state.bufferSaturation-70)*.12+Math.max(0,state.interference-60)*.08+Math.max(0,state.quantumCrosstalk-60)*.08+Math.max(0,50-state.thermalTransfer)*.08+Math.max(0,60-state.backplaneLink)*.05;return clamp(Math.round(total/weights*100+penalty));}
-    function getCrossLoad(){return {optical:clamp(Math.round((state.photonLeak*.28+state.laserDensity*.24+state.opticalInput*.18+state.rxChannels*1.2)/1.8)),compute:clamp(Math.round((state.rxTemp*.25+state.degradation*.27+state.interference*.23+state.txChannels*1.1)/1.7)),thermal:clamp(Math.round(state.coreTemp*.45+state.platformDissipation*.25+(100-state.thermalTransfer)*.3)),network:clamp(Math.round(state.bufferSaturation*.35+(100-state.backplaneLink)*.3+state.conversionLatency*.35))};}
-    function renderTabs(){tabsEl.innerHTML=modules.map((m,i)=>`<button class="tab" id="tab-${m.id}" type="button" role="tab" aria-selected="${i===state.activeTab}" aria-controls="panel-content" tabindex="${i===state.activeTab?0:-1}" data-index="${i}"><span class="tab-index">${String(i+1).padStart(2,"0")}</span>${m.title}</button>`).join("");tabsEl.querySelectorAll(".tab").forEach(btn=>{btn.addEventListener("click",()=>selectTab(Number(btn.dataset.index)));btn.addEventListener("keydown",e=>{if(e.key==="ArrowRight"||e.key==="ArrowLeft"){e.preventDefault();const next=(state.activeTab+(e.key==="ArrowRight"?1:-1)+modules.length)%modules.length;selectTab(next);document.getElementById(`tab-${modules[next].id}`).focus();}});});}
-    function formatValue(c,v=state[c.id]){return `${Number(v).toFixed(c.step===1?0:1)} <small>${c.unit}</small>`;}
-    function renderPanel(){const m=modules[state.activeTab];panelEl.innerHTML=`<div class="panel-heading" id="panel-content"><div class="eyebrow">${m.eyebrow}</div><h2>${m.title}</h2><p class="panel-description">${m.description}</p></div>${m.id==="compute"?`<div class="duplex-row"><span>LINK MODE // RX ↔ TX</span><label class="switch"><input id="duplexSwitch" type="checkbox" ${state.duplex?"checked":""}><span>${state.duplex?"FULL DUPLEX":"HALF DUPLEX"}</span></label></div>`:""}<div class="control-grid">${m.controls.map(c=>`<article class="control-card"><div class="control-top"><div><div class="control-label">${c.label}</div><span class="control-key">${c.key}</span></div><output class="control-value" id="value-${c.id}">${formatValue(c)}</output></div><input type="range" id="control-${c.id}" min="${c.min}" max="${c.max}" step="${c.step||1}" value="${state[c.id]}" aria-label="${c.label}"><div class="range-limits"><span>${c.min} ${c.unit}</span><span>${c.max} ${c.unit}</span></div><div class="coupling"><span>COUPLED INFLUENCE</span><div class="mini-meter"><span id="coupling-${c.id}"></span></div><span id="coupling-value-${c.id}">--%</span></div></article>`).join("")}</div>${m.id==="oob"?`<div class="module-actions"><button type="button" class="button danger" id="localQuench">OOB QUENCH</button><button type="button" class="button" id="localReset">RESET OOB</button></div>`:""}<div class="scope"><div class="scope-head"><span>${m.chart}</span><span id="scopeStatus">LIVE TRACE</span></div><canvas id="moduleChart" role="img" aria-label="Live illustrative chart for ${m.title}"></canvas></div>`;
-      m.controls.forEach(c=>document.getElementById(`control-${c.id}`).addEventListener("input",e=>{state[c.id]=Number(e.target.value);updateDynamic();}));
-      const duplex=document.getElementById("duplexSwitch");if(duplex)duplex.addEventListener("change",()=>{state.duplex=duplex.checked;duplex.nextElementSibling.textContent=state.duplex?"FULL DUPLEX":"HALF DUPLEX";updateDynamic();});
-      const q=document.getElementById("localQuench");if(q)q.addEventListener("click",quenchLocal);const r=document.getElementById("localReset");if(r)r.addEventListener("click",resetLocal);
-      renderTabs();updateDynamic();drawChart();}
-    function selectTab(i){state.activeTab=i;renderPanel();}
-    function couplingInfluence(c){const load=getCrossLoad(),idx=modules.findIndex(m=>m.controls.some(x=>x.id===c.id)),weights=[load.optical,load.compute,load.network,load.compute,load.optical,load.compute,load.thermal,load.network],local=Math.abs(state[c.id]-defaults[c.id])/(c.max-c.min);return clamp(Math.round(weights[idx]*.62+local*38));}
-    function updateDynamic(){const risk=calculateRisk(),cross=getCrossLoad(),m=modules[state.activeTab];const hardLimit=state.coreTemp>=112||state.bufferSaturation>=98||state.photonLeak>=97;if(!state.quenched&&(risk>=85||hardLimit)){quenchSystem();return;}
-      document.getElementById("riskValue").textContent=`${risk} / 100`;document.getElementById("globalMeter").style.width=`${risk}%`;document.querySelector(".meter").setAttribute("aria-valuenow",risk);const color=risk>=70?"var(--red)":risk>=45?"var(--amber)":"var(--cyan)";document.getElementById("globalMeter").style.background=color;const label=document.getElementById("riskLabel");label.textContent=risk>=70?"ELEVATED":risk>=45?"WATCH":"NOMINAL";label.style.color=color;
-      document.getElementById("systemState").textContent=state.quenched?"SYSTEM QUENCHED":"SIMULATION ONLINE";document.getElementById("app").classList.toggle("quenched",state.quenched);document.getElementById("footerMode").textContent=state.quenched?"MODE: SAFE HOLD":"MODE: COUPLED SIMULATION";
-      m.controls.forEach(c=>{const input=document.getElementById(`control-${c.id}`),out=document.getElementById(`value-${c.id}`),meter=document.getElementById(`coupling-${c.id}`),value=document.getElementById(`coupling-value-${c.id}`);if(input)input.value=state[c.id];if(out)out.innerHTML=formatValue(c);const influence=couplingInfluence(c);if(meter){meter.style.width=`${influence}%`;meter.style.background=influence>70?"var(--amber)":"var(--cyan)";}if(value)value.textContent=`${influence}%`;});renderReadouts(m,cross,risk);const status=document.getElementById("scopeStatus");if(status)status.textContent=state.quenched?"SAFE HOLD":"LIVE TRACE";drawChart();}
-    function renderReadouts(m,cross,risk){const i=modules.indexOf(m),values=[["Global stress index",`${risk}%`,"Combined model of 8 nodes"],["Optical load",`${cross.optical}%`,"OOB + Laser/SPAD + Gateway"],["Compute load",`${cross.compute}%`,"RX/TX + Mesh + Mo-CNT"],["Thermal coupling",`${cross.thermal}%`,"Core ↔ platform"]],derived=[[m.reads[0],`${Math.round((cross.optical+cross.compute)/2)}%`],[m.reads[1],`${Math.round((cross.thermal+cross.network)/2)}%`],[m.reads[2],`${Math.round((cross.compute+cross.network+risk)/3)}%`]];readoutsEl.innerHTML=`${values.slice(0,i===0?3:2).map(([label,value,note])=>`<div class="readout"><div class="readout-row"><span class="readout-label">${label}</span><span class="readout-value">${value}</span></div><div class="readout-note">${note}</div></div>`).join("")}${derived.map(([label,value])=>`<div class="readout"><div class="readout-row"><span class="readout-label">${label}</span><span class="readout-value">${value}</span></div><div class="readout-note">CROSS-COUPLED DERIVED VALUE</div></div>`).join("")}<div class="readout"><div class="readout-row"><span class="readout-label">Interlock</span><span class="status-pill ${state.quenched?"critical":risk>=55?"warning":""}">${state.quenched?"SAFE HOLD":risk>=55?"WATCH":"NOMINAL"}</span></div><div class="readout-note">Illustrative model state</div></div>`;}
-    function quenchSystem(){state.quenched=true;const safe={coreTemp:24,photonLeak:4,cellPotential:25,rxTemp:28,degradation:4,interference:5,bufferSaturation:8,claddingStress:10,quantumCrosstalk:7,laserDensity:8,darkCounts:5,seedExcitation:20,phaseResonance:8,perovskitePower:28,rxChannels:3,txChannels:3};Object.entries(safe).forEach(([k,v])=>state[k]=Math.min(state[k],v));renderPanel();}
-    function quenchLocal(){state.coreTemp=Math.min(state.coreTemp,24);state.photonLeak=Math.min(state.photonLeak,4);state.cellPotential=Math.min(state.cellPotential,25);updateDynamic();}
-    function resetLocal(){modules[0].controls.forEach(c=>state[c.id]=defaults[c.id]);state.quenched=false;renderPanel();}
-    function resetAll(){Object.assign(state,defaults);state.quenched=false;state.duplex=true;renderPanel();}
-    function drawChart(){const canvas=document.getElementById("moduleChart");if(!canvas)return;const rect=canvas.getBoundingClientRect();if(!rect.width)return;const dpr=Math.min(window.devicePixelRatio||1,2),w=Math.max(1,Math.floor(rect.width*dpr)),h=Math.max(1,Math.floor(rect.height*dpr));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;}const ctx=canvas.getContext("2d");if(!ctx)return;ctx.clearRect(0,0,w,h);ctx.strokeStyle="rgba(91,137,139,.16)";ctx.lineWidth=dpr;for(let x=0;x<=w;x+=w/10){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke();}for(let y=0;y<=h;y+=h/4){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();}const m=modules[state.activeTab],risk=calculateRisk(),values=m.controls.map(c=>(state[c.id]-c.min)/(c.max-c.min)),level=values.reduce((a,b)=>a+b,0)/values.length,amp=h*(.12+level*.2),freq=.018+state.activeTab*.0025,time=performance.now()*.001,color=state.quenched?"#ff6678":risk>55?"#ffbf69":"#62e5d0";ctx.beginPath();for(let x=0;x<=w;x+=2*dpr){const t=x/dpr,y=h/2+Math.sin(t*freq+time*(1+state.activeTab*.08))*amp+Math.sin(t*freq*2.15-time*1.3)*amp*.22+Math.sin(t*.17+time*3)*amp*.1;if(x===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);}ctx.strokeStyle=color;ctx.lineWidth=1.6*dpr;ctx.shadowBlur=8*dpr;ctx.shadowColor=color;ctx.stroke();ctx.shadowBlur=0;}
-    let animationFrame;function animate(){drawChart();animationFrame=requestAnimationFrame(animate);}document.getElementById("globalQuench").addEventListener("click",quenchSystem);document.getElementById("resetAll").addEventListener("click",resetAll);
-    function updateClock(){document.getElementById("clock").textContent=new Date().toISOString().slice(11,19)+" UTC";}updateClock();setInterval(updateClock,1000);window.addEventListener("resize",drawChart);renderPanel();if(!animationFrame)animate();
+
+    const defaults = {};
+    modules.forEach(module => {
+      module.controls.forEach(control => {
+        defaults[control.id] = control.value;
+      });
+    });
+
+    const state = {
+      ...defaults,
+      activeTab: 0,
+      quenched: false,
+      duplex: true
+    };
+
+    const tabsEl = document.getElementById("tabs");
+    const panelEl = document.getElementById("mainPanel");
+    const readoutsEl = document.getElementById("readouts");
+
+    const clamp = (value, min = 0, max = 100) => Math.max(min, Math.min(max, value));
+
+    function hazardOf(control) {
+      if (!control.hazard) return 0;
+      const ratio = (state[control.id] - control.min) / (control.max - control.min);
+      return control.hazard === "low" ? 1 - ratio : ratio;
+    }
+
+    function calculateRisk() {
+      let total = 0;
+      let weights = 0;
+      modules.forEach(module => {
+        module.controls.forEach(control => {
+          if (control.hazard) {
+            total += hazardOf(control) * control.weight;
+            weights += control.weight;
+          }
+        });
+      });
+
+      const penalty = Math.max(0, state.coreTemp - 60) * 0.28;
+      const loadPenalty = Math.max(0, state.bufferSaturation - 70) * 0.22;
+      const coupledPenalty = (state.duplex ? 4 : 0) + (state.quenched ? 14 : 0);
+
+      const risk = Math.round(clamp((total / Math.max(1, weights)) * 100 + penalty + loadPenalty + coupledPenalty, 0, 100));
+      return risk;
+    }
+
+    function getCrossLoad() {
+      return {
+        optical: clamp(Math.round((state.photonLeak * 0.28 + state.laserDensity * 0.24 + state.opticalInput * 0.18 + state.rxChannels * 1.2) / 1.8)),
+        compute: clamp(Math.round((state.rxTemp * 0.25 + state.degradation * 0.24 + state.interference * 0.17 + state.txChannels * 1.0) / 1.4)),
+        network: clamp(Math.round((state.bufferSaturation * 0.32 + state.conversionLatency * 0.18 + state.backplaneLink * 0.18 + state.opticalInput * 0.16) / 1.7)),
+        mesh: clamp(Math.round((state.seedExcitation * 0.26 + state.phaseResonance * 0.22 + state.meshCoherence * 0.15 + state.quantumCrosstalk * 0.2) / 1.5)),
+        thermal: clamp(Math.round((state.coreTemp * 0.26 + state.heatSpread * 0.18 + state.platformDissipation * 0.2 + state.thermalTransfer * 0.18) / 1.6))
+      };
+    }
+
+    function renderTabs() {
+      tabsEl.innerHTML = modules.map((module, index) => `
+        <button
+          class="tab"
+          id="tab-${module.id}"
+          type="button"
+          role="tab"
+          aria-selected="${index === state.activeTab}"
+          aria-controls="panel-content"
+          tabindex="${index === state.activeTab ? 0 : -1}"
+          data-index="${index}"
+        >
+          <span class="tab-index">${String(index + 1).padStart(2, "0")}</span>${module.title}
+        </button>
+      `).join("");
+
+      tabsEl.querySelectorAll(".tab").forEach((button) => {
+        button.addEventListener("click", () => {
+          selectTab(Number(button.dataset.index));
+        });
+      });
+    }
+
+    function formatValue(control, value = state[control.id]) {
+      return `${Number(value).toFixed(control.step === 1 ? 0 : 1)} <small>${control.unit}</small>`;
+    }
+
+    function drawModuleChart(module) {
+      const canvas = document.getElementById("moduleChart");
+      if (!canvas) return;
+
+      const ctx = canvas.getContext("2d");
+      const rect = canvas.getBoundingClientRect();
+      if (!rect.width) return;
+
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.floor(rect.width * dpr);
+      canvas.height = Math.floor(rect.height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      const width = rect.width;
+      const height = rect.height;
+
+      ctx.clearRect(0, 0, width, height);
+
+      const gridColor = "rgba(129,157,166,0.18)";
+      const axisColor = "rgba(98,229,208,0.22)";
+      const lineColor = "#62e5d0";
+      const glowColor = "rgba(98, 229, 208, 0.35)";
+      const accentColor = "#70b7ff";
+
+      ctx.strokeStyle = gridColor;
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 4; i++) {
+        const y = (height * i) / 4;
+        ctx.beginPath();
+        ctx.moveTo(0, y + 0.5);
+        ctx.lineTo(width, y + 0.5);
+        ctx.stroke();
+      }
+
+      ctx.strokeStyle = axisColor;
+      ctx.beginPath();
+      ctx.moveTo(0, height - 20);
+      ctx.lineTo(width, height - 20);
+      ctx.stroke();
+
+      const samples = module.controls.map(control => {
+        const value = Number(state[control.id]);
+        const normalized = clamp((value - control.min) / Math.max(1, control.max - control.min), 0, 1);
+        return normalized * 100;
+      });
+
+      const center = height * 0.5;
+
+      ctx.beginPath();
+      ctx.moveTo(0, center);
+      samples.forEach((sample, index) => {
+        const x = (index / Math.max(1, samples.length - 1)) * (width - 20) + 10;
+        const y = center - (sample - 50) * 0.7;
+        if (index === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+
+      ctx.strokeStyle = lineColor;
+      ctx.lineWidth = 2.2;
+      ctx.shadowColor = glowColor;
+      ctx.shadowBlur = 12;
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      const active = module.controls.map(control => state[control.id]);
+
+      active.forEach((value, index) => {
+        const x = (index / Math.max(1, active.length - 1)) * (width - 20) + 10;
+        const y = center - ((value / 100) * 100 - 50) * 0.7;
+
+        ctx.beginPath();
+        ctx.fillStyle = index % 2 === 0 ? accentColor : lineColor;
+        ctx.arc(x, y, 4.2, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = "rgba(234, 241, 243, 0.75)";
+        ctx.font = "10px SFMono-Regular, Consolas, monospace";
+        ctx.textAlign = "center";
+        ctx.fillText(String(index + 1), x, height - 5);
+      });
+
+      ctx.fillStyle = "rgba(157, 176, 183, 0.75)";
+      ctx.font = "10px SFMono-Regular, Consolas, monospace";
+      ctx.textAlign = "left";
+      ctx.fillText(module.chart, 12, 18);
+    }
+
+    function renderPanel() {
+      const module = modules[state.activeTab];
+
+      panelEl.innerHTML = `
+        <div class="panel-heading" id="panel-content">
+          <div class="eyebrow">${module.eyebrow}</div>
+          <h2>${module.title}</h2>
+          <p class="panel-description">${module.description}</p>
+        </div>
+
+        <div class="control-grid">
+          ${module.controls.map(control => `
+            <div class="control-card" data-control="${control.id}">
+              <div class="control-top">
+                <div>
+                  <div class="control-label">${control.label}</div>
+                  <span class="control-key">${control.key}</span>
+                </div>
+                <div class="control-value" id="value-${control.id}">${formatValue(control)}</div>
+              </div>
+
+              <input
+                id="control-${control.id}"
+                type="range"
+                min="${control.min}"
+                max="${control.max}"
+                step="${control.step || 1}"
+                value="${state[control.id]}"
+                aria-label="${control.label}"
+              />
+
+              <div class="range-limits">
+                <span>${control.min}</span>
+                <span>${control.max}</span>
+              </div>
+
+              <div class="coupling">
+                <span>Coupling</span>
+                <div class="mini-meter"><span id="coupling-${control.id}"></span></div>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+
+        <div class="duplex-row">
+          <span>Channel directionality</span>
+          <label class="switch">
+            <input id="duplexSwitch" type="checkbox" ${state.duplex ? "checked" : ""} />
+            <span>${state.duplex ? "Full duplex" : "Simplex"}</span>
+          </label>
+        </div>
+
+        <div class="module-actions">
+          <button class="button" id="localQuench" type="button">Local quench</button>
+          <button class="button" id="localReset" type="button">Reset module</button>
+        </div>
+
+        <div class="scope">
+          <div class="scope-head">
+            <span>Module signal scope</span>
+            <span>${module.chart}</span>
+          </div>
+          <div class="scope-body">
+            <canvas id="moduleChart"></canvas>
+          </div>
+        </div>
+      `;
+
+      renderTabs();
+
+      module.controls.forEach(control => {
+        const input = document.getElementById(`control-${control.id}`);
+        const out = document.getElementById(`value-${control.id}`);
+        const meter = document.getElementById(`coupling-${control.id}`);
+
+        if (input) {
+          input.addEventListener("input", (event) => {
+            state[control.id] = Number(event.target.value);
+            updateDynamic();
+          });
+        }
+
+        if (out) out.innerHTML = formatValue(control);
+        if (meter) meter.style.width = `${clamp((state[control.id] / control.max) * 100, 0, 100)}%`;
+      });
+
+      const duplex = document.getElementById("duplexSwitch");
+      if (duplex) {
+        duplex.addEventListener("change", () => {
+          state.duplex = duplex.checked;
+          duplex.nextElementSibling.textContent = state.duplex ? "Full duplex" : "Simplex";
+          updateDynamic();
+        });
+      }
+
+      const q = document.getElementById("localQuench");
+      const r = document.getElementById("localReset");
+
+      if (q) q.addEventListener("click", quenchLocal);
+      if (r) r.addEventListener("click", resetLocal);
+
+      drawModuleChart(module);
+    }
+
+    function selectTab(index) {
+      state.activeTab = index;
+      renderPanel();
+    }
+
+    function couplingInfluence(control) {
+      const load = getCrossLoad();
+      const modulesWithId = modules.findIndex(m => m.controls.some(item => item.id === control.id));
+      const weights = [
+        load.optical,
+        load.compute,
+        load.network,
+        load.compute,
+        load.optical,
+        load.mesh,
+        load.thermal,
+        load.network
+      ];
+      const idx = Math.min(modulesWithId, weights.length - 1);
+      return clamp((weights[idx] + (control.hazard === "low" ? 8 : 16)) / 2);
+    }
+
+    function updateDynamic() {
+      const risk = calculateRisk();
+      const cross = getCrossLoad();
+      const module = modules[state.activeTab];
+      const hardLimit = state.coreTemp >= 112 || state.bufferSaturation >= 98 || state.photonLeak >= 97;
+
+      if (!state.quenched && hardLimit) {
+        state.quenched = true;
+      }
+
+      document.getElementById("systemState").textContent = state.quenched ? "SYSTEM QUENCHED" : "SIMULATION ONLINE";
+      document.getElementById("app").classList.toggle("quenched", state.quenched);
+      document.getElementById("riskValue").textContent = `${risk} / 100`;
+      document.getElementById("globalMeter").style.width = `${risk}%`;
+      document.querySelector(".meter").setAttribute("aria-valuenow", String(risk));
+
+      if (risk >= 75) {
+        document.getElementById("riskLabel").textContent = "CRITICAL";
+      } else if (risk >= 45) {
+        document.getElementById("riskLabel").textContent = "ELEVATED";
+      } else if (risk >= 20) {
+        document.getElementById("riskLabel").textContent = "WATCH";
+      } else {
+        document.getElementById("riskLabel").textContent = "NOMINAL";
+      }
+
+      const mode = state.quenched ? "EMERGENCY QUENCH" : (state.duplex ? "FULL DUPLEX" : "SIMPLEX");
+      document.getElementById("footerMode").textContent = `MODE: ${mode}`;
+
+      const panelCards = panelEl.querySelectorAll(".control-card");
+      panelCards.forEach(card => {
+        const controlId = card.dataset.control;
+        const control = modules.flatMap(m => m.controls).find(c => c.id === controlId);
+        const input = document.getElementById(`control-${controlId}`);
+        const output = document.getElementById(`value-${controlId}`);
+        const meter = document.getElementById(`coupling-${controlId}`);
+        if (!control) return;
+
+        const value = state[controlId];
+        const fill = couplingInfluence(control);
+
+        if (output) output.innerHTML = formatValue(control, value);
+        if (meter) meter.style.width = `${fill}%`;
+        if (input) input.value = value;
+      });
+
+      renderReadouts(module, cross, risk);
+      if (module) drawModuleChart(module);
+    }
+
+    function renderReadouts(module, cross, risk) {
+      const index = modules.indexOf(module);
+      const values = [
+        ["Global stress index", `${risk}%`, "Combined model of 8 nodes"],
+        ["Optical load", `${cross.optical}%`, "OOB + laser / SPAD + bridge"],
+        ["Compute load", `${cross.compute}%`, "RX/TX and channel variance"],
+        ["Mesh coupling", `${cross.mesh}%`, "Phase drift and seed coupling"],
+        ["Thermal drift", `${cross.thermal}%`, "Thermal propagation and dissipation"],
+        ["Active module", `${index + 1}`, `${module.title}`]
+      ];
+
+      readoutsEl.innerHTML = values.map(([label, value, note]) => `
+        <div class="readout">
+          <div class="readout-row">
+            <span class="readout-label">${label}</span>
+            <span class="readout-value">${value}</span>
+          </div>
+          <div class="readout-note">${note}</div>
+        </div>
+      `).join("");
+    }
+
+    function quenchSystem() {
+      state.quenched = true;
+
+      const safeValues = {
+        coreTemp: 24,
+        photonLeak: 4,
+        cellPotential: 25,
+        rxTemp: 28,
+        degradation: 4,
+        interference: 5,
+        bufferSaturation: 8,
+        claddingStress: 10,
+        quantumCrosstalk: 7,
+        laserDensity: 12,
+        spadEfficiency: 86,
+        darkCounts: 9,
+        seedExcitation: 18,
+        meshCoherence: 80,
+        phaseResonance: 14,
+        heatSpread: 24,
+        platformDissipation: 18,
+        thermalTransfer: 25,
+        dockLock: 80,
+        perovskitePower: 35,
+        backplaneLink: 82,
+        opticalInput: 18,
+        conversionLatency: 17,
+        conductivity: 80,
+        rxChannels: 8,
+        txChannels: 8
+      };
+
+      Object.entries(safeValues).forEach(([key, value]) => {
+        if (key in state) state[key] = value;
+      });
+
+      renderPanel();
+      updateDynamic();
+    }
+
+    function quenchLocal() {
+      state.coreTemp = Math.min(state.coreTemp, 24);
+      state.photonLeak = Math.min(state.photonLeak, 4);
+      state.cellPotential = Math.min(state.cellPotential, 25);
+      state.quenched = true;
+      updateDynamic();
+    }
+
+    function resetLocal() {
+      modules[state.activeTab].controls.forEach(control => {
+        state[control.id] = defaults[control.id];
+      });
+      state.quenched = false;
+      renderPanel();
+      updateDynamic();
+    }
+
+    function resetAll() {
+      Object.assign(state, defaults);
+      state.quenched = false;
+      state.duplex = true;
+      renderPanel();
+      updateDynamic();
+    }
+
+    function updateClock() {
+      document.getElementById("clock").textContent = new Date().toISOString().slice(11, 19) + " UTC";
+    }
+
+    document.getElementById("globalQuench").addEventListener("click", quenchSystem);
+    document.getElementById("resetAll").addEventListener("click", resetAll);
+
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    renderPanel();
+    updateDynamic();
+    window.addEventListener("resize", () => {
+      const module = modules[state.activeTab];
+      drawModuleChart(module);
+    });
   </script>
 </body>
 </html>
