@@ -7,173 +7,1230 @@
   <meta name="description" content="An illustrative, interactive Sferium telemetry simulator." />
   <title>SFERIUM v2.026 // Unified Cross-Coupled Telemetry Suite</title>
   <style>
-    :root{color-scheme:dark;--bg:#090c0f;--panel:rgba(16,22,26,.94);--line:#2a3941;--muted:#8d9ea4;--text:#eaf1f3;--cyan:#62e5d0;--blue:#70b7ff;--amber:#ffbf69;--red:#ff6678;--green:#83e6a3;--purple:#a78bfa;--mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace;--sans:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--shadow:0 0 0 1px rgba(98,229,208,.14),0 18px 40px rgba(0,0,0,.32)}
-    *{box-sizing:border-box}html,body{margin:0;min-height:100vh;background:radial-gradient(circle at 20% 0%,rgba(98,229,208,.08),transparent 25%),radial-gradient(circle at 80% 0%,rgba(112,183,255,.08),transparent 25%),linear-gradient(180deg,#0a0f12 0%,#0a0d10 25%,#090c0f 100%);color:var(--text);font-family:var(--sans)}body{line-height:1.45}button,input{font:inherit}.shell{width:min(1500px,100%);margin:0 auto;padding:28px clamp(14px,3vw,42px)}
-    .topline,.brand-row,.footer-row,.readout-row{display:flex;align-items:center;justify-content:space-between;gap:16px}.topline{border-bottom:1px solid var(--line);padding-bottom:12px;color:var(--muted);font:11px var(--mono);letter-spacing:.12em;text-transform:uppercase}.live-label{color:var(--cyan)}.live-dot{display:inline-block;width:7px;height:7px;margin-right:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 12px var(--cyan)}header{padding:22px 0 20px}.brand-row{align-items:flex-start}h1{margin:0;font-size:clamp(24px,4vw,43px);line-height:1.08;letter-spacing:-.045em;font-weight:720}h1 span{display:block;margin-top:9px;color:var(--cyan);font:500 clamp(10px,1.35vw,14px) var(--mono);letter-spacing:.13em}.patent{flex:0 0 auto;padding:8px 10px;border:1px solid #7a6638;color:var(--amber);background:rgba(255,191,105,.02);font:10px var(--mono);letter-spacing:.12em;white-space:nowrap}.notice{margin-top:20px;padding:12px 14px;border:1px solid #334752;border-left:3px solid var(--amber);background:rgba(255,191,105,.05);color:#b9c5c8;font-size:12px;line-height:1.55}.notice strong{color:var(--amber);font:11px var(--mono);letter-spacing:.08em}
-    .system-bar{display:grid;grid-template-columns:minmax(180px,1.2fr) minmax(200px,2fr) auto;align-items:center;gap:18px;padding:14px 16px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(13,18,22,.96),rgba(9,12,15,.96));box-shadow:var(--shadow)}.system-title{color:var(--muted);font:10px var(--mono);letter-spacing:.12em}.system-title b{display:block;margin-top:5px;color:var(--text);font-size:13px}.risk-wrap{display:grid;gap:7px}.risk-meta{display:flex;justify-content:space-between;color:var(--muted);font:10px var(--mono);letter-spacing:.08em;text-transform:uppercase}.meter,.mini-meter{overflow:hidden;height:7px;border-radius:999px;background:rgba(79,95,103,.4);border:1px solid rgba(255,255,255,.04)}.meter>span,.mini-meter>span{display:block;width:0;height:100%;background:linear-gradient(90deg,var(--cyan),var(--blue));box-shadow:0 0 14px rgba(98,229,208,.38);transition:width .2s ease}.system-actions,.module-actions{display:flex;flex-wrap:wrap;gap:8px}.button,.tab{border:1px solid #3a4a51;background:linear-gradient(180deg,#172126,#111b20);color:var(--text);cursor:pointer;font:10px var(--mono);letter-spacing:.08em;text-transform:uppercase}.button{min-height:36px;padding:0 12px;transition:.15s ease}.button:hover,.tab:hover{border-color:var(--cyan);color:var(--cyan);transform:translateY(-1px)}.button.danger{border-color:#7d3a47;color:#ff9aa5}.button:focus-visible,.tab:focus-visible,input:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
-    .tabs{display:flex;gap:6px;overflow-x:auto;padding:14px 0 12px;scrollbar-width:thin}.tab{flex:0 0 auto;padding:10px 12px;border-color:var(--line);background:#101619;color:#9aabb0}.tab[aria-selected=true]{border-color:#3b8f87;background:rgba(18,36,33,.96);color:var(--cyan)}.tab-index{color:#61737a;margin-right:5px}.workspace{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:14px;align-items:start}.main-panel,.side-panel{border:1px solid var(--line);background:var(--panel);box-shadow:var(--shadow)}.main-panel{min-height:440px}.panel-heading{padding:20px 20px 15px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,rgba(14,17,20,.75),rgba(13,17,18,.3))}.eyebrow{color:var(--cyan);font:10px var(--mono);letter-spacing:.14em;text-transform:uppercase}h2{margin:7px 0 5px;font-size:clamp(19px,2vw,25px);letter-spacing:-.025em}.panel-description{margin:0;color:var(--muted);font-size:12px}.control-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:16px}.control-card,.energy-card{padding:14px;border:1px solid #26343a;background:linear-gradient(145deg,rgba(22,31,36,.86),rgba(15,21,24,.8))}.control-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.control-label{color:#c6d2d5;font-size:12px;font-weight:600}.control-key{display:block;margin-top:5px;color:#73868c;font:9px var(--mono);letter-spacing:.035em}.control-value{flex:0 0 auto;color:var(--cyan);font:13px var(--mono);text-align:right;white-space:nowrap}.control-value small{color:#829398;font-size:9px}input[type=range]{display:block;width:100%;height:20px;margin:14px 0 9px;accent-color:var(--cyan);cursor:pointer}.range-limits{display:flex;justify-content:space-between;color:#64767c;font:9px var(--mono)}.coupling{display:flex;align-items:center;gap:8px;padding-top:10px;color:#829398;font:9px var(--mono)}.mini-meter{flex:1;height:4px}.module-actions{padding:0 16px 16px}.duplex-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:14px 16px 0;padding:12px;border:1px solid #26343a;color:#a9b8bc;font:10px var(--mono);background:rgba(9,14,17,.9)}.switch{display:inline-flex;align-items:center;gap:8px;cursor:pointer;color:var(--cyan)}.switch input,.scope-toggles input{accent-color:var(--cyan)}
-    .scope{margin:0 16px 16px;border:1px solid #26343a;background:#080d10;overflow:hidden}.scope-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:9px 10px;border-bottom:1px solid #1c292e;color:#84979d;font:9px var(--mono);letter-spacing:.08em;text-transform:uppercase;background:rgba(17,24,28,.9)}.scope-toggles{display:flex;gap:12px;align-items:center}.scope-toggles label{display:flex;gap:5px;align-items:center;white-space:nowrap}.scope-body{padding:12px;background:linear-gradient(180deg,rgba(9,15,17,.6),rgba(8,12,14,.9))}canvas{display:block;width:100%;height:180px;border-radius:10px;background:linear-gradient(180deg,rgba(16,22,26,.85),rgba(9,12,14,.92));border:1px solid rgba(98,229,208,.08)}.energy-card{margin:0 16px 16px;border-color:#31514f;background:linear-gradient(145deg,rgba(17,34,34,.84),rgba(15,21,24,.9))}.energy-card h3{margin:0 0 12px;color:var(--cyan);font:10px var(--mono);letter-spacing:.1em}.energy-summary{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.energy-stat{padding:10px;border:1px solid #26343a;background:rgba(8,13,16,.6)}.energy-stat span{display:block;color:var(--muted);font:9px var(--mono);text-transform:uppercase}.energy-stat strong{display:block;margin-top:5px;color:var(--green);font:14px var(--mono)}.energy-stat strong.negative{color:var(--amber)}
-    .side-panel{padding:16px}.side-title{margin:0 0 14px;color:#aab9bd;font:10px var(--mono);letter-spacing:.12em;text-transform:uppercase}.readout{padding:12px 0;border-top:1px solid #253238}.readout-row{align-items:baseline}.readout-label{color:#8b9ba0;font-size:11px}.readout-value{color:var(--text);font:12px var(--mono)}.readout-note{margin-top:5px;color:#607278;font:9px var(--mono)}.coupling-map{margin-top:14px;padding:12px;border:1px solid #26343a;background:linear-gradient(180deg,rgba(9,14,17,.9),rgba(12,17,20,.95))}.coupling-map h3{margin:0 0 8px;color:var(--cyan);font:9px var(--mono);letter-spacing:.1em;text-transform:uppercase}.coupling-map p{margin:0;color:#829398;font:10px/1.6 var(--mono)}footer{margin-top:18px;padding-top:14px;border-top:1px solid var(--line);color:#72848a;font:10px var(--mono)}.footer-row{flex-wrap:wrap}footer strong{color:#b6c4c7;font-weight:500}.footer-note{margin-top:9px;color:#718086;line-height:1.5}.quenched .live-dot{background:var(--red);box-shadow:0 0 12px var(--red)}.quenched .live-label{color:var(--red)}
-    @media(max-width:900px){.workspace{grid-template-columns:1fr}.side-panel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 20px}.side-title,.coupling-map{grid-column:1/-1}}@media(max-width:600px){.shell{padding-top:16px}.topline{font-size:9px}.brand-row{gap:10px}.patent{font-size:8px;padding:7px}.system-bar{grid-template-columns:1fr;gap:12px}.control-grid{grid-template-columns:1fr}.side-panel{grid-template-columns:1fr}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important}}
+    :root {
+      color-scheme: dark;
+      --bg: #090c0f;
+      --panel: rgba(16, 22, 26, 0.94);
+      --panel-strong: rgba(12, 17, 20, 0.97);
+      --line: #2a3941;
+      --line-soft: #1d2a2f;
+      --muted: #8d9ea4;
+      --text: #eaf1f3;
+      --cyan: #62e5d0;
+      --blue: #70b7ff;
+      --amber: #ffbf69;
+      --red: #ff6678;
+      --green: #83e6a3;
+      --purple: #a78bfa;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --shadow: 0 0 0 1px rgba(98, 229, 208, 0.14), 0 18px 40px rgba(0, 0, 0, 0.32);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(98, 229, 208, 0.08), transparent 25%),
+        radial-gradient(circle at 80% 0%, rgba(112, 183, 255, 0.08), transparent 25%),
+        linear-gradient(180deg, #0a0f12 0%, #0a0d10 25%, #090c0f 100%);
+      color: var(--text);
+      font-family: var(--sans);
+    }
+
+    body { line-height: 1.45; }
+    button, input { font: inherit; }
+
+    .shell {
+      width: min(1500px, 100%);
+      margin: 0 auto;
+      padding: 28px clamp(14px, 3vw, 42px) 28px;
+    }
+
+    .topline, .brand-row, .footer-row, .readout-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .topline {
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 12px;
+      color: var(--muted);
+      font: 11px var(--mono);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .live-label { color: var(--cyan); }
+    .live-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      margin-right: 7px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 12px var(--cyan);
+    }
+
+    header { padding: 22px 0 20px; }
+    .brand-row { align-items: flex-start; }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(24px, 4vw, 43px);
+      line-height: 1.08;
+      letter-spacing: -0.045em;
+      font-weight: 720;
+    }
+
+    h1 span {
+      display: block;
+      margin-top: 9px;
+      color: var(--cyan);
+      font: 500 clamp(10px, 1.35vw, 14px) var(--mono);
+      letter-spacing: 0.13em;
+    }
+
+    .patent {
+      flex: 0 0 auto;
+      padding: 8px 10px;
+      border: 1px solid #7a6638;
+      color: var(--amber);
+      background: rgba(255, 191, 105, 0.02);
+      font: 10px var(--mono);
+      letter-spacing: 0.12em;
+      white-space: nowrap;
+    }
+
+    .notice {
+      margin-top: 20px;
+      padding: 12px 14px;
+      border: 1px solid #334752;
+      border-left: 3px solid var(--amber);
+      background: rgba(255, 191, 105, 0.05);
+      color: #b9c5c8;
+      font-size: 12px;
+      line-height: 1.55;
+      box-shadow: inset 0 0 0 1px rgba(255, 191, 105, 0.05);
+    }
+
+    .notice strong {
+      color: var(--amber);
+      font: 11px var(--mono);
+      letter-spacing: 0.08em;
+    }
+
+    .system-bar {
+      display: grid;
+      grid-template-columns: minmax(180px, 1.2fr) minmax(200px, 2fr) auto;
+      align-items: center;
+      gap: 18px;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(13, 18, 22, 0.96), rgba(9, 12, 15, 0.96));
+      box-shadow: var(--shadow);
+    }
+
+    .system-title {
+      color: var(--muted);
+      font: 10px var(--mono);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .system-title b {
+      display: block;
+      margin-top: 5px;
+      color: var(--text);
+      font-size: 13px;
+      letter-spacing: 0.04em;
+    }
+
+    .risk-wrap { display: grid; gap: 7px; }
+    .risk-meta {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font: 10px var(--mono);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .meter, .mini-meter {
+      overflow: hidden;
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(79, 95, 103, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .meter > span, .mini-meter > span {
+      display: block;
+      width: 0;
+      height: 100%;
+      background: linear-gradient(90deg, var(--cyan), var(--blue));
+      box-shadow: 0 0 14px rgba(98, 229, 208, 0.38);
+      transition: width 0.2s ease;
+    }
+
+    .system-actions, .module-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .button, .tab {
+      border: 1px solid #3a4a51;
+      background: linear-gradient(180deg, #172126, #111b20);
+      color: var(--text);
+      cursor: pointer;
+      font: 10px var(--mono);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .button {
+      min-height: 36px;
+      padding: 0 12px;
+      transition: 0.15s ease;
+    }
+
+    .button:hover, .tab:hover {
+      border-color: var(--cyan);
+      color: var(--cyan);
+      transform: translateY(-1px);
+    }
+
+    .button.danger {
+      border-color: #7d3a47;
+      color: #ff9aa5;
+    }
+
+    .button:focus-visible, .tab:focus-visible, input:focus-visible {
+      outline: 2px solid var(--cyan);
+      outline-offset: 3px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding: 14px 0 12px;
+      scrollbar-width: thin;
+    }
+
+    .tab {
+      flex: 0 0 auto;
+      padding: 10px 12px;
+      background: #101619;
+      color: #9aabb0;
+    }
+
+    .tab[aria-selected="true"] {
+      border-color: #3b8f87;
+      background: rgba(18, 36, 33, 0.96);
+      color: var(--cyan);
+    }
+
+    .tab-index {
+      color: #61737a;
+      margin-right: 5px;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 280px;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .main-panel, .side-panel {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .main-panel { min-height: 440px; }
+
+    .panel-heading {
+      padding: 20px 20px 15px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(14, 17, 20, 0.75), rgba(13, 17, 18, 0.3));
+    }
+
+    .eyebrow {
+      color: var(--cyan);
+      font: 10px var(--mono);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin: 7px 0 5px;
+      font-size: clamp(19px, 2vw, 25px);
+      letter-spacing: -0.025em;
+    }
+
+    .panel-description {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .control-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      padding: 16px;
+    }
+
+    .control-card, .energy-card {
+      padding: 14px;
+      border: 1px solid #26343a;
+      background: linear-gradient(145deg, rgba(22, 31, 36, 0.86), rgba(15, 21, 24, 0.8));
+    }
+
+    .control-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .control-label {
+      color: #c6d2d5;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .control-key {
+      display: block;
+      margin-top: 5px;
+      color: #73868c;
+      font: 9px var(--mono);
+      letter-spacing: 0.035em;
+    }
+
+    .control-value {
+      flex: 0 0 auto;
+      color: var(--cyan);
+      font: 13px var(--mono);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .control-value small {
+      color: #829398;
+      font-size: 9px;
+    }
+
+    input[type="range"] {
+      display: block;
+      width: 100%;
+      height: 20px;
+      margin: 14px 0 9px;
+      accent-color: var(--cyan);
+      cursor: pointer;
+    }
+
+    .range-limits {
+      display: flex;
+      justify-content: space-between;
+      color: #64767c;
+      font: 9px var(--mono);
+    }
+
+    .coupling {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-top: 10px;
+      color: #829398;
+      font: 9px var(--mono);
+    }
+
+    .mini-meter {
+      flex: 1;
+      height: 4px;
+      border-radius: 999px;
+    }
+
+    .duplex-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 14px 16px 0;
+      padding: 12px;
+      border: 1px solid #26343a;
+      color: #a9b8bc;
+      font: 10px var(--mono);
+      background: rgba(9, 14, 17, 0.9);
+    }
+
+    .switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      color: var(--cyan);
+    }
+
+    .switch input { accent-color: var(--cyan); }
+
+    .module-actions {
+      padding: 0 16px 16px;
+    }
+
+    .scope {
+      margin: 0 16px 16px;
+      border: 1px solid #26343a;
+      background: #080d10;
+      overflow: hidden;
+    }
+
+    .scope-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 9px 10px;
+      border-bottom: 1px solid #1c292e;
+      color: #84979d;
+      font: 9px var(--mono);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: rgba(17, 24, 28, 0.9);
+    }
+
+    .scope-toggles {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .scope-toggles label {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+
+    .scope-body {
+      padding: 12px;
+      background: linear-gradient(180deg, rgba(9, 15, 17, 0.6), rgba(8, 12, 14, 0.9));
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 180px;
+      border-radius: 10px;
+      background: linear-gradient(180deg, rgba(16, 22, 26, 0.85), rgba(9, 12, 14, 0.92));
+      border: 1px solid rgba(98, 229, 208, 0.08);
+    }
+
+    .energy-card {
+      margin: 0 16px 16px;
+      border-color: #31514f;
+      background: linear-gradient(145deg, rgba(17, 34, 34, 0.84), rgba(15, 21, 24, 0.9));
+    }
+
+    .energy-card h3 {
+      margin: 0 0 12px;
+      color: var(--cyan);
+      font: 10px var(--mono);
+      letter-spacing: 0.1em;
+    }
+
+    .energy-summary {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .energy-stat {
+      padding: 10px;
+      border: 1px solid #26343a;
+      background: rgba(8, 13, 16, 0.6);
+    }
+
+    .energy-stat span {
+      display: block;
+      color: var(--muted);
+      font: 9px var(--mono);
+      text-transform: uppercase;
+    }
+
+    .energy-stat strong {
+      display: block;
+      margin-top: 5px;
+      color: var(--green);
+      font: 14px var(--mono);
+    }
+
+    .energy-stat strong.negative {
+      color: var(--amber);
+    }
+
+    .side-panel { padding: 16px; }
+
+    .side-title {
+      margin: 0 0 14px;
+      color: #aab9bd;
+      font: 10px var(--mono);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .readout {
+      padding: 12px 0;
+      border-top: 1px solid #253238;
+    }
+
+    .readout-row { align-items: baseline; }
+
+    .readout-label {
+      color: #8b9ba0;
+      font-size: 11px;
+    }
+
+    .readout-value {
+      color: var(--text);
+      font: 12px var(--mono);
+    }
+
+    .readout-note {
+      margin-top: 5px;
+      color: #607278;
+      font: 9px var(--mono);
+    }
+
+    .coupling-map {
+      margin-top: 14px;
+      padding: 12px;
+      border: 1px solid #26343a;
+      background: linear-gradient(180deg, rgba(9, 14, 17, 0.9), rgba(12, 17, 20, 0.95));
+    }
+
+    .coupling-map h3 {
+      margin: 0 0 8px;
+      color: var(--cyan);
+      font: 9px var(--mono);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .coupling-map p {
+      margin: 0;
+      color: #829398;
+      font: 10px/1.6 var(--mono);
+    }
+
+    footer {
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+      color: #72848a;
+      font: 10px var(--mono);
+    }
+
+    .footer-row { flex-wrap: wrap; }
+    footer strong { color: #b6c4c7; font-weight: 500; }
+    .footer-note {
+      margin-top: 9px;
+      color: #718086;
+      line-height: 1.5;
+    }
+
+    .quenched .live-dot {
+      background: var(--red);
+      box-shadow: 0 0 12px var(--red);
+    }
+
+    .quenched .live-label { color: var(--red); }
+
+    @media (max-width: 900px) {
+      .workspace { grid-template-columns: 1fr; }
+      .side-panel {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0 20px;
+      }
+      .side-title, .coupling-map { grid-column: 1 / -1; }
+    }
+
+    @media (max-width: 600px) {
+      .shell { padding-top: 16px; }
+      .topline { font-size: 9px; }
+      .brand-row { gap: 10px; }
+      .patent { font-size: 8px; padding: 7px; }
+      .system-bar { grid-template-columns: 1fr; gap: 12px; }
+      .control-grid { grid-template-columns: 1fr; }
+      .side-panel { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="shell" id="app">
-    <div class="topline"><span><span class="live-dot"></span><span class="live-label" id="systemState">SIMULATION ONLINE</span></span><span>TELEMETRY BUS // 8 NODES</span><span id="clock">--:--:-- UTC</span></div>
-    <header><div class="brand-row"><h1>SFERIUM<span>v2.026 // UNIFIED CROSS-COUPLED TELEMETRY SUITE</span></h1><div class="patent">PATENT PENDING</div></div><div class="notice"><strong>SPECULATIVE / ILLUSTRATIVE MODEL</strong><br />The interface presents a hypothetical telemetry model for demonstration purposes only. It is not a verified engineering specification or hardware control system.</div></header>
-    <section class="system-bar" aria-label="Global system status"><div class="system-title">GLOBAL SAFETY INDEX<b id="riskValue">-- / 100</b></div><div class="risk-wrap"><div class="risk-meta"><span>COUPLED STRESS</span><span id="riskLabel">NOMINAL</span></div><div class="meter" role="progressbar" aria-label="Global risk index" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalMeter"></span></div></div><div class="system-actions"><button class="button danger" id="globalQuench" type="button">System-wide quench</button><button class="button" id="resetAll" type="button">Reset all</button></div></section>
+    <div class="topline">
+      <span><span class="live-dot"></span><span class="live-label" id="systemState">SIMULATION ONLINE</span></span>
+      <span>TELEMETRY BUS // 8 NODES</span>
+      <span id="clock">--:--:-- UTC</span>
+    </div>
+
+    <header>
+      <div class="brand-row">
+        <h1>SFERIUM<span>v2.026 // UNIFIED CROSS-COUPLED TELEMETRY SUITE</span></h1>
+        <div class="patent">PATENT PENDING</div>
+      </div>
+      <div class="notice">
+        <strong>SPECULATIVE / ILLUSTRATIVE MODEL</strong><br />
+        The interface presents a hypothetical telemetry model for demonstration purposes only. It is not a verified engineering specification or hardware control system.
+      </div>
+    </header>
+
+    <section class="system-bar" aria-label="Global system status">
+      <div class="system-title">GLOBAL SAFETY INDEX<b id="riskValue">-- / 100</b></div>
+      <div class="risk-wrap">
+        <div class="risk-meta"><span>COUPLED STRESS</span><span id="riskLabel">NOMINAL</span></div>
+        <div class="meter" role="progressbar" aria-label="Global risk index" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalMeter"></span></div>
+      </div>
+      <div class="system-actions">
+        <button class="button danger" id="globalQuench" type="button">System-wide quench</button>
+        <button class="button" id="resetAll" type="button">Reset all</button>
+      </div>
+    </section>
+
     <nav class="tabs" id="tabs" role="tablist" aria-label="Telemetry modules"></nav>
-    <main class="workspace"><section class="main-panel" id="mainPanel" role="tabpanel" aria-live="polite"></section><aside class="side-panel" aria-label="Live couplings and status"><h3 class="side-title">LIVE COUPLED READOUT</h3><div id="readouts"></div><div class="coupling-map"><h3>Cross-coupling bus</h3><p>Signal coherence is derived from coupled load, thermal drift, and distributed channel variance. The effect is modeled as a weighted interaction across the telemetry stack. Photon recycling raises simulated charge and offsets cradle power draw.</p></div></aside></main>
-    <footer><div class="footer-row"><span>SUITE // SFERIUM v2.026</span><span>ARCHITECT: <strong>KRYSTIAN JANKIEL</strong></span><span id="footerMode">MODE: COUPLED SIMULATION</span></div><div class="footer-note">This demonstrator is intended for illustrative visualization of system behavior under complex cross-coupled conditions.</div></footer>
+
+    <main class="workspace">
+      <section class="main-panel" id="mainPanel" role="tabpanel" aria-live="polite"></section>
+      <aside class="side-panel" aria-label="Live couplings and status">
+        <h3 class="side-title">LIVE COUPLED READOUT</h3>
+        <div id="readouts"></div>
+        <div class="coupling-map">
+          <h3>Cross-coupling bus</h3>
+          <p>Signal coherence is derived from coupled load, thermal drift, and distributed channel variance. The effect is modeled as a weighted interaction across the telemetry stack. Photon recycling raises simulated charge and offsets cradle power draw.</p>
+        </div>
+      </aside>
+    </main>
+
+    <footer>
+      <div class="footer-row">
+        <span>SUITE // SFERIUM v2.026</span>
+        <span>ARCHITECT: <strong>KRYSTIAN JANKIEL</strong></span>
+        <span id="footerMode">MODE: COUPLED SIMULATION</span>
+      </div>
+      <div class="footer-note">This demonstrator is intended for illustrative visualization of system behavior under complex cross-coupled conditions.</div>
+    </footer>
   </div>
-<script>
-"use strict";
-const modules=[
-{id:"oob",title:"OOB Emergency",eyebrow:"01 // OUT-OF-BAND SAFETY",description:"Emergency monitoring of core losses, photon leakage, and cell potential.",chart:"CORE OSCILLOSCOPE // SIMULATED",reads:["Critical nodes","Combined load","Interlock state"],controls:[{id:"coreTemp",label:"Core temperature",key:"CORE_THERMAL_LOAD",min:0,max:120,value:34,unit:"°C",hazard:"high"},{id:"photonLeak",label:"Photon leakage",key:"PHOTON_CONTAINMENT",min:0,max:100,value:12,unit:"%",hazard:"high"},{id:"cellPotential",label:"Perovskite cell potential",key:"PV_CELL_POTENTIAL",min:0,max:100,value:48,unit:"%",hazard:"high"}]},
-{id:"compute",title:"Compute RX/TX",eyebrow:"02 // OPTICAL COMPUTE FABRIC",description:"WDM channels, receiver temperature, and modeled RX/TX path degradation.",chart:"RX/TX CHANNEL ACTIVITY // SIMULATED",reads:["Path integrity","Voltage spread","Thermal drift"],controls:[{id:"rxChannels",label:"WDM channels · RX",key:"RX_WDM_CHANNELS",min:1,max:16,value:8,unit:"ch"},{id:"rxTemp",label:"Receiver junction temperature",key:"RX_JUNCTION_TEMP",min:0,max:120,value:41,unit:"°C",hazard:"high"},{id:"txLoad",label:"Transmit path load",key:"TX_PATH_LOAD",min:0,max:100,value:62,unit:"%",hazard:"high"}]},
-{id:"gateway",title:"Gateway Node",eyebrow:"03 // EDGE ROUTING GATEWAY",description:"Mesh traffic balancing, packet route load, and gateway channel stress.",chart:"ROUTE DISTRIBUTION // SIMULATED",reads:["Queue depth","Latency variance","Telemetry priority"],controls:[{id:"routeLoad",label:"Route pressure",key:"ROUTE_PRESSURE",min:0,max:100,value:54,unit:"%"},{id:"packetLoss",label:"Packet drift",key:"PACKET_DRIFT",min:0,max:100,value:18,unit:"%"},{id:"burstWindow",label:"Burst window",key:"BURST_WINDOW",min:0,max:100,value:72,unit:"%"}]},
-{id:"cnt",title:"Mo-CNT Matrix",eyebrow:"04 // CARBON NANOTUBE FLUX",description:"Matrix conduction, electron drift, and synthetic strain balancing.",chart:"CNT CONDUCTANCE // SIMULATED",reads:["Flux spread","Carrier phase","Grain alignment"],controls:[{id:"conductance",label:"Conductance index",key:"CNT_CONDUCTANCE",min:0,max:100,value:66,unit:"%"},{id:"strain",label:"Strain offset",key:"CNT_STRAIN",min:0,max:100,value:39,unit:"%"},{id:"ionBias",label:"Ion bias drift",key:"ION_BIAS_DRIFT",min:0,max:100,value:27,unit:"%"}]},
-{id:"laser",title:"Laser & SPAD",eyebrow:"05 // PHOTONIC DETECTION",description:"Laser pulse density, SPAD detection efficiency, and photon recycling into perovskite storage.",chart:"LASER / SPAD WAVEFORMS // SIMULATED",reads:["Detection quality","Photonic load","Dark noise"],controls:[{id:"laserDensity",label:"Laser pulse density",key:"LASER_PULSE_DENSITY",min:0,max:100,value:58,unit:"%",hazard:"high"},{id:"spadEfficiency",label:"SPAD efficiency",key:"SPAD_DETECTION_EFFICIENCY",min:0,max:100,value:73,unit:"%"},{id:"darkCounts",label:"Dark-count rate",key:"DARK_COUNT_RATE",min:0,max:100,value:18,unit:"kcps",hazard:"high"}]},
-{id:"mesh",title:"Mesh Fabric",eyebrow:"06 // DISTRIBUTED MESH",description:"Cross-mesh circulation, neighbor resilience, and route redundancy.",chart:"MESH RESONANCE // SIMULATED",reads:["Node health","Peer sync","Fault margin"],controls:[{id:"meshLoad",label:"Mesh load",key:"MESH_LOAD",min:0,max:100,value:58,unit:"%"},{id:"redundancy",label:"Redundancy",key:"REDUNDANCY",min:0,max:100,value:61,unit:"%"},{id:"neighborSync",label:"Neighbor sync",key:"NEIGHBOR_SYNC",min:0,max:100,value:46,unit:"%"}]},
-{id:"thermal",title:"Thermal Core",eyebrow:"07 // THERMAL REGULATION",description:"Temperature spread, sink efficiency, and coolant micro-cycling.",chart:"THERMAL PROFILE // SIMULATED",reads:["Thermal stress","Flow reserve","Stability band"],controls:[{id:"sinkEff",label:"Sink efficiency",key:"SINK_EFFICIENCY",min:0,max:100,value:71,unit:"%"},{id:"tempSpread",label:"Thermal spread",key:"TEMP_SPREAD",min:0,max:120,value:43,unit:"°C"},{id:"coolantFlow",label:"Coolant flow",key:"COOLANT_FLOW",min:0,max:100,value:64,unit:"%"}]},
-{id:"cradle",title:"Cradle Station",eyebrow:"08 // DOCK / BACKPLANE",description:"Docking interlock, perovskite power, and backplane connectivity.",chart:"CRADLE LINK // SIMULATED",reads:["Support margin","External power draw","Link quality"],controls:[{id:"vibe",label:"Vibration load",key:"VIBRATION_LOAD",min:0,max:100,value:29,unit:"%"},{id:"alignment",label:"Alignment drift",key:"ALIGNMENT_DRIFT",min:0,max:100,value:21,unit:"%"},{id:"damping",label:"Damping reserve",key:"DAMPING_RESERVE",min:0,max:100,value:73,unit:"%"}]}
-];
-const defaults=Object.fromEntries(modules.flatMap(m=>m.controls.map(c=>[c.id,c.value])));
-const state={...defaults,activeTab:0,quenched:false,transfer:62,buffer:68,duplex:true,phase:0,lastEnergy:performance.now(),netMw:0};
-const clamp=(v,min=0,max=100)=>Math.max(min,Math.min(max,v));
-const activeModule=()=>modules[state.activeTab];
-const isRxTxModule=()=>activeModule().id==="compute";
-function pulseFlow(){return clamp((state.laserDensity*.58+state.spadEfficiency*.22+(100-state.darkCounts)*.2),0,100)}
-function harvestPercent(){const cell=state.cellPotential===undefined?state.buffer:state.cellPotential;return clamp(state.transfer*(.35+pulseFlow()/150)*(.65+cell/300),0,100)}
-function externalDraw(){return Math.max(0,100-harvestPercent())}
-function chargeFactor(){return clamp((state.buffer-8)/42,.12,1)}
-function energyTick(){const now=performance.now(),dt=Math.min(Math.max((now-state.lastEnergy)/1000,0),.25);state.lastEnergy=now;const flow=pulseFlow(),harvested=flow*harvestPercent()*.055,pulseLoad=8+flow*.035;state.netMw=harvested-pulseLoad;state.buffer=clamp(state.buffer+state.netMw*dt*.22,0,100)}
-function calculateRisk(){let total=0,count=0;for(const m of modules)for(const c of m.controls){if(!c.hazard)continue;const ratio=clamp(state[c.id]/c.max,0,1);total+=c.hazard==="low"?1-ratio:ratio;count++}return Math.round(clamp(total/Math.max(count,1)*72+(100-state.buffer)*.28+(state.quenched?12:0),0,100))}
-function renderTabs(){const root=document.getElementById("tabs");root.innerHTML=modules.map((m,i)=>`<button class="tab" type="button" role="tab" aria-selected="${i===state.activeTab}" aria-controls="mainPanel" tabindex="${i===state.activeTab?0:-1}" data-tab="${i}"><span class="tab-index">${String(i+1).padStart(2,"0")}</span>${m.title}</button>`).join("");root.querySelectorAll("[data-tab]").forEach(b=>{b.addEventListener("click",()=>{state.activeTab=Number(b.dataset.tab);renderTabs();renderPanel();refreshUI();drawChart()});b.addEventListener("keydown",e=>{if(e.key!=="ArrowLeft"&&e.key!=="ArrowRight")return;e.preventDefault();state.activeTab=(state.activeTab+(e.key==="ArrowRight"?1:-1)+modules.length)%modules.length;renderTabs();renderPanel();document.querySelector(`[data-tab="${state.activeTab}"]`)?.focus();refreshUI();drawChart()})})}
-function controlMarkup(c){return `<div class="control-card"><div class="control-top"><div><div class="control-label">${c.label}</div><span class="control-key">${c.key||c.id.toUpperCase()}</span></div><div class="control-value" id="value-${c.id}">${state[c.id].toFixed(0)} <small>${c.unit}</small></div></div><input type="range" data-control-id="${c.id}" min="${c.min}" max="${c.max}" step="${c.step||1}" value="${state[c.id]}" aria-label="${c.label}"><div class="range-limits"><span>${c.min}</span><span>${c.max}</span></div><div class="coupling"><span>COUPLING</span><div class="mini-meter"><span style="width:${clamp(state[c.id]/c.max*100)}%"></span></div></div></div>`}
-function energyCard(){return `<section class="energy-card" aria-label="Perovskite photon recycling and pulse charging"><h3>PEROVSKITE → LASER ENERGY HARVESTING</h3><div class="control-top"><div><div class="control-label">Perovskite → Laser Power Transfer (%)</div><span class="control-key">PHOTON_RECYCLING_TRANSFER // SIMULATED</span></div><div class="control-value" id="transferValue">${Math.round(harvestPercent())} <small>%</small></div></div><input id="transferSlider" type="range" min="0" max="100" value="${state.transfer}" aria-label="Perovskite to laser power transfer"><div class="range-limits"><span>0%</span><span>100%</span></div><div class="energy-summary"><div class="energy-stat"><span>Real-Time Pulse Charging Balance</span><strong id="netMw">${state.netMw.toFixed(1)} mW</strong></div><div class="energy-stat"><span>Storage buffer</span><strong id="bufferPct">${state.buffer.toFixed(0)}%</strong></div></div><div class="readout-note">Illustrative balance follows optical pulse flow, photon harvesting, and modeled pulse consumption.</div></section>`}
-function waveformMarkup(){if(isRxTxModule())return `<div class="scope-toggles"><label><input id="rxToggle" type="checkbox" checked> RX · cyan</label><label><input id="txToggle" type="checkbox" checked> TX · violet</label></div>`;return `<span class="scope-legend">MULTI-CHANNEL SYSTEM SIGNAL // LIVE</span>`}
-function renderPanel(){const m=activeModule(),root=document.getElementById("mainPanel");root.innerHTML=`<div class="panel-heading"><div class="eyebrow">${m.eyebrow}</div><h2>${m.title}</h2><p class="panel-description">${m.description}</p></div><div class="control-grid">${m.controls.map(controlMarkup).join("")}</div>${m.id==="oob"||m.id==="laser"?energyCard():""}<div class="duplex-row"><span>SIMULATED LINK // ${m.chart}</span><label class="switch"><input id="duplex" type="checkbox" ${state.duplex?"checked":""}> Duplex</label></div><div class="module-actions"><button class="button" type="button" data-action="stabilize">Stabilize</button><button class="button" type="button" data-action="boost">Boost flux</button><button class="button danger" type="button" data-action="quench">Local quench</button><button class="button" type="button" data-action="reset">Reset module</button></div><div class="scope"><div class="scope-head"><span>${m.chart}</span>${waveformMarkup()}</div><div class="scope-body"><canvas id="scopeChart" role="img" aria-label="Animated module telemetry waveform"></canvas></div></div>`;
-  root.querySelectorAll("[data-control-id]").forEach(input=>input.addEventListener("input",()=>{const id=input.dataset.controlId,c=m.controls.find(item=>item.id===id);state[id]=Number(input.value);document.getElementById(`value-${id}`).innerHTML=`${state[id].toFixed(0)} <small>${c.unit}</small>`;input.closest(".control-card").querySelector(".mini-meter span").style.width=`${clamp(state[id]/c.max*100)}%`;refreshUI();drawChart()}));
-  const transfer=document.getElementById("transferSlider");if(transfer)transfer.addEventListener("input",()=>{state.transfer=Number(transfer.value);refreshUI();drawChart()});document.getElementById("duplex").addEventListener("change",e=>{state.duplex=e.target.checked;refreshUI();drawChart()});
-  const rxToggle=document.getElementById("rxToggle"),txToggle=document.getElementById("txToggle");if(rxToggle)rxToggle.addEventListener("change",e=>{state.rxOn=e.target.checked;drawChart()});if(txToggle)txToggle.addEventListener("change",e=>{state.txOn=e.target.checked;drawChart()});
-  root.querySelectorAll("[data-action]").forEach(b=>b.addEventListener("click",()=>{const action=b.dataset.action;if(action==="reset"){m.controls.forEach(c=>state[c.id]=defaults[c.id]);state.quenched=false}else if(action==="quench"){state.quenched=true;m.controls.forEach(c=>state[c.id]=clamp(state[c.id]-18,c.min,c.max))}else m.controls.forEach(c=>state[c.id]=clamp(action==="boost"?state[c.id]+8:state[c.id]*.9,c.min,c.max));renderPanel();refreshUI();drawChart()}));
-}
-function renderReadouts(){const m=activeModule(),items=m.reads.map((label,i)=>{const c=m.controls[i%m.controls.length];return `<div class="readout"><div class="readout-row"><span class="readout-label">${label}</span><span class="readout-value">${Math.round(state[c.id])} ${c.unit}</span></div><div class="readout-note">${c.key||c.id.toUpperCase()} // simulated</div></div>`}).join("");document.getElementById("readouts").innerHTML=items+`<div class="readout"><div class="readout-row"><span class="readout-label">Perovskite → Laser transfer</span><span class="readout-value">${Math.round(harvestPercent())}%</span></div><div class="readout-note">Photon recycling // simulated</div></div><div class="readout"><div class="readout-row"><span class="readout-label">Pulse charging balance</span><span class="readout-value">${state.netMw.toFixed(1)} mW · ${state.buffer.toFixed(0)}%</span></div><div class="readout-note">Estimated external cradle draw ${externalDraw().toFixed(0)}%</div></div><div class="readout"><div class="readout-row"><span class="readout-label">RX/TX signal coherence</span><span class="readout-value">${Math.round(chargeFactor()*100)}%</span></div><div class="readout-note">Low charge reduces modeled pulse amplitude and coherence</div></div>`}
-function drawChart(){const canvas=document.getElementById("scopeChart");if(!canvas||!canvas.isConnected)return;const rect=canvas.getBoundingClientRect();if(rect.width<2||rect.height<2)return;const ctx=canvas.getContext("2d");if(!ctx)return;const dpr=Math.min(window.devicePixelRatio||1,2),w=rect.width,h=rect.height,pw=Math.round(w*dpr),ph=Math.round(h*dpr);if(canvas.width!==pw||canvas.height!==ph){canvas.width=pw;canvas.height=ph}ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);ctx.strokeStyle="rgba(129,157,166,.2)";ctx.lineWidth=1;for(let i=0;i<=4;i++){const y=h*i/4;ctx.beginPath();ctx.moveTo(0,y+.5);ctx.lineTo(w,y+.5);ctx.stroke()}
-  const m=activeModule(),controls=m.controls,avg=controls.reduce((sum,c)=>sum+clamp(state[c.id]/c.max*100),0)/controls.length,charge=chargeFactor(),time=state.phase,flow=pulseFlow()/100,commonAmp=.65+avg/260;let traces;
-  if(m.id==="compute"){traces=[{enabled:state.rxOn,color:"#62e5d0",center:.30,amp:.17*commonAmp*charge,frequency:1+avg/180,phase:0,speed:1},{enabled:state.txOn,color:"#a78bfa",center:.70,amp:.16*commonAmp*charge,frequency:1.28+avg/220,phase:1.7,speed:1.24}]}else{const colors=["#62e5d0","#70b7ff","#ffbf69"];traces=controls.map((c,index)=>({enabled:true,color:colors[index%colors.length],center:.28+index*.22,amp:(.075+clamp(state[c.id]/c.max)*.07)*charge,frequency:1+index*.23+clamp(state[c.id]/c.max)*.4,phase:index*1.35,speed:.8+index*.23}))}
-  traces.forEach((t,index)=>{if(!t.enabled)return;ctx.beginPath();const step=Math.max(1,Math.floor(w/600));for(let x=0;x<=w;x+=step){const u=x/w,envelope=1+.18*Math.sin(time*.7+u*5+index),fundamental=Math.sin(u*Math.PI*8*t.frequency-time*t.speed+t.phase),harmonic=.3*Math.sin(u*Math.PI*16*t.frequency-time*t.speed*1.7+t.phase+.6),mod=m.id==="laser"?.5+flow*.5:1,y=h*t.center-(fundamental+harmonic)*h*t.amp*envelope*mod;if(x===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)}ctx.strokeStyle=t.color;ctx.lineWidth=m.id==="compute"?2.6:2;ctx.shadowColor=t.color;ctx.shadowBlur=10;ctx.stroke();ctx.shadowBlur=0});ctx.fillStyle="rgba(157,176,183,.85)";ctx.font="9px monospace";ctx.fillText(m.id==="compute"?`RX ${state.rxOn?"ACTIVE":"OFF"}  /  TX ${state.txOn?"ACTIVE":"OFF"}  /  CHARGE ${Math.round(charge*100)}%`:`${m.title.toUpperCase()} // ${traces.length} TELEMETRY CHANNELS`,10,14)}
-function refreshUI(){const risk=calculateRisk(),value=document.getElementById("riskValue"),label=document.getElementById("riskLabel"),meter=document.getElementById("globalMeter");if(!value||!label||!meter)return;value.textContent=`${risk} / 100`;label.textContent=risk>80?"CRITICAL":risk>60?"ELEVATED":risk>35?"WATCH":"NOMINAL";meter.style.width=`${risk}%`;meter.style.background=risk>80?"linear-gradient(90deg,var(--red),#ff8c7a)":risk>60?"linear-gradient(90deg,var(--amber),var(--red))":"linear-gradient(90deg,var(--cyan),var(--blue))";document.querySelector(".meter").setAttribute("aria-valuenow",String(risk));document.getElementById("app").classList.toggle("quenched",state.quenched||risk>80);document.getElementById("systemState").textContent=state.quenched?"SIMULATION QUENCHED":risk>80?"HIGH STRESS":"SIMULATION ONLINE";const transfer=document.getElementById("transferValue"),net=document.getElementById("netMw"),buffer=document.getElementById("bufferPct");if(transfer)transfer.innerHTML=`${Math.round(harvestPercent())} <small>%</small>`;if(net){net.textContent=`${state.netMw.toFixed(1)} mW`;net.classList.toggle("negative",state.netMw<0)}if(buffer){buffer.textContent=`${state.buffer.toFixed(0)}%`;buffer.classList.toggle("negative",state.buffer<20)}renderReadouts()}
-let lastUiUpdate=0;function animate(timestamp){state.phase=timestamp/1000;energyTick();drawChart();if(timestamp-lastUiUpdate>120){lastUiUpdate=timestamp;refreshUI()}requestAnimationFrame(animate)}
-function updateClock(){const clock=document.getElementById("clock");if(clock)clock.textContent=new Date().toISOString().slice(11,19)+" UTC"}
-function initialize(){renderTabs();renderPanel();updateClock();refreshUI();window.setInterval(updateClock,1000);document.getElementById("resetAll").addEventListener("click",()=>{Object.assign(state,defaults,{activeTab:0,quenched:false,transfer:62,buffer:68,duplex:true,phase:0,lastEnergy:performance.now(),netMw:0});state.rxOn=true;state.txOn=true;renderTabs();renderPanel();refreshUI();drawChart()});document.getElementById("globalQuench").addEventListener("click",()=>{state.quenched=true;state.buffer=Math.max(0,state.buffer-12);refreshUI();drawChart()});window.addEventListener("resize",drawChart);requestAnimationFrame(animate)}
-if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initialize,{once:true});else initialize();
+
   <script>
-(function(){
-  let phase = 0, quenched = false, rxMode = true, txMode = true;
-  const clkEl = Array.from(document.querySelectorAll('*')).find(el => el.textContent.includes('--:--:-- UTC') && el.children.length === 0);
-  const gsiEl = Array.from(document.querySelectorAll('*')).find(el => el.textContent.includes('-- / 100') && el.children.length === 0);
+    "use strict";
 
-  const firstCanvas = document.querySelector('canvas');
-  if (firstCanvas && !document.getElementById('sferium-addon')) {
-    const bar = document.createElement('div');
-    bar.id = 'sferium-addon';
-    bar.style.cssText = 'background:#0c131f;border:1px solid #1e293b;border-radius:8px;padding:12px;margin-bottom:12px;display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center;font-size:0.8rem;color:#e2e8f0;';
-    bar.innerHTML = `
-      <div><span style="color:#94a3b8;">PEROVSKITE -> LASER FEED:</span> <strong id="p2lVal" style="color:#10b981;">76.4% (+19.2 mW)</strong></div>
-      <div><span style="color:#94a3b8;">PULSE HARVEST BALANCE:</span> <strong id="harvVal" style="color:#06b6d4;">CHARGING (+98.6%)</strong></div>
-      <div style="display:flex;gap:6px;">
-        <button type="button" onclick="window._sfMode('BOTH')" style="padding:5px 10px;background:#1e293b;color:#fff;border:1px solid #06b6d4;border-radius:4px;cursor:pointer;font-size:0.74rem;">RX+TX DUPLEX</button>
-        <button type="button" onclick="window._sfMode('RX')" style="padding:5px 10px;background:#1e293b;color:#06b6d4;border:1px solid #334155;border-radius:4px;cursor:pointer;font-size:0.74rem;">RX ONLY (←)</button>
-        <button type="button" onclick="window._sfMode('TX')" style="padding:5px 10px;background:#1e293b;color:#a855f7;border:1px solid #334155;border-radius:4px;cursor:pointer;font-size:0.74rem;">TX ONLY (→)</button>
-      </div>`;
-    firstCanvas.parentNode.insertBefore(bar, firstCanvas);
-  }
+    const modules = [
+      { id: "oob", title: "OOB Emergency", eyebrow: "01 // OUT-OF-BAND SAFETY", description: "Emergency monitoring of core losses, photon leakage, and cell potential.", chart: "CORE OSCILLOSCOPE // SIMULATED", reads: ["Critical nodes", "Combined load", "Interlock state"], controls: [
+        { id: "coreTemp", label: "Core temperature", key: "CORE_THERMAL_LOAD", min: 0, max: 120, value: 34, unit: "°C", hazard: "high" },
+        { id: "photonLeak", label: "Photon leakage", key: "PHOTON_CONTAINMENT", min: 0, max: 100, value: 12, unit: "%", hazard: "high" },
+        { id: "cellPotential", label: "Perovskite cell potential", key: "PV_CELL_POTENTIAL", min: 0, max: 100, value: 48, unit: "%", hazard: "high" }
+      ] },
+      { id: "compute", title: "Compute RX/TX", eyebrow: "02 // OPTICAL COMPUTE FABRIC", description: "WDM channels, receiver temperature, and modeled RX/TX path degradation.", chart: "RX/TX CHANNEL ACTIVITY // SIMULATED", reads: ["Path integrity", "Voltage spread", "Thermal drift"], controls: [
+        { id: "rxChannels", label: "WDM channels · RX", key: "RX_WDM_CHANNELS", min: 1, max: 16, value: 8, unit: "ch" },
+        { id: "rxTemp", label: "Receiver junction temperature", key: "RX_JUNCTION_TEMP", min: 0, max: 120, value: 41, unit: "°C", hazard: "high" },
+        { id: "txLoad", label: "Transmit path load", key: "TX_PATH_LOAD", min: 0, max: 100, value: 62, unit: "%", hazard: "high" }
+      ] },
+      { id: "gateway", title: "Gateway Node", eyebrow: "03 // EDGE ROUTING GATEWAY", description: "Mesh traffic balancing, packet route load, and gateway channel stress.", chart: "ROUTE DISTRIBUTION // SIMULATED", reads: ["Queue depth", "Latency variance", "Telemetry priority"], controls: [
+        { id: "routeLoad", label: "Route pressure", key: "ROUTE_PRESSURE", min: 0, max: 100, value: 54, unit: "%" },
+        { id: "packetLoss", label: "Packet drift", key: "PACKET_DRIFT", min: 0, max: 100, value: 18, unit: "%" },
+        { id: "burstWindow", label: "Burst window", key: "BURST_WINDOW", min: 0, max: 100, value: 72, unit: "%" }
+      ] },
+      { id: "cnt", title: "Mo-CNT Matrix", eyebrow: "04 // CARBON NANOTUBE FLUX", description: "Matrix conduction, electron drift, and synthetic strain balancing.", chart: "CNT CONDUCTANCE // SIMULATED", reads: ["Flux spread", "Carrier phase", "Grain alignment"], controls: [
+        { id: "conductance", label: "Conductance index", key: "CNT_CONDUCTANCE", min: 0, max: 100, value: 66, unit: "%" },
+        { id: "strain", label: "Strain offset", key: "CNT_STRAIN", min: 0, max: 100, value: 39, unit: "%" },
+        { id: "ionBias", label: "Ion bias drift", key: "ION_BIAS_DRIFT", min: 0, max: 100, value: 27, unit: "%" }
+      ] },
+      { id: "laser", title: "Laser & SPAD", eyebrow: "05 // PHOTONIC DETECTION", description: "Laser pulse density, SPAD detection efficiency, and photon recycling into perovskite storage.", chart: "LASER / SPAD WAVEFORMS // SIMULATED", reads: ["Detection quality", "Photonic load", "Dark noise"], controls: [
+        { id: "laserDensity", label: "Laser pulse density", key: "LASER_PULSE_DENSITY", min: 0, max: 100, value: 58, unit: "%", hazard: "high" },
+        { id: "spadEfficiency", label: "SPAD efficiency", key: "SPAD_DETECTION_EFFICIENCY", min: 0, max: 100, value: 73, unit: "%" },
+        { id: "darkCounts", label: "Dark-count rate", key: "DARK_COUNT_RATE", min: 0, max: 100, value: 18, unit: "kcps", hazard: "high" }
+      ] },
+      { id: "mesh", title: "Mesh Fabric", eyebrow: "06 // DISTRIBUTED MESH", description: "Cross-mesh circulation, neighbor resilience, and route redundancy.", chart: "MESH RESONANCE // SIMULATED", reads: ["Node health", "Peer sync", "Fault margin"], controls: [
+        { id: "meshLoad", label: "Mesh load", key: "MESH_LOAD", min: 0, max: 100, value: 58, unit: "%" },
+        { id: "redundancy", label: "Redundancy", key: "REDUNDANCY", min: 0, max: 100, value: 61, unit: "%" },
+        { id: "neighborSync", label: "Neighbor sync", key: "NEIGHBOR_SYNC", min: 0, max: 100, value: 46, unit: "%" }
+      ] },
+      { id: "thermal", title: "Thermal Core", eyebrow: "07 // THERMAL REGULATION", description: "Temperature spread, sink efficiency, and coolant micro-cycling.", chart: "THERMAL PROFILE // SIMULATED", reads: ["Thermal stress", "Flow reserve", "Stability band"], controls: [
+        { id: "sinkEff", label: "Sink efficiency", key: "SINK_EFFICIENCY", min: 0, max: 100, value: 71, unit: "%" },
+        { id: "tempSpread", label: "Thermal spread", key: "TEMP_SPREAD", min: 0, max: 120, value: 43, unit: "°C" },
+        { id: "coolantFlow", label: "Coolant flow", key: "COOLANT_FLOW", min: 0, max: 100, value: 64, unit: "%" }
+      ] },
+      { id: "cradle", title: "Cradle Station", eyebrow: "08 // DOCK / BACKPLANE", description: "Docking interlock, perovskite power, and backplane connectivity.", chart: "CRADLE LINK // SIMULATED", reads: ["Support margin", "External power draw", "Link quality"], controls: [
+        { id: "vibe", label: "Vibration load", key: "VIBRATION_LOAD", min: 0, max: 100, value: 29, unit: "%" },
+        { id: "alignment", label: "Alignment drift", key: "ALIGNMENT_DRIFT", min: 0, max: 100, value: 21, unit: "%" },
+        { id: "damping", label: "Damping reserve", key: "DAMPING_RESERVE", min: 0, max: 100, value: 73, unit: "%" }
+      ] }
+    ];
 
-  window._sfMode = function(m) {
-    rxMode = (m === 'BOTH' || m === 'RX');
-    txMode = (m === 'BOTH' || m === 'TX');
-  };
+    const defaults = Object.fromEntries(modules.flatMap(module => module.controls.map(control => [control.id, control.value])));
 
-  document.addEventListener('click', e => {
-    const txt = (e.target.textContent || '').toLowerCase();
-    if (txt.includes('quench')) quenched = true;
-    if (txt.includes('reset')) { quenched = false; rxMode = true; txMode = true; }
-  });
+    const state = {
+      ...defaults,
+      activeTab: 0,
+      quenched: false,
+      transfer: 62,
+      buffer: 68,
+      duplex: true,
+      rxEnabled: true,
+      txEnabled: true,
+      phase: 0,
+      lastEnergy: performance.now(),
+      netMw: 0
+    };
 
-  setInterval(() => {
-    phase += 0.14;
-    if (clkEl) clkEl.textContent = new Date().toISOString().split('T').slice(0, 8) + ' UTC';
-    
-    const sliders = Array.from(document.querySelectorAll('input[type="range"]'));
-    let avgLoad = 0.35;
-    if (sliders.length > 0) {
-      avgLoad = sliders.reduce((acc, s) => acc + ((+s.value - +s.min) / ((+s.max - +s.min) || 1)), 0) / sliders.length;
+    const clamp = (value, min = 0, max = 100) => Math.max(min, Math.min(max, value));
+    const activeModule = () => modules[state.activeTab];
+    const isRxTxModule = () => activeModule().id === "compute";
+
+    function pulseFlow() {
+      const density = Number(state.laserDensity || 0);
+      const efficiency = Number(state.spadEfficiency || 0);
+      const dark = Number(state.darkCounts || 0);
+      return clamp((density * 0.58) + (efficiency * 0.22) + ((100 - dark) * 0.2), 0, 100);
     }
 
-    if (gsiEl) {
-      const score = quenched ? 0 : Math.max(15, Math.min(99, Math.round(100 - avgLoad * 42 + Math.sin(phase) * 1.5)));
-      gsiEl.textContent = score + ' / 100';
-      gsiEl.style.color = score < 50 ? '#ef4444' : score < 75 ? '#f59e0b' : '#10b981';
+    function harvestPercent() {
+      const cellPotential = Number(state.cellPotential ?? state.buffer ?? 50);
+      const transfer = Number(state.transfer ?? 62);
+      const flow = pulseFlow();
+      const base = transfer * (0.35 + flow / 150) * (0.65 + cellPotential / 300);
+      return clamp(base, 0, 100);
     }
 
-    const p2l = document.getElementById('p2lVal');
-    const harv = document.getElementById('harvVal');
-    if (p2l && harv) {
-      if (quenched) {
-        p2l.textContent = '0.0% (ISOLATED)'; p2l.style.color = '#ef4444';
-        harv.textContent = 'QUENCHED'; harv.style.color = '#ef4444';
-      } else {
-        const eff = (68 + avgLoad * 24 + Math.sin(phase * 0.5) * 1.8).toFixed(1);
-        const mw = ((eff - 60) * 0.85).toFixed(1);
-        p2l.textContent = `${eff}% (+${mw} mW)`; p2l.style.color = '#10b981';
-        harv.textContent = `ACTIVE HARVEST (${(94 + avgLoad * 5).toFixed(1)}%)`; harv.style.color = '#06b6d4';
+    function externalDraw() {
+      return Math.max(0, 100 - harvestPercent());
+    }
+
+    function chargeFactor() {
+      return clamp((state.buffer - 8) / 42, 0.12, 1);
+    }
+
+    function energyTick() {
+      const now = performance.now();
+      const dt = Math.min(Math.max((now - state.lastEnergy) / 1000, 0), 0.25);
+      state.lastEnergy = now;
+      const flow = pulseFlow();
+      const harvested = flow * harvestPercent() * 0.055;
+      const pulseLoad = 8 + flow * 0.035;
+      state.netMw = harvested - pulseLoad;
+      state.buffer = clamp(state.buffer + state.netMw * dt * 0.22, 0, 100);
+      if (state.buffer < 14) {
+        state.quenched = true;
       }
     }
 
-    document.querySelectorAll('canvas').forEach((cv, idx) => {
-      if (!cv.offsetParent) return;
-      const ctx = cv.getContext('2d');
-      const w = cv.width, h = cv.height, mid = h / 2;
-      ctx.clearRect(0, 0, w, h);
-      ctx.strokeStyle = '#162032'; ctx.lineWidth = 1;
-      for (let x = 0; x < w; x += 50) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
-
-      const amp = quenched ? 2 : (16 + avgLoad * (h * 0.26));
-
-      // 1. RX (Niebieska) - płynie od prawej do lewej (+phase), nieregularne paczki impulsów
-      ctx.strokeStyle = rxMode ? '#06b6d4' : '#1e293b'; ctx.lineWidth = 2.3; ctx.beginPath();
-      for (let x = 0; x <= w; x += 4) {
-        const u = x * 0.022 + phase * 1.4 + idx;
-        const burst = Math.max(0.15, Math.sin(u * 0.35 + Math.cos(u * 0.17)));
-        const y = mid - (h * 0.14) + (quenched ? Math.sin(u)*1.5 : (Math.sin(u) * 0.6 + Math.sin(u * 2.7) * 0.4) * amp * burst);
-        x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    function calculateRisk() {
+      let total = 0;
+      let count = 0;
+      for (const module of modules) {
+        for (const control of module.controls) {
+          if (!control.hazard) continue;
+          const ratio = clamp(Number(state[control.id]) / control.max, 0, 1);
+          total += ratio;
+          count += 1;
+        }
       }
-      ctx.stroke();
+      const risk = total / Math.max(count, 1) * 72 + (100 - state.buffer) * 0.28 + (state.quenched ? 12 : 0);
+      return Math.round(clamp(risk, 0, 100));
+    }
 
-      // 2. TX (Fioletowa) - płynie w PRZECIWNYM kierunku od lewej do prawej (-phase), inne skoki
-      ctx.strokeStyle = txMode ? '#a855f7' : '#1e293b'; ctx.lineWidth = 2.3; ctx.beginPath();
-      for (let x = 0; x <= w; x += 4) {
-        const u = x * 0.028 - phase * 1.9 - idx * 2;
-        const spike = Math.pow(Math.abs(Math.sin(u * 0.42)), 1.6) * Math.sign(Math.sin(u * 1.9));
-        const y = mid + (h * 0.14) + (quenched ? Math.cos(u)*1.5 : (spike * 0.75 + Math.cos(u * 3.3) * 0.25) * amp * 0.9);
-        x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-      }
-      ctx.stroke();
+    function renderTabs() {
+      const root = document.getElementById("tabs");
+      root.innerHTML = modules.map((module, index) => `
+        <button
+          class="tab"
+          type="button"
+          role="tab"
+          aria-selected="${index === state.activeTab}"
+          aria-controls="mainPanel"
+          tabindex="${index === state.activeTab ? 0 : -1}"
+          data-tab="${index}"
+        >
+          <span class="tab-index">${String(index + 1).padStart(2, "0")}</span>${module.title}
+        </button>
+      `).join("");
 
-      // 3. Perowskit / Energia (Zielona) - powolny, schodkowy odzysk ładunku
-      ctx.strokeStyle = '#10b981'; ctx.lineWidth = 2.0; ctx.beginPath();
-      for (let x = 0; x <= w; x += 6) {
-        const u = x * 0.009 + phase * 0.45 + idx;
-        const step = Math.tanh(Math.sin(u) * 2.5) * 0.6 + Math.sin(u * 3.1) * 0.25;
-        const y = mid + (quenched ? 0 : step * (amp * 0.65));
-        x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      root.querySelectorAll("[data-tab]").forEach(button => {
+        button.addEventListener("click", () => {
+          state.activeTab = Number(button.dataset.tab);
+          renderTabs();
+          renderPanel();
+          refreshUI();
+          drawChart();
+        });
+
+        button.addEventListener("keydown", (event) => {
+          if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+          event.preventDefault();
+          state.activeTab = (state.activeTab + (event.key === "ArrowRight" ? 1 : -1) + modules.length) % modules.length;
+          renderTabs();
+          renderPanel();
+          const next = document.querySelector(`[data-tab="${state.activeTab}"]`);
+          if (next) next.focus();
+          refreshUI();
+          drawChart();
+        });
+      });
+    }
+
+    function controlMarkup(control) {
+      return `
+        <div class="control-card">
+          <div class="control-top">
+            <div>
+              <div class="control-label">${control.label}</div>
+              <span class="control-key">${control.key || control.id.toUpperCase()}</span>
+            </div>
+            <div class="control-value" id="value-${control.id}">${Number(state[control.id]).toFixed(0)} <small>${control.unit}</small></div>
+          </div>
+          <input type="range" data-control-id="${control.id}" min="${control.min}" max="${control.max}" step="${control.step || 1}" value="${state[control.id]}" aria-label="${control.label}">
+          <div class="range-limits"><span>${control.min}</span><span>${control.max}</span></div>
+          <div class="coupling"><span>COUPLING</span><div class="mini-meter"><span style="width:${clamp((state[control.id] / control.max) * 100)}%"></span></div></div>
+        </div>
+      `;
+    }
+
+    function energyCardMarkup() {
+      return `
+        <section class="energy-card" aria-label="Perovskite photon recycling and pulse charging">
+          <h3>PEROVSKITE → LASER ENERGY HARVESTING</h3>
+          <div class="control-top">
+            <div>
+              <div class="control-label">Perovskite → Laser Power Transfer (%)</div>
+              <span class="control-key">PHOTON_RECYCLING_TRANSFER // SIMULATED</span>
+            </div>
+            <div class="control-value" id="transferValue">${Math.round(harvestPercent())} <small>%</small></div>
+          </div>
+          <input id="transferSlider" type="range" min="0" max="100" value="${state.transfer}" aria-label="Perovskite to laser power transfer">
+          <div class="range-limits"><span>0%</span><span>100%</span></div>
+          <div class="energy-summary">
+            <div class="energy-stat">
+              <span>Real-Time Pulse Charging Balance</span>
+              <strong id="netMw">${state.netMw.toFixed(1)} mW</strong>
+            </div>
+            <div class="energy-stat">
+              <span>Storage buffer</span>
+              <strong id="bufferPct">${state.buffer.toFixed(0)}%</strong>
+            </div>
+          </div>
+          <div class="readout-note">Illustrative balance follows optical pulse flow, photon harvesting, and modeled pulse consumption.</div>
+        </section>
+      `;
+    }
+
+    function waveformTogglesMarkup() {
+      if (!isRxTxModule()) return '<span>MULTI-CHANNEL SYSTEM SIGNAL // LIVE</span>';
+      return `
+        <div class="scope-toggles">
+          <label><input id="rxToggle" type="checkbox" ${state.rxEnabled ? "checked" : ""}> RX · cyan</label>
+          <label><input id="txToggle" type="checkbox" ${state.txEnabled ? "checked" : ""}> TX · violet</label>
+        </div>
+      `;
+    }
+
+    function renderPanel() {
+      const module = activeModule();
+      const panel = document.getElementById("mainPanel");
+
+      panel.innerHTML = `
+        <div class="panel-heading">
+          <div class="eyebrow">${module.eyebrow}</div>
+          <h2>${module.title}</h2>
+          <p class="panel-description">${module.description}</p>
+        </div>
+
+        <div class="control-grid">
+          ${module.controls.map(controlMarkup).join("")}
+        </div>
+
+        ${(module.id === "oob" || module.id === "laser") ? energyCardMarkup() : ""}
+
+        <div class="duplex-row">
+          <span>SIMULATED LINK // ${module.chart}</span>
+          <label class="switch"><input id="duplex" type="checkbox" ${state.duplex ? "checked" : ""}> Duplex</label>
+        </div>
+
+        <div class="module-actions">
+          <button class="button" type="button" data-action="stabilize">Stabilize</button>
+          <button class="button" type="button" data-action="boost">Boost flux</button>
+          <button class="button danger" type="button" data-action="quench">Local quench</button>
+          <button class="button" type="button" data-action="reset">Reset module</button>
+        </div>
+
+        <div class="scope">
+          <div class="scope-head">
+            <span>${module.chart}</span>
+            ${waveformTogglesMarkup()}
+          </div>
+          <div class="scope-body">
+            <canvas id="scopeChart" role="img" aria-label="Animated module telemetry waveform"></canvas>
+          </div>
+        </div>
+      `;
+
+      panel.querySelectorAll("[data-control-id]").forEach(input => {
+        input.addEventListener("input", () => {
+          const id = input.dataset.controlId;
+          const control = module.controls.find(item => item.id === id);
+          state[id] = Number(input.value);
+          document.getElementById(`value-${id}`).innerHTML = `${Number(state[id]).toFixed(0)} <small>${control.unit}</small>`;
+          const meter = input.closest(".control-card").querySelector(".mini-meter span");
+          meter.style.width = `${clamp((state[id] / control.max) * 100)}%`;
+          refreshUI();
+          drawChart();
+        });
+      });
+
+      const transferSlider = document.getElementById("transferSlider");
+      if (transferSlider) {
+        transferSlider.addEventListener("input", () => {
+          state.transfer = Number(transferSlider.value);
+          refreshUI();
+          drawChart();
+        });
       }
-      ctx.stroke();
-    });
-  }, 55);
-})();
-</script>
+
+      const duplex = document.getElementById("duplex");
+      if (duplex) {
+        duplex.addEventListener("change", event => {
+          state.duplex = event.target.checked;
+          refreshUI();
+          drawChart();
+        });
+      }
+
+      const rxToggle = document.getElementById("rxToggle");
+      if (rxToggle) {
+        rxToggle.addEventListener("change", event => {
+          state.rxEnabled = event.target.checked;
+          drawChart();
+        });
+      }
+
+      const txToggle = document.getElementById("txToggle");
+      if (txToggle) {
+        txToggle.addEventListener("change", event => {
+          state.txEnabled = event.target.checked;
+          drawChart();
+        });
+      }
+
+      panel.querySelectorAll("[data-action]").forEach(button => {
+        button.addEventListener("click", () => {
+          const action = button.dataset.action;
+
+          if (action === "reset") {
+            module.controls.forEach(control => {
+              state[control.id] = defaults[control.id];
+            });
+            state.quenched = false;
+          } else if (action === "quench") {
+            state.quenched = true;
+            module.controls.forEach(control => {
+              state[control.id] = clamp(state[control.id] - 18, control.min, control.max);
+            });
+          } else {
+            module.controls.forEach(control => {
+              state[control.id] = clamp(action === "boost" ? state[control.id] + 8 : state[control.id] * 0.9, control.min, control.max);
+            });
+          }
+
+          renderPanel();
+          refreshUI();
+          drawChart();
+        });
+      });
+    }
+
+    function renderReadouts() {
+      const module = activeModule();
+      const readouts = module.reads.map((label, index) => {
+        const control = module.controls[index % module.controls.length];
+        return `
+          <div class="readout">
+            <div class="readout-row">
+              <span class="readout-label">${label}</span>
+              <span class="readout-value">${Math.round(Number(state[control.id]))} ${control.unit}</span>
+            </div>
+            <div class="readout-note">${control.key || control.id.toUpperCase()} // simulated</div>
+          </div>
+        `;
+      }).join("");
+
+      const extra = `
+        <div class="readout">
+          <div class="readout-row">
+            <span class="readout-label">Perovskite → Laser transfer</span>
+            <span class="readout-value">${Math.round(harvestPercent())}%</span>
+          </div>
+          <div class="readout-note">Photon recycling // simulated</div>
+        </div>
+        <div class="readout">
+          <div class="readout-row">
+            <span class="readout-label">Pulse charging balance</span>
+            <span class="readout-value">${state.netMw.toFixed(1)} mW · ${state.buffer.toFixed(0)}%</span>
+          </div>
+          <div class="readout-note">Estimated external cradle draw ${externalDraw().toFixed(0)}%</div>
+        </div>
+        <div class="readout">
+          <div class="readout-row">
+            <span class="readout-label">RX/TX signal coherence</span>
+            <span class="readout-value">${Math.round(chargeFactor() * 100)}%</span>
+          </div>
+          <div class="readout-note">Low charge reduces modeled pulse amplitude and coherence</div>
+        </div>
+      `;
+
+      document.getElementById("readouts").innerHTML = readouts + extra;
+    }
+
+    function buildTraces(module, time) {
+      const avg = module.controls.reduce((sum, control) => sum + clamp((state[control.id] / control.max) * 100), 0) / Math.max(module.controls.length, 1);
+      const charge = chargeFactor();
+      const pulse = pulseFlow() / 100;
+      const commonAmp = 0.65 + avg / 260;
+
+      if (module.id === "compute") {
+        return [
+          {
+            enabled: state.rxEnabled,
+            color: "#62e5d0",
+            baseY: 0.30,
+            amplitude: 0.18 * commonAmp * charge,
+            frequency: 1 + avg / 140,
+            phase: 0.35,
+            speed: 1.15,
+            modulation: 0.45,
+            offset: 0.22
+          },
+          {
+            enabled: state.txEnabled,
+            color: "#a78bfa",
+            baseY: 0.68,
+            amplitude: 0.14 * commonAmp * charge,
+            frequency: 1.35 + avg / 160,
+            phase: 1.7,
+            speed: 1.45,
+            modulation: 0.60,
+            offset: 0.15
+          }
+        ];
+      }
+
+      const traceColors = ["#62e5d0", "#70b7ff", "#ffbf69"];
+      return module.controls.map((control, index) => ({
+        enabled: true,
+        color: traceColors[index % traceColors.length],
+        baseY: 0.23 + index * 0.21,
+        amplitude: (0.06 + clamp((state[control.id] / control.max) * 0.08)) * charge,
+        frequency: 1 + index * 0.23 + clamp((state[control.id] / control.max), 0, 1) * 0.5,
+        phase: index * 1.45,
+        speed: 0.9 + index * 0.24,
+        modulation: 0.28 + pulse * 0.65,
+        offset: 0.08 + index * 0.03
+      }));
+    }
+
+    function drawChart() {
+      const canvas = document.getElementById("scopeChart");
+      if (!canvas || !canvas.isConnected) return;
+
+      const rect = canvas.getBoundingClientRect();
+      if (rect.width < 2 || rect.height < 2) return;
+
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const width = rect.width;
+      const height = rect.height;
+      const pixelWidth = Math.round(width * dpr);
+      const pixelHeight = Math.round(height * dpr);
+
+      if (canvas.width !== pixelWidth || canvas.height !== pixelHeight) {
+        canvas.width = pixelWidth;
+        canvas.height = pixelHeight;
+      }
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, width, height);
+
+      ctx.strokeStyle = "rgba(129, 157, 166, 0.2)";
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 4; i++) {
+        const y = height * (i / 4);
+        ctx.beginPath();
+        ctx.moveTo(0, y + 0.5);
+        ctx.lineTo(width, y + 0.5);
+        ctx.stroke();
+      }
+
+      const module = activeModule();
+      const traces = buildTraces(module, state.phase);
+      const charge = chargeFactor();
+
+      traces.forEach((trace, index) => {
+        if (!trace.enabled) return;
+
+        ctx.beginPath();
+        const step = Math.max(1, Math.floor(width / 600));
+
+        for (let x = 0; x <= width; x += step) {
+          const u = x / width;
+          const envelope = 1 + 0.18 * Math.sin(state.phase * 0.7 + u * 5 + index);
+          const fundamental = Math.sin(u * Math.PI * 8 * trace.frequency - state.phase * trace.speed + trace.phase);
+          const harmonic = 0.35 * Math.sin(u * Math.PI * 16 * trace.frequency - state.phase * (trace.speed + 0.7) + trace.phase + 0.8);
+          const drift = 0.22 * Math.sin(u * Math.PI * 12 + state.phase * 1.4 + trace.offset);
+          const y = height * (trace.baseY) - (fundamental + harmonic + drift) * height * trace.amplitude * envelope * (module.id === "laser" ? (0.7 + pulseFlow() / 100) : 1);
+
+          if (x === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+
+        ctx.strokeStyle = trace.color;
+        ctx.lineWidth = module.id === "compute" ? 2.4 : 2;
+        ctx.shadowColor = trace.color;
+        ctx.shadowBlur = 10;
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+      });
+
+      ctx.fillStyle = "rgba(157, 176, 183, 0.85)";
+      ctx.font = "9px monospace";
+      ctx.fillText(
+        module.id === "compute"
+          ? `RX ${state.rxEnabled ? "ACTIVE" : "OFF"} / TX ${state.txEnabled ? "ACTIVE" : "OFF"} / CHARGE ${Math.round(charge * 100)}%`
+          : `${module.title.toUpperCase()} // ${traces.filter(t => t.enabled).length} TELEMETRY CHANNELS`,
+        10,
+        14
+      );
+    }
+
+    function refreshUI() {
+      const risk = calculateRisk();
+      const riskValue = document.getElementById("riskValue");
+      const riskLabel = document.getElementById("riskLabel");
+      const globalMeter = document.getElementById("globalMeter");
+      const app = document.getElementById("app");
+      const systemState = document.getElementById("systemState");
+
+      if (riskValue) riskValue.textContent = `${risk} / 100`;
+      if (riskLabel) riskLabel.textContent = risk > 80 ? "CRITICAL" : risk > 60 ? "ELEVATED" : risk > 35 ? "WATCH" : "NOMINAL";
+      if (globalMeter) {
+        globalMeter.style.width = `${risk}%`;
+        globalMeter.style.background = risk > 80 ? "linear-gradient(90deg, var(--red), #ff8c7a)" : risk > 60 ? "linear-gradient(90deg, var(--amber), var(--red))" : "linear-gradient(90deg, var(--cyan), var(--blue))";
+      }
+
+      app.classList.toggle("quenched", state.quenched || risk > 80);
+      if (systemState) {
+        systemState.textContent = state.quenched ? "SIMULATION QUENCHED" : risk > 80 ? "HIGH STRESS" : "SIMULATION ONLINE";
+      }
+
+      const transferValue = document.getElementById("transferValue");
+      const netMw = document.getElementById("netMw");
+      const bufferPct = document.getElementById("bufferPct");
+
+      if (transferValue) transferValue.innerHTML = `${Math.round(harvestPercent())} <small>%</small>`;
+      if (netMw) {
+        netMw.textContent = `${state.netMw.toFixed(1)} mW`;
+        netMw.classList.toggle("negative", state.netMw < 0);
+      }
+      if (bufferPct) {
+        bufferPct.textContent = `${state.buffer.toFixed(0)}%`;
+        bufferPct.classList.toggle("negative", state.buffer < 20);
+      }
+
+      renderReadouts();
+    }
+
+    function updateClock() {
+      const clock = document.getElementById("clock");
+      if (clock) {
+        clock.textContent = `${new Date().toISOString().slice(11, 19)} UTC`;
+      }
+    }
+
+    let lastUiUpdate = 0;
+
+    function animate(timestamp) {
+      state.phase = timestamp / 1000;
+      energyTick();
+      drawChart();
+
+      if (timestamp - lastUiUpdate > 120) {
+        lastUiUpdate = timestamp;
+        refreshUI();
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    function initialize() {
+      renderTabs();
+      renderPanel();
+      updateClock();
+      refreshUI();
+      window.setInterval(updateClock, 1000);
+
+      document.getElementById("resetAll").addEventListener("click", () => {
+        Object.assign(state, defaults, {
+          activeTab: 0,
+          quenched: false,
+          transfer: 62,
+          buffer: 68,
+          duplex: true,
+          rxEnabled: true,
+          txEnabled: true,
+          phase: 0,
+          lastEnergy: performance.now(),
+          netMw: 0
+        });
+        renderTabs();
+        renderPanel();
+        refreshUI();
+        drawChart();
+      });
+
+      document.getElementById("globalQuench").addEventListener("click", () => {
+        state.quenched = true;
+        state.buffer = Math.max(0, state.buffer - 12);
+        refreshUI();
+        drawChart();
+      });
+
+      window.addEventListener("resize", drawChart);
+      requestAnimationFrame(animate);
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initialize, { once: true });
+    } else {
+      initialize();
+    }
+  </script>
 </body>
 </html>
