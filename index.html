@@ -69,14 +69,12 @@ let lastUiUpdate=0;function animate(timestamp){state.phase=timestamp/1000;energy
 function updateClock(){const clock=document.getElementById("clock");if(clock)clock.textContent=new Date().toISOString().slice(11,19)+" UTC"}
 function initialize(){renderTabs();renderPanel();updateClock();refreshUI();window.setInterval(updateClock,1000);document.getElementById("resetAll").addEventListener("click",()=>{Object.assign(state,defaults,{activeTab:0,quenched:false,transfer:62,buffer:68,duplex:true,phase:0,lastEnergy:performance.now(),netMw:0});state.rxOn=true;state.txOn=true;renderTabs();renderPanel();refreshUI();drawChart()});document.getElementById("globalQuench").addEventListener("click",()=>{state.quenched=true;state.buffer=Math.max(0,state.buffer-12);refreshUI();drawChart()});window.addEventListener("resize",drawChart);requestAnimationFrame(animate)}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initialize,{once:true});else initialize();
-</script>
   <script>
 (function(){
   let phase = 0, quenched = false, rxMode = true, txMode = true;
   const clkEl = Array.from(document.querySelectorAll('*')).find(el => el.textContent.includes('--:--:-- UTC') && el.children.length === 0);
   const gsiEl = Array.from(document.querySelectorAll('*')).find(el => el.textContent.includes('-- / 100') && el.children.length === 0);
 
-  // Dodanie paska energii Perowskit -> Laser i kontroli RX/TX nad pierwszym wykresem
   const firstCanvas = document.querySelector('canvas');
   if (firstCanvas && !document.getElementById('sferium-addon')) {
     const bar = document.createElement('div');
@@ -87,8 +85,8 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
       <div><span style="color:#94a3b8;">PULSE HARVEST BALANCE:</span> <strong id="harvVal" style="color:#06b6d4;">CHARGING (+98.6%)</strong></div>
       <div style="display:flex;gap:6px;">
         <button type="button" onclick="window._sfMode('BOTH')" style="padding:5px 10px;background:#1e293b;color:#fff;border:1px solid #06b6d4;border-radius:4px;cursor:pointer;font-size:0.74rem;">RX+TX DUPLEX</button>
-        <button type="button" onclick="window._sfMode('RX')" style="padding:5px 10px;background:#1e293b;color:#06b6d4;border:1px solid #334155;border-radius:4px;cursor:pointer;font-size:0.74rem;">RX ONLY</button>
-        <button type="button" onclick="window._sfMode('TX')" style="padding:5px 10px;background:#1e293b;color:#a855f7;border:1px solid #334155;border-radius:4px;cursor:pointer;font-size:0.74rem;">TX ONLY</button>
+        <button type="button" onclick="window._sfMode('RX')" style="padding:5px 10px;background:#1e293b;color:#06b6d4;border:1px solid #334155;border-radius:4px;cursor:pointer;font-size:0.74rem;">RX ONLY (←)</button>
+        <button type="button" onclick="window._sfMode('TX')" style="padding:5px 10px;background:#1e293b;color:#a855f7;border:1px solid #334155;border-radius:4px;cursor:pointer;font-size:0.74rem;">TX ONLY (→)</button>
       </div>`;
     firstCanvas.parentNode.insertBefore(bar, firstCanvas);
   }
@@ -105,8 +103,8 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
   });
 
   setInterval(() => {
-    phase += 0.16;
-    if (clkEl) clkEl.textContent = new Date().toISOString().split('T')[1].slice(0, 8) + ' UTC';
+    phase += 0.14;
+    if (clkEl) clkEl.textContent = new Date().toISOString().split('T').slice(0, 8) + ' UTC';
     
     const sliders = Array.from(document.querySelectorAll('input[type="range"]'));
     let avgLoad = 0.35;
@@ -142,24 +140,40 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
       ctx.strokeStyle = '#162032'; ctx.lineWidth = 1;
       for (let x = 0; x < w; x += 50) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
 
-      const ampBase = quenched ? 3 : (18 + avgLoad * (h * 0.28));
-      const waves = [
-        { col: rxMode ? '#06b6d4' : '#1e293b', amp: rxMode ? ampBase : 2, freq: 0.016, spd: 1.0, off: idx },
-        { col: txMode ? '#a855f7' : '#1e293b', amp: txMode ? ampBase * 0.85 : 2, freq: 0.022, spd: -1.3, off: idx + 1.5 },
-        { col: '#10b981', amp: quenched ? 2 : ampBase * 0.6, freq: 0.011, spd: 0.7, off: idx + 3.0 }
-      ];
+      const amp = quenched ? 2 : (16 + avgLoad * (h * 0.26));
 
-      waves.forEach(wv => {
-        ctx.strokeStyle = wv.col; ctx.lineWidth = 2.4; ctx.beginPath();
-        for (let x = 0; x <= w; x += 6) {
-          const y = mid + Math.sin(x * wv.freq + phase * wv.spd + wv.off) * wv.amp + Math.cos(x * 0.04 - phase) * (quenched ? 0.5 : 3);
-          x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-        }
-        ctx.stroke();
-      });
+      // 1. RX (Niebieska) - płynie od prawej do lewej (+phase), nieregularne paczki impulsów
+      ctx.strokeStyle = rxMode ? '#06b6d4' : '#1e293b'; ctx.lineWidth = 2.3; ctx.beginPath();
+      for (let x = 0; x <= w; x += 4) {
+        const u = x * 0.022 + phase * 1.4 + idx;
+        const burst = Math.max(0.15, Math.sin(u * 0.35 + Math.cos(u * 0.17)));
+        const y = mid - (h * 0.14) + (quenched ? Math.sin(u)*1.5 : (Math.sin(u) * 0.6 + Math.sin(u * 2.7) * 0.4) * amp * burst);
+        x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      // 2. TX (Fioletowa) - płynie w PRZECIWNYM kierunku od lewej do prawej (-phase), inne skoki
+      ctx.strokeStyle = txMode ? '#a855f7' : '#1e293b'; ctx.lineWidth = 2.3; ctx.beginPath();
+      for (let x = 0; x <= w; x += 4) {
+        const u = x * 0.028 - phase * 1.9 - idx * 2;
+        const spike = Math.pow(Math.abs(Math.sin(u * 0.42)), 1.6) * Math.sign(Math.sin(u * 1.9));
+        const y = mid + (h * 0.14) + (quenched ? Math.cos(u)*1.5 : (spike * 0.75 + Math.cos(u * 3.3) * 0.25) * amp * 0.9);
+        x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      // 3. Perowskit / Energia (Zielona) - powolny, schodkowy odzysk ładunku
+      ctx.strokeStyle = '#10b981'; ctx.lineWidth = 2.0; ctx.beginPath();
+      for (let x = 0; x <= w; x += 6) {
+        const u = x * 0.009 + phase * 0.45 + idx;
+        const step = Math.tanh(Math.sin(u) * 2.5) * 0.6 + Math.sin(u * 3.1) * 0.25;
+        const y = mid + (quenched ? 0 : step * (amp * 0.65));
+        x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+      ctx.stroke();
     });
-  }, 60);
+  }, 55);
 })();
-  </script>
+</script>
 </body>
 </html>
