@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#070b14" />
-  <meta name="description" content="Illustrative Sferium power and thermal efficiency benchmark." />
+  <meta name="description" content="Illustrative Sferium power and thermal efficiency benchmark with animated architecture visualizations." />
   <title>Sferium v2.026 — 2D Silicon vs 3D Spherical Benchmark</title>
   <style>
     :root {
@@ -18,103 +18,35 @@
       --good: #10b981;
     }
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: var(--bg);
-      color: var(--text);
-      padding: 24px;
-      display: flex;
-      justify-content: center;
-    }
-    .container { width: 100%; max-width: 1040px; }
-    .header {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 16px;
-      margin-bottom: 24px;
-    }
-    .badge {
-      background: rgba(56, 189, 248, 0.12);
-      color: var(--sferium);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 600;
-    }
-    .controls {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 20px;
-      margin-bottom: 24px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 20px;
-    }
-    .control-group label {
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-      font-size: 13px;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
+    body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--text); padding: 24px; display: flex; justify-content: center; }
+    .container { width: 100%; max-width: 1080px; }
+    .header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); padding-bottom: 16px; margin-bottom: 24px; }
+    .badge { background: rgba(56, 189, 248, 0.12); color: var(--sferium); border: 1px solid rgba(56, 189, 248, 0.3); padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+    .controls { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin-bottom: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 20px; }
+    .control-group label { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; color: var(--muted); margin-bottom: 8px; }
     .control-group output { color: var(--text); font-weight: 700; }
     input[type="range"] { width: 100%; accent-color: var(--sferium); cursor: pointer; }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
-      gap: 20px;
-      margin-bottom: 24px;
-    }
-    .card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 20px;
-    }
-    .card h2 { margin: 0 0 14px; font-size: 15px; color: var(--muted); font-weight: 600; }
+    .visual-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 20px; margin-bottom: 24px; }
+    .visual-card { min-width: 0; background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 16px; }
+    .visual-card h2 { margin: 0 0 10px; font-size: 14px; display: flex; justify-content: space-between; gap: 10px; }
+    .visual-card h2 span:last-child { text-align: right; }
+    canvas { width: 100%; height: 220px; background: #050811; border-radius: 10px; border: 1px solid var(--border); display: block; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 20px; margin-bottom: 24px; }
+    .card { min-width: 0; background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
+    .card h3 { margin: 0 0 14px; font-size: 15px; color: var(--muted); font-weight: 600; }
     .metric-row { margin-bottom: 14px; }
     .metric-label { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; margin-bottom: 6px; }
     .metric-label strong { white-space: nowrap; }
     .bar-bg { background: #1e293b; height: 10px; border-radius: 999px; overflow: hidden; }
     .bar-fill { height: 100%; border-radius: 999px; transition: width 0.25s ease; }
-    .summary {
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(56, 189, 248, 0.08));
-      border: 1px solid rgba(16, 185, 129, 0.35);
-      border-radius: 14px;
-      padding: 20px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 16px;
-    }
+    .summary { background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(56, 189, 248, 0.08)); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 14px; padding: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
     .stat-box .val { font-size: 24px; font-weight: 800; color: var(--good); }
     .stat-box .lbl { font-size: 12px; color: var(--muted); margin-top: 4px; }
-    .footer-note {
-      margin-top: 18px;
-      font-size: 12px;
-      color: var(--muted);
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
+    .footer-note { margin-top: 18px; font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
     a { color: var(--sferium); text-decoration: none; }
     a:hover, a:focus-visible { text-decoration: underline; }
-    @media (max-width: 520px) {
-      body { padding: 16px; }
-      .controls, .card, .summary { padding: 16px; }
-      .metric-label { font-size: 12px; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
-    }
+    @media (max-width: 520px) { body { padding: 16px; } .controls, .card, .summary { padding: 16px; } .metric-label { font-size: 12px; } .visual-card h2 { font-size: 12px; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; } }
   </style>
 </head>
 <body>
@@ -142,41 +74,32 @@
       </div>
     </section>
 
-    <section class="grid" aria-label="Benchmark results">
-      <article class="card">
-        <h2>Net Grid Power Draw (kW per Cluster Node)</h2>
-        <div class="metric-row">
-          <div class="metric-label"><span>Planar 2D Silicon + Copper</span><strong id="pwrLegacy" style="color:var(--legacy);">48.5 kW</strong></div>
-          <div class="bar-bg"><div id="barPwrLegacy" class="bar-fill" style="background:var(--legacy);width:82%;"></div></div>
-        </div>
-        <div class="metric-row">
-          <div class="metric-label"><span>Sferium 3D (Mo-CNT + Perovskite)</span><strong id="pwrSferium" style="color:var(--sferium);">14.2 kW</strong></div>
-          <div class="bar-bg"><div id="barPwrSferium" class="bar-fill" style="background:var(--sferium);width:24%;"></div></div>
-        </div>
+    <section class="visual-grid" aria-label="Animated architecture comparison">
+      <article class="visual-card">
+        <h2><span>Planar 2D Silicon + Copper</span><span style="color:var(--legacy);">Thermal Bottlenecks</span></h2>
+        <canvas id="canvas2d" role="img" aria-label="Illustration of heat and signal flow in a planar silicon chip"></canvas>
       </article>
-
-      <article class="card">
-        <h2>Waste Heat &amp; Cooling Overhead (kW Thermal)</h2>
-        <div class="metric-row">
-          <div class="metric-label"><span>Planar 2D (Resistive + Cooling Overhead)</span><strong id="heatLegacy" style="color:var(--legacy);">39.0 kW</strong></div>
-          <div class="bar-bg"><div id="barHeatLegacy" class="bar-fill" style="background:var(--legacy);width:78%;"></div></div>
-        </div>
-        <div class="metric-row">
-          <div class="metric-label"><span>Sferium 3D (Isotropic + Photon Recovery)</span><strong id="heatSferium" style="color:var(--sferium);">6.4 kW</strong></div>
-          <div class="bar-bg"><div id="barHeatSferium" class="bar-fill" style="background:var(--sferium);width:13%;"></div></div>
-        </div>
+      <article class="visual-card">
+        <h2><span>Sferium 3D Dual-Sphere</span><span style="color:var(--sferium);">Isotropic Flow + Recycling</span></h2>
+        <canvas id="canvas3d" role="img" aria-label="Illustration of signal flow and photon recycling in a dual-sphere architecture"></canvas>
       </article>
+    </section>
 
+    <section class="grid" aria-label="Benchmark metrics">
       <article class="card">
-        <h2>Hardware Wear &amp; Material Degradation Index</h2>
-        <div class="metric-row">
-          <div class="metric-label"><span>2D Copper Electromigration Risk</span><strong id="wearLegacy" style="color:var(--legacy);">74 / 100</strong></div>
-          <div class="bar-bg"><div id="barWearLegacy" class="bar-fill" style="background:var(--legacy);width:74%;"></div></div>
-        </div>
-        <div class="metric-row">
-          <div class="metric-label"><span>3D Sapphire-Quartz + Mo-CNT Wear</span><strong id="wearSferium" style="color:var(--sferium);">11 / 100</strong></div>
-          <div class="bar-bg"><div id="barWearSferium" class="bar-fill" style="background:var(--sferium);width:11%;"></div></div>
-        </div>
+        <h3>Net Grid Power Draw (kW per Cluster Node)</h3>
+        <div class="metric-row"><div class="metric-label"><span>Planar 2D Silicon + Copper</span><strong id="pwrLegacy" style="color:var(--legacy);">48.5 kW</strong></div><div class="bar-bg"><div id="barPwrLegacy" class="bar-fill" style="background:var(--legacy);width:82%;"></div></div></div>
+        <div class="metric-row"><div class="metric-label"><span>Sferium 3D (Mo-CNT + Perovskite)</span><strong id="pwrSferium" style="color:var(--sferium);">14.2 kW</strong></div><div class="bar-bg"><div id="barPwrSferium" class="bar-fill" style="background:var(--sferium);width:24%;"></div></div></div>
+      </article>
+      <article class="card">
+        <h3>Waste Heat &amp; Cooling Overhead (kW Thermal)</h3>
+        <div class="metric-row"><div class="metric-label"><span>Planar 2D (Resistive + Cooling Overhead)</span><strong id="heatLegacy" style="color:var(--legacy);">39.0 kW</strong></div><div class="bar-bg"><div id="barHeatLegacy" class="bar-fill" style="background:var(--legacy);width:78%;"></div></div></div>
+        <div class="metric-row"><div class="metric-label"><span>Sferium 3D (Isotropic + Photon Recovery)</span><strong id="heatSferium" style="color:var(--sferium);">6.4 kW</strong></div><div class="bar-bg"><div id="barHeatSferium" class="bar-fill" style="background:var(--sferium);width:13%;"></div></div></div>
+      </article>
+      <article class="card">
+        <h3>Hardware Wear &amp; Material Degradation Index</h3>
+        <div class="metric-row"><div class="metric-label"><span>2D Copper Electromigration Risk</span><strong id="wearLegacy" style="color:var(--legacy);">74 / 100</strong></div><div class="bar-bg"><div id="barWearLegacy" class="bar-fill" style="background:var(--legacy);width:74%;"></div></div></div>
+        <div class="metric-row"><div class="metric-label"><span>3D Sapphire-Quartz + Mo-CNT Wear</span><strong id="wearSferium" style="color:var(--sferium);">11 / 100</strong></div><div class="bar-bg"><div id="barWearSferium" class="bar-fill" style="background:var(--sferium);width:11%;"></div></div></div>
       </article>
     </section>
 
@@ -197,16 +120,19 @@
     const loadSlider = document.getElementById("loadSlider");
     const idleSlider = document.getElementById("idleSlider");
     const recSlider = document.getElementById("recSlider");
-    const setText = (id, value) => { document.getElementById(id).textContent = value; };
-    const setBar = (id, value, max) => { document.getElementById(id).style.width = `${Math.max(0, Math.min(100, value / max * 100))}%`; };
+    const c2d = document.getElementById("canvas2d");
+    const ctx2d = c2d.getContext("2d");
+    const c3d = document.getElementById("canvas3d");
+    const ctx3d = c3d.getContext("2d");
+    let tick = 0;
 
     function update() {
       const load = Number(loadSlider.value);
       const idle = Number(idleSlider.value);
       const rec = Number(recSlider.value);
-      setText("loadVal", `${load}%`);
-      setText("idleVal", `${idle}%`);
-      setText("recVal", `${rec}%`);
+      document.getElementById("loadVal").textContent = `${load}%`;
+      document.getElementById("idleVal").textContent = `${idle}%`;
+      document.getElementById("recVal").textContent = `${rec}%`;
 
       const activeFactor = (100 - idle) / 100;
       const idleFactor = idle / 100;
@@ -219,29 +145,114 @@
       const legacyWear = Math.min(98, Math.round(25 + load * 0.65));
       const sferiumWear = Math.max(1, Math.min(28, Math.round(5 + load * 0.08)));
 
-      setText("pwrLegacy", `${legacyPower.toFixed(1)} kW`);
-      setText("pwrSferium", `${sferiumPower.toFixed(1)} kW`);
-      setBar("barPwrLegacy", legacyPower, 65);
-      setBar("barPwrSferium", sferiumPower, 65);
-      setText("heatLegacy", `${legacyHeat.toFixed(1)} kW`);
-      setText("heatSferium", `${sferiumHeat.toFixed(1)} kW`);
-      setBar("barHeatLegacy", legacyHeat, 55);
-      setBar("barHeatSferium", sferiumHeat, 55);
-      setText("wearLegacy", `${legacyWear} / 100`);
-      setText("wearSferium", `${sferiumWear} / 100`);
-      setBar("barWearLegacy", legacyWear, 100);
-      setBar("barWearSferium", sferiumWear, 100);
+      document.getElementById("pwrLegacy").textContent = `${legacyPower.toFixed(1)} kW`;
+      document.getElementById("pwrSferium").textContent = `${sferiumPower.toFixed(1)} kW`;
+      document.getElementById("barPwrLegacy").style.width = `${Math.min(100, legacyPower / 65 * 100)}%`;
+      document.getElementById("barPwrSferium").style.width = `${Math.min(100, sferiumPower / 65 * 100)}%`;
+      document.getElementById("heatLegacy").textContent = `${legacyHeat.toFixed(1)} kW`;
+      document.getElementById("heatSferium").textContent = `${sferiumHeat.toFixed(1)} kW`;
+      document.getElementById("barHeatLegacy").style.width = `${Math.min(100, legacyHeat / 55 * 100)}%`;
+      document.getElementById("barHeatSferium").style.width = `${Math.min(100, sferiumHeat / 55 * 100)}%`;
+      document.getElementById("wearLegacy").textContent = `${legacyWear} / 100`;
+      document.getElementById("wearSferium").textContent = `${sferiumWear} / 100`;
+      document.getElementById("barWearLegacy").style.width = `${legacyWear}%`;
+      document.getElementById("barWearSferium").style.width = `${sferiumWear}%`;
 
-      const powerReduction = ((legacyPower - sferiumPower) / legacyPower * 100).toFixed(1);
-      const heatReduction = ((legacyHeat - sferiumHeat) / legacyHeat * 100).toFixed(1);
-      setText("savePower", `-${powerReduction}%`);
-      setText("saveHeat", `-${heatReduction}%`);
-      setText("recEnergy", `${recycled.toFixed(1)} kW`);
-      setText("lifespan", `~${(legacyWear / sferiumWear).toFixed(1)}x`);
+      const pwrSave = ((legacyPower - sferiumPower) / legacyPower * 100).toFixed(1);
+      const heatSave = ((legacyHeat - sferiumHeat) / legacyHeat * 100).toFixed(1);
+      document.getElementById("savePower").textContent = `-${pwrSave}%`;
+      document.getElementById("saveHeat").textContent = `-${heatSave}%`;
+      document.getElementById("recEnergy").textContent = `${recycled.toFixed(1)} kW`;
+      document.getElementById("lifespan").textContent = `~${(legacyWear / sferiumWear).toFixed(1)}x`;
+    }
+
+    function resizeCanvas(canvas, context) {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const width = Math.max(1, Math.round(rect.width * dpr));
+      const height = Math.max(1, Math.round(rect.height * dpr));
+      if (canvas.width !== width || canvas.height !== height) {
+        canvas.width = width;
+        canvas.height = height;
+      }
+      context.setTransform(dpr, 0, 0, dpr, 0, 0);
+      context.clearRect(0, 0, rect.width, rect.height);
+      return { width: rect.width, height: rect.height };
+    }
+
+    function drawSimulations() {
+      tick += 0.04;
+      const load = Number(loadSlider.value) / 100;
+      const rec = Number(recSlider.value) / 100;
+      const size2d = resizeCanvas(c2d, ctx2d);
+      const w2d = size2d.width;
+      const h2d = size2d.height;
+
+      ctx2d.strokeStyle = "#334155";
+      ctx2d.lineWidth = 2;
+      ctx2d.strokeRect(30, 40, Math.max(0, w2d - 60), Math.max(0, h2d - 80));
+      const heatRadius = 25 + load * 45 + Math.sin(tick * 2) * 4;
+      const grad = ctx2d.createRadialGradient(w2d / 2, h2d / 2, 5, w2d / 2, h2d / 2, heatRadius);
+      grad.addColorStop(0, "rgba(249, 115, 22, 0.85)");
+      grad.addColorStop(1, "rgba(249, 115, 22, 0)");
+      ctx2d.fillStyle = grad;
+      ctx2d.beginPath();
+      ctx2d.arc(w2d / 2, h2d / 2, heatRadius, 0, Math.PI * 2);
+      ctx2d.fill();
+
+      for (let i = 0; i < 5; i++) {
+        const y = 60 + i * 25;
+        ctx2d.strokeStyle = "rgba(148, 163, 184, 0.3)";
+        ctx2d.beginPath();
+        ctx2d.moveTo(40, y);
+        ctx2d.lineTo(w2d - 40, y);
+        ctx2d.stroke();
+        const trackWidth = Math.max(1, w2d - 80);
+        const px = 40 + ((tick * (40 + load * 60) + i * 50) % trackWidth);
+        ctx2d.fillStyle = "#f97316";
+        ctx2d.fillRect(px, y - 3, 10, 6);
+      }
+
+      const size3d = resizeCanvas(c3d, ctx3d);
+      const w3d = size3d.width;
+      const h3d = size3d.height;
+      const cx1 = w3d * 0.36;
+      const cx2 = w3d * 0.64;
+      const cy = h3d / 2;
+      const r = Math.min(56, h3d * 0.25, w3d * 0.2);
+
+      [cx1, cx2].forEach((cx, idx) => {
+        ctx3d.strokeStyle = idx === 0 ? "#38bdf8" : "#818cf8";
+        ctx3d.lineWidth = 2;
+        ctx3d.beginPath();
+        ctx3d.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx3d.stroke();
+        for (let p = 0; p < 4; p++) {
+          const angle = tick * (1.2 + load) + p * Math.PI / 2;
+          const px = cx + Math.cos(angle) * (r - 10);
+          const py = cy + Math.sin(angle) * (r - 10);
+          ctx3d.fillStyle = "#38bdf8";
+          ctx3d.beginPath();
+          ctx3d.arc(px, py, 3.5, 0, Math.PI * 2);
+          ctx3d.fill();
+        }
+        ctx3d.strokeStyle = `rgba(16, 185, 129, ${0.25 + rec * 0.5})`;
+        ctx3d.lineWidth = 3;
+        ctx3d.beginPath();
+        ctx3d.arc(cx, cy, r + 6, 0, Math.PI * 2);
+        ctx3d.stroke();
+      });
+
+      requestAnimationFrame(drawSimulations);
     }
 
     [loadSlider, idleSlider, recSlider].forEach(input => input.addEventListener("input", update));
     update();
+    drawSimulations();
+    window.addEventListener("resize", () => {
+      resizeCanvas(c2d, ctx2d);
+      resizeCanvas(c3d, ctx3d);
+    });
   </script>
 </body>
 </html>
