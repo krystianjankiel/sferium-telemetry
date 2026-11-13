@@ -70,7 +70,7 @@
         <h1 style="margin:0;font-size:22px;">Sferium v2.026 — Power &amp; Thermal Efficiency Benchmark</h1>
         <p style="margin:4px 0 0;font-size:13px;color:var(--muted);">Illustrative Architectural Model: Planar 2D Silicon/Copper vs. Copper-Free 3D Dual-Sphere Photonics</p>
       </div>
-      <div class="badge">Status: Patent Pending</div>
+      <div class="badge">Status: Patent Pending (PL P.457652)</div>
     </header>
 
     <section class="controls" aria-label="Benchmark controls">
@@ -89,23 +89,23 @@
     </section>
 
     <section class="network-section" aria-labelledby="networkHeading">
-      <h2 class="section-heading" id="networkHeading">Ustawienia przepływu danych</h2>
-      <p class="section-note">Dodatkowe, poglądowe sterowanie transmisją. Nie zmienia istniejących animacji ani bazowych metryk benchmarku.</p>
+      <h2 class="section-heading" id="networkHeading">Data Flow Settings</h2>
+      <p class="section-note">Additional illustrative transmission controls. These do not affect the existing animations or baseline benchmark metrics.</p>
       <div class="controls" aria-label="Network flow controls">
         <div class="control-group">
-          <label for="txSlider">Wysyłanie danych <output id="txVal" for="txSlider">300 Mb/s</output></label>
+          <label for="txSlider">Data Transmit Rate <output id="txVal" for="txSlider">300 Mb/s</output></label>
           <input type="range" id="txSlider" min="0" max="1000" value="300" />
         </div>
         <div class="control-group">
-          <label for="rxSlider">Odbieranie danych <output id="rxVal" for="rxSlider">400 Mb/s</output></label>
+          <label for="rxSlider">Data Receive Rate <output id="rxVal" for="rxSlider">400 Mb/s</output></label>
           <input type="range" id="rxSlider" min="0" max="1000" value="400" />
         </div>
         <div class="control-group">
-          <label for="resistanceSlider">Opór przesyłu danych <output id="resistanceVal" for="resistanceSlider">20%</output></label>
+          <label for="resistanceSlider">Data Transfer Resistance <output id="resistanceVal" for="resistanceSlider">20%</output></label>
           <input type="range" id="resistanceSlider" min="0" max="100" value="20" />
         </div>
         <div class="control-group">
-          <label for="thresholdSlider">Próg zadziałania bezpiecznika <output id="thresholdVal" for="thresholdSlider">80%</output></label>
+          <label for="thresholdSlider">Fuse Trip Threshold <output id="thresholdVal" for="thresholdSlider">80%</output></label>
           <input type="range" id="thresholdSlider" min="40" max="100" value="80" />
         </div>
       </div>
@@ -113,17 +113,17 @@
 
     <section class="grid" aria-label="Data flow metrics">
       <article class="card">
-        <h3>Przepływ i obciążenie łącza (model poglądowy)</h3>
-        <div class="metric-row"><div class="metric-label"><span>Łączny transfer</span><strong id="totalTransfer">700 Mb/s</strong></div><div class="bar-bg"><div id="transferBar" class="bar-fill" style="background:var(--sferium);width:35%;"></div></div></div>
-        <div class="metric-row"><div class="metric-label"><span>Opór / straty transmisji</span><strong id="resistanceMetric">20%</strong></div><div class="bar-bg"><div id="resistanceBar" class="bar-fill" style="background:#a78bfa;width:20%;"></div></div></div>
-        <div class="metric-row"><div class="metric-label"><span>Szacowane obciążenie układu</span><strong id="systemLoad">58%</strong></div><div class="bar-bg"><div id="systemLoadBar" class="bar-fill" style="background:var(--good);width:58%;"></div></div></div>
+        <h3>Link Throughput and Load (Illustrative Model)</h3>
+        <div class="metric-row"><div class="metric-label"><span>Total Data Transfer</span><strong id="totalTransfer">700 Mb/s</strong></div><div class="bar-bg"><div id="transferBar" class="bar-fill" style="background:var(--sferium);width:35%;"></div></div></div>
+        <div class="metric-row"><div class="metric-label"><span>Transmission Resistance / Loss</span><strong id="resistanceMetric">20%</strong></div><div class="bar-bg"><div id="resistanceBar" class="bar-fill" style="background:#a78bfa;width:20%;"></div></div></div>
+        <div class="metric-row"><div class="metric-label"><span>Estimated System Load</span><strong id="systemLoad">58%</strong></div><div class="bar-bg"><div id="systemLoadBar" class="bar-fill" style="background:var(--good);width:58%;"></div></div></div>
       </article>
       <article class="card">
-        <h3>Ochrona przeciążeniowa</h3>
+        <h3>Overload Protection</h3>
         <div id="fuseCard" class="fuse-card" data-state="normal" style="margin:0;padding:14px;">
-          <div class="fuse-head"><h4 class="fuse-title">Bezpiecznik układu Sferium</h4><span class="fuse-state" id="fuseState" role="status" aria-live="polite">OK — układ pracuje normalnie</span></div>
-          <div class="fuse-track" role="progressbar" aria-label="Obciążenie w stosunku do progu bezpiecznika" aria-valuemin="0" aria-valuemax="100" aria-valuenow="58" id="fuseProgress"><div class="fuse-level" id="fuseLevel"></div></div>
-          <p class="fuse-caption" id="fuseDescription">Obciążenie poniżej progu zadziałania. To symulowany wskaźnik, nie rzeczywiste zabezpieczenie sprzętowe.</p>
+          <div class="fuse-head"><h4 class="fuse-title">Sferium System Fuse</h4><span class="fuse-state" id="fuseState" role="status" aria-live="polite">OK — system operating normally</span></div>
+          <div class="fuse-track" role="progressbar" aria-label="Load relative to the fuse trip threshold" aria-valuemin="0" aria-valuemax="100" aria-valuenow="58" id="fuseProgress"><div class="fuse-level" id="fuseLevel"></div></div>
+          <p class="fuse-caption" id="fuseDescription">Load is below the trip threshold. This is a simulated indicator, not a real hardware protection device.</p>
         </div>
       </article>
     </section>
@@ -253,12 +253,12 @@
       fuseLevel.style.backgroundColor = isTripped ? "#ef4444" : isWarning ? "#f59e0b" : "#10b981";
       fuseProgress.setAttribute("aria-valuenow", String(Math.round(loadPercent)));
       document.getElementById("fuseState").textContent = isTripped
-        ? "PRZECIĄŻENIE — bezpiecznik zadziałał"
-        : isWarning ? "UWAGA — zbliża się przeciążenie" : "OK — układ pracuje normalnie";
+        ? "TRIPPED — Quench Interlock Active (< 1 µs)"
+        : isWarning ? "WARNING — approaching overload" : "OK — system operating normally";
       document.getElementById("fuseDescription").textContent = isTripped
-        ? `Obciążenie ${Math.round(systemLoad)}% przekroczyło ustawiony próg ${threshold}%. W modelu transmisja zostaje odcięta.`
-        : isWarning ? `Obciążenie ${Math.round(systemLoad)}%; próg zadziałania ustawiono na ${threshold}%.`
-        : `Obciążenie poniżej progu zadziałania (${threshold}%). To symulowany wskaźnik, nie rzeczywiste zabezpieczenie sprzętowe.`;
+        ? `Overload threshold exceeded: system load is ${Math.round(systemLoad)}%, above the configured ${threshold}% limit. Transmission is cut off in this simulation.`
+        : isWarning ? `System load is ${Math.round(systemLoad)}%; the trip threshold is set to ${threshold}%.`
+        : `System load is below the ${threshold}% trip threshold. This is a simulated indicator, not a real hardware protection device.`;
     }
 
     function resizeCanvas(canvas, context) {
