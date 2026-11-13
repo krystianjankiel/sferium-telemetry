@@ -43,9 +43,23 @@
     .stat-box .val { font-size: 24px; font-weight: 800; color: var(--good); }
     .stat-box .lbl { font-size: 12px; color: var(--muted); margin-top: 4px; }
     .footer-note { margin-top: 18px; font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+    .network-section { margin: 0 0 24px; }
+    .section-heading { color: var(--text); font-size: 16px; margin: 0 0 6px; }
+    .section-note { color: var(--muted); font-size: 12px; line-height: 1.5; margin: 0 0 14px; }
+    .fuse-card { border: 1px solid var(--border); border-radius: 14px; background: var(--panel); padding: 18px 20px; margin-bottom: 24px; }
+    .fuse-card[data-state="warning"] { border-color: #f59e0b; }
+    .fuse-card[data-state="tripped"] { border-color: #ef4444; background: rgba(127, 29, 29, 0.2); }
+    .fuse-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .fuse-title { margin: 0; font-size: 15px; }
+    .fuse-state { font-size: 13px; font-weight: 800; color: var(--good); }
+    .fuse-card[data-state="warning"] .fuse-state { color: #fbbf24; }
+    .fuse-card[data-state="tripped"] .fuse-state { color: #f87171; }
+    .fuse-track { height: 12px; margin: 14px 0 8px; border-radius: 999px; background: #1e293b; overflow: hidden; }
+    .fuse-level { height: 100%; width: 0; border-radius: inherit; background: var(--good); transition: width .25s ease, background-color .25s ease; }
+    .fuse-caption { color: var(--muted); font-size: 12px; margin: 0; }
     a { color: var(--sferium); text-decoration: none; }
     a:hover, a:focus-visible { text-decoration: underline; }
-    @media (max-width: 520px) { body { padding: 16px; } .controls, .card, .summary { padding: 16px; } .metric-label { font-size: 12px; } .visual-card h2 { font-size: 12px; } }
+    @media (max-width: 520px) { body { padding: 16px; } .controls, .card, .summary, .fuse-card { padding: 16px; } .metric-label { font-size: 12px; } .visual-card h2 { font-size: 12px; } }
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; } }
   </style>
 </head>
@@ -74,6 +88,46 @@
       </div>
     </section>
 
+    <section class="network-section" aria-labelledby="networkHeading">
+      <h2 class="section-heading" id="networkHeading">Ustawienia przepływu danych</h2>
+      <p class="section-note">Dodatkowe, poglądowe sterowanie transmisją. Nie zmienia istniejących animacji ani bazowych metryk benchmarku.</p>
+      <div class="controls" aria-label="Network flow controls">
+        <div class="control-group">
+          <label for="txSlider">Wysyłanie danych <output id="txVal" for="txSlider">300 Mb/s</output></label>
+          <input type="range" id="txSlider" min="0" max="1000" value="300" />
+        </div>
+        <div class="control-group">
+          <label for="rxSlider">Odbieranie danych <output id="rxVal" for="rxSlider">400 Mb/s</output></label>
+          <input type="range" id="rxSlider" min="0" max="1000" value="400" />
+        </div>
+        <div class="control-group">
+          <label for="resistanceSlider">Opór przesyłu danych <output id="resistanceVal" for="resistanceSlider">20%</output></label>
+          <input type="range" id="resistanceSlider" min="0" max="100" value="20" />
+        </div>
+        <div class="control-group">
+          <label for="thresholdSlider">Próg zadziałania bezpiecznika <output id="thresholdVal" for="thresholdSlider">80%</output></label>
+          <input type="range" id="thresholdSlider" min="40" max="100" value="80" />
+        </div>
+      </div>
+    </section>
+
+    <section class="grid" aria-label="Data flow metrics">
+      <article class="card">
+        <h3>Przepływ i obciążenie łącza (model poglądowy)</h3>
+        <div class="metric-row"><div class="metric-label"><span>Łączny transfer</span><strong id="totalTransfer">700 Mb/s</strong></div><div class="bar-bg"><div id="transferBar" class="bar-fill" style="background:var(--sferium);width:35%;"></div></div></div>
+        <div class="metric-row"><div class="metric-label"><span>Opór / straty transmisji</span><strong id="resistanceMetric">20%</strong></div><div class="bar-bg"><div id="resistanceBar" class="bar-fill" style="background:#a78bfa;width:20%;"></div></div></div>
+        <div class="metric-row"><div class="metric-label"><span>Szacowane obciążenie układu</span><strong id="systemLoad">58%</strong></div><div class="bar-bg"><div id="systemLoadBar" class="bar-fill" style="background:var(--good);width:58%;"></div></div></div>
+      </article>
+      <article class="card">
+        <h3>Ochrona przeciążeniowa</h3>
+        <div id="fuseCard" class="fuse-card" data-state="normal" style="margin:0;padding:14px;">
+          <div class="fuse-head"><h4 class="fuse-title">Bezpiecznik układu Sferium</h4><span class="fuse-state" id="fuseState" role="status" aria-live="polite">OK — układ pracuje normalnie</span></div>
+          <div class="fuse-track" role="progressbar" aria-label="Obciążenie w stosunku do progu bezpiecznika" aria-valuemin="0" aria-valuemax="100" aria-valuenow="58" id="fuseProgress"><div class="fuse-level" id="fuseLevel"></div></div>
+          <p class="fuse-caption" id="fuseDescription">Obciążenie poniżej progu zadziałania. To symulowany wskaźnik, nie rzeczywiste zabezpieczenie sprzętowe.</p>
+        </div>
+      </article>
+    </section>
+
     <section class="visual-grid" aria-label="Animated architecture comparison">
       <article class="visual-card">
         <h2><span>Planar 2D Silicon + Copper</span><span style="color:var(--legacy);">Thermal Bottlenecks</span></h2>
@@ -88,13 +142,13 @@
     <section class="grid" aria-label="Benchmark metrics">
       <article class="card">
         <h3>Net Grid Power Draw (kW per Cluster Node)</h3>
-        <div class="metric-row"><div class="metric-label"><span>Planar 2D Silicon + Copper</span><strong id="pwrLegacy" style="color:var(--legacy);">48.5 kW</strong></div><div class="bar-bg"><div id="barPwrLegacy" class="bar-fill" style="background:var(--legacy);width:82%;"></div></div></div>
-        <div class="metric-row"><div class="metric-label"><span>Sferium 3D (Mo-CNT + Perovskite)</span><strong id="pwrSferium" style="color:var(--sferium);">14.2 kW</strong></div><div class="bar-bg"><div id="barPwrSferium" class="bar-fill" style="background:var(--sferium);width:24%;"></div></div></div>
+        <div class="metric-row"><div class="metric-label"><span>Planar 2D Silicon + Copper</span><strong id="pwrLegacy" style="color:var(--legacy);">48.5 kW</strong></div><div class="bar-bg"><div id="barPwrLegacy" class="bar-fill" style="background:var(--legacy);width:74.6%;"></div></div></div>
+        <div class="metric-row"><div class="metric-label"><span>Sferium 3D (Mo-CNT + Perovskite)</span><strong id="pwrSferium" style="color:var(--sferium);">14.2 kW</strong></div><div class="bar-bg"><div id="barPwrSferium" class="bar-fill" style="background:var(--sferium);width:21.8%;"></div></div></div>
       </article>
       <article class="card">
         <h3>Waste Heat &amp; Cooling Overhead (kW Thermal)</h3>
-        <div class="metric-row"><div class="metric-label"><span>Planar 2D (Resistive + Cooling Overhead)</span><strong id="heatLegacy" style="color:var(--legacy);">39.0 kW</strong></div><div class="bar-bg"><div id="barHeatLegacy" class="bar-fill" style="background:var(--legacy);width:78%;"></div></div></div>
-        <div class="metric-row"><div class="metric-label"><span>Sferium 3D (Isotropic + Photon Recovery)</span><strong id="heatSferium" style="color:var(--sferium);">6.4 kW</strong></div><div class="bar-bg"><div id="barHeatSferium" class="bar-fill" style="background:var(--sferium);width:13%;"></div></div></div>
+        <div class="metric-row"><div class="metric-label"><span>Planar 2D (Resistive + Cooling Overhead)</span><strong id="heatLegacy" style="color:var(--legacy);">39.0 kW</strong></div><div class="bar-bg"><div id="barHeatLegacy" class="bar-fill" style="background:var(--legacy);width:70.9%;"></div></div></div>
+        <div class="metric-row"><div class="metric-label"><span>Sferium 3D (Isotropic + Photon Recovery)</span><strong id="heatSferium" style="color:var(--sferium);">6.4 kW</strong></div><div class="bar-bg"><div id="barHeatSferium" class="bar-fill" style="background:var(--sferium);width:11.6%;"></div></div></div>
       </article>
       <article class="card">
         <h3>Hardware Wear &amp; Material Degradation Index</h3>
@@ -120,6 +174,10 @@
     const loadSlider = document.getElementById("loadSlider");
     const idleSlider = document.getElementById("idleSlider");
     const recSlider = document.getElementById("recSlider");
+    const txSlider = document.getElementById("txSlider");
+    const rxSlider = document.getElementById("rxSlider");
+    const resistanceSlider = document.getElementById("resistanceSlider");
+    const thresholdSlider = document.getElementById("thresholdSlider");
     const c2d = document.getElementById("canvas2d");
     const ctx2d = c2d.getContext("2d");
     const c3d = document.getElementById("canvas3d");
@@ -164,6 +222,43 @@
       document.getElementById("saveHeat").textContent = `-${heatSave}%`;
       document.getElementById("recEnergy").textContent = `${recycled.toFixed(1)} kW`;
       document.getElementById("lifespan").textContent = `~${(legacyWear / sferiumWear).toFixed(1)}x`;
+
+      const tx = Number(txSlider.value);
+      const rx = Number(rxSlider.value);
+      const resistance = Number(resistanceSlider.value);
+      const threshold = Number(thresholdSlider.value);
+      const totalTransfer = tx + rx;
+      const transferLoad = (totalTransfer / 2000) * 100;
+      const systemLoad = Math.min(200, transferLoad * (1 + resistance / 100));
+      const loadPercent = Math.min(100, systemLoad);
+      const isTripped = systemLoad >= threshold;
+      const isWarning = !isTripped && systemLoad >= threshold * 0.8;
+
+      document.getElementById("txVal").textContent = `${tx} Mb/s`;
+      document.getElementById("rxVal").textContent = `${rx} Mb/s`;
+      document.getElementById("resistanceVal").textContent = `${resistance}%`;
+      document.getElementById("thresholdVal").textContent = `${threshold}%`;
+      document.getElementById("totalTransfer").textContent = `${totalTransfer.toLocaleString("pl-PL")} Mb/s`;
+      document.getElementById("transferBar").style.width = `${Math.min(100, transferLoad)}%`;
+      document.getElementById("resistanceMetric").textContent = `${resistance}%`;
+      document.getElementById("resistanceBar").style.width = `${resistance}%`;
+      document.getElementById("systemLoad").textContent = `${Math.round(systemLoad)}%`;
+      document.getElementById("systemLoadBar").style.width = `${loadPercent}%`;
+
+      const fuseCard = document.getElementById("fuseCard");
+      const fuseLevel = document.getElementById("fuseLevel");
+      const fuseProgress = document.getElementById("fuseProgress");
+      fuseCard.dataset.state = isTripped ? "tripped" : isWarning ? "warning" : "normal";
+      fuseLevel.style.width = `${loadPercent}%`;
+      fuseLevel.style.backgroundColor = isTripped ? "#ef4444" : isWarning ? "#f59e0b" : "#10b981";
+      fuseProgress.setAttribute("aria-valuenow", String(Math.round(loadPercent)));
+      document.getElementById("fuseState").textContent = isTripped
+        ? "PRZECIĄŻENIE — bezpiecznik zadziałał"
+        : isWarning ? "UWAGA — zbliża się przeciążenie" : "OK — układ pracuje normalnie";
+      document.getElementById("fuseDescription").textContent = isTripped
+        ? `Obciążenie ${Math.round(systemLoad)}% przekroczyło ustawiony próg ${threshold}%. W modelu transmisja zostaje odcięta.`
+        : isWarning ? `Obciążenie ${Math.round(systemLoad)}%; próg zadziałania ustawiono na ${threshold}%.`
+        : `Obciążenie poniżej progu zadziałania (${threshold}%). To symulowany wskaźnik, nie rzeczywiste zabezpieczenie sprzętowe.`;
     }
 
     function resizeCanvas(canvas, context) {
@@ -246,7 +341,7 @@
       requestAnimationFrame(drawSimulations);
     }
 
-    [loadSlider, idleSlider, recSlider].forEach(input => input.addEventListener("input", update));
+    [loadSlider, idleSlider, recSlider, txSlider, rxSlider, resistanceSlider, thresholdSlider].forEach(input => input.addEventListener("input", update));
     update();
     drawSimulations();
     window.addEventListener("resize", () => {
