@@ -22,7 +22,7 @@
     .container { width: 100%; max-width: 1080px; }
     .header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); padding-bottom: 16px; margin-bottom: 24px; }
     .badge { background: rgba(56, 189, 248, 0.12); color: var(--sferium); border: 1px solid rgba(56, 189, 248, 0.3); padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 600; }
-    .controls { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin-bottom: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 20px; }
+    .controls { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin-bottom: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 16px; }
     .control-group label { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; color: var(--muted); margin-bottom: 8px; }
     .control-group output { color: var(--text); font-weight: 700; }
     input[type="range"] { width: 100%; accent-color: var(--sferium); cursor: pointer; }
@@ -39,7 +39,8 @@
     .metric-label strong { white-space: nowrap; }
     .bar-bg { background: #1e293b; height: 10px; border-radius: 999px; overflow: hidden; }
     .bar-fill { height: 100%; border-radius: 999px; transition: width 0.25s ease; }
-    .summary { background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(56, 189, 248, 0.08)); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 14px; padding: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
+    .summary { background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(56, 189, 248, 0.08)); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 14px; padding: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; }
+    .stat-box { text-align: center; }
     .stat-box .val { font-size: 24px; font-weight: 800; color: var(--good); }
     .stat-box .lbl { font-size: 12px; color: var(--muted); margin-top: 4px; }
     .footer-note { margin-top: 18px; font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
@@ -114,15 +115,15 @@
     <section class="grid" aria-label="Data flow metrics">
       <article class="card">
         <h3>Link Throughput and Load (Illustrative Model)</h3>
-        <div class="metric-row"><div class="metric-label"><span>Total Data Transfer</span><strong id="totalTransfer">700 Mb/s</strong></div><div class="bar-bg"><div id="transferBar" class="bar-fill" style="background:var(--sferium);width:35%;"></div></div></div>
-        <div class="metric-row"><div class="metric-label"><span>Transmission Resistance / Loss</span><strong id="resistanceMetric">20%</strong></div><div class="bar-bg"><div id="resistanceBar" class="bar-fill" style="background:#a78bfa;width:20%;"></div></div></div>
-        <div class="metric-row"><div class="metric-label"><span>Estimated System Load</span><strong id="systemLoad">58%</strong></div><div class="bar-bg"><div id="systemLoadBar" class="bar-fill" style="background:var(--good);width:58%;"></div></div></div>
+        <div class="metric-row"><div class="metric-label"><span>Total Data Transfer</span><strong id="totalTransfer">700 Mb/s</strong></div><div class="bar-bg"><div id="transferBar" class="bar-fill" style="width:35%;background:#38bdf8;"></div></div></div>
+        <div class="metric-row"><div class="metric-label"><span>Transmission Resistance / Loss</span><strong id="resistanceMetric">20%</strong></div><div class="bar-bg"><div id="resistanceBar" class="bar-fill" style="width:20%;background:#f97316;"></div></div></div>
+        <div class="metric-row"><div class="metric-label"><span>Estimated System Load</span><strong id="systemLoad">58%</strong></div><div class="bar-bg"><div id="systemLoadBar" class="bar-fill" style="width:58%;background:#10b981;"></div></div></div>
       </article>
       <article class="card">
         <h3>Overload Protection</h3>
         <div id="fuseCard" class="fuse-card" data-state="normal" style="margin:0;padding:14px;">
           <div class="fuse-head"><h4 class="fuse-title">Sferium System Fuse</h4><span class="fuse-state" id="fuseState" role="status" aria-live="polite">OK — system operating normally</span></div>
-          <div class="fuse-track" role="progressbar" aria-label="Load relative to the fuse trip threshold" aria-valuemin="0" aria-valuemax="100" aria-valuenow="58" id="fuseProgress"><div class="fuse-level" id="fuseLevel"></div></div>
+          <div class="fuse-track" role="progressbar" aria-label="Load relative to the fuse trip threshold" aria-valuemin="0" aria-valuemax="100" aria-valuenow="58" id="fuseProgress"><div class="fuse-level" id="fuseLevel" style="width:58%;background:#10b981;"></div></div>
           <p class="fuse-caption" id="fuseDescription">Load is below the trip threshold. This is a simulated indicator, not a real hardware protection device.</p>
         </div>
       </article>
@@ -142,18 +143,18 @@
     <section class="grid" aria-label="Benchmark metrics">
       <article class="card">
         <h3>Net Grid Power Draw (kW per Cluster Node)</h3>
-        <div class="metric-row"><div class="metric-label"><span>Planar 2D Silicon + Copper</span><strong id="pwrLegacy" style="color:var(--legacy);">48.5 kW</strong></div><div class="bar-bg"><div id="barPwrLegacy" class="bar-fill" style="background:var(--legacy);width:74.6%;"></div></div></div>
-        <div class="metric-row"><div class="metric-label"><span>Sferium 3D (Mo-CNT + Perovskite)</span><strong id="pwrSferium" style="color:var(--sferium);">14.2 kW</strong></div><div class="bar-bg"><div id="barPwrSferium" class="bar-fill" style="background:var(--sferium);width:21.8%;"></div></div></div>
+        <div class="metric-row"><div class="metric-label"><span>Planar 2D Silicon + Copper</span><strong id="pwrLegacy" style="color:var(--legacy);">48.5 kW</strong></div><div class="bar-bg"><div id="barPwrLegacy" class="bar-fill" style="width:75%;background:var(--legacy);"></div></div></div>
+        <div class="metric-row"><div class="metric-label"><span>Sferium 3D (Mo-CNT + Perovskite)</span><strong id="pwrSferium" style="color:var(--sferium);">14.2 kW</strong></div><div class="bar-bg"><div id="barPwrSferium" class="bar-fill" style="width:35%;background:var(--sferium);"></div></div></div>
       </article>
       <article class="card">
         <h3>Waste Heat &amp; Cooling Overhead (kW Thermal)</h3>
-        <div class="metric-row"><div class="metric-label"><span>Planar 2D (Resistive + Cooling Overhead)</span><strong id="heatLegacy" style="color:var(--legacy);">39.0 kW</strong></div><div class="bar-bg"><div id="barHeatLegacy" class="bar-fill" style="background:var(--legacy);width:70.9%;"></div></div></div>
-        <div class="metric-row"><div class="metric-label"><span>Sferium 3D (Isotropic + Photon Recovery)</span><strong id="heatSferium" style="color:var(--sferium);">6.4 kW</strong></div><div class="bar-bg"><div id="barHeatSferium" class="bar-fill" style="background:var(--sferium);width:11.6%;"></div></div></div>
+        <div class="metric-row"><div class="metric-label"><span>Planar 2D (Resistive + Cooling Overhead)</span><strong id="heatLegacy" style="color:var(--legacy);">39.0 kW</strong></div><div class="bar-bg"><div id="barHeatLegacy" class="bar-fill" style="width:71%;background:var(--legacy);"></div></div></div>
+        <div class="metric-row"><div class="metric-label"><span>Sferium 3D (Isotropic + Photon Recovery)</span><strong id="heatSferium" style="color:var(--sferium);">6.4 kW</strong></div><div class="bar-bg"><div id="barHeatSferium" class="bar-fill" style="width:18%;background:var(--sferium);"></div></div></div>
       </article>
       <article class="card">
         <h3>Hardware Wear &amp; Material Degradation Index</h3>
-        <div class="metric-row"><div class="metric-label"><span>2D Copper Electromigration Risk</span><strong id="wearLegacy" style="color:var(--legacy);">74 / 100</strong></div><div class="bar-bg"><div id="barWearLegacy" class="bar-fill" style="background:var(--legacy);width:74%;"></div></div></div>
-        <div class="metric-row"><div class="metric-label"><span>3D Sapphire-Quartz + Mo-CNT Wear</span><strong id="wearSferium" style="color:var(--sferium);">11 / 100</strong></div><div class="bar-bg"><div id="barWearSferium" class="bar-fill" style="background:var(--sferium);width:11%;"></div></div></div>
+        <div class="metric-row"><div class="metric-label"><span>2D Copper Electromigration Risk</span><strong id="wearLegacy" style="color:var(--legacy);">74 / 100</strong></div><div class="bar-bg"><div id="barWearLegacy" class="bar-fill" style="width:74%;background:var(--legacy);"></div></div></div>
+        <div class="metric-row"><div class="metric-label"><span>3D Sapphire-Quartz + Mo-CNT Wear</span><strong id="wearSferium" style="color:var(--sferium);">11 / 100</strong></div><div class="bar-bg"><div id="barWearSferium" class="bar-fill" style="width:11%;background:var(--sferium);"></div></div></div>
       </article>
     </section>
 
@@ -349,5 +350,9 @@
       resizeCanvas(c3d, ctx3d);
     });
   </script>
+  <!-- WSTAW SWÓJ KOD GOATCOUNTER -->
+  <script data-goatcounter="https://sferium.goatcounter.com/count"
+          data-goatcounter-settings='{"path": "/sferium-telemetry/benchmark"}'
+          async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
