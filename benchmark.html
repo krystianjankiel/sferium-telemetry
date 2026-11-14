@@ -94,11 +94,11 @@
       <p class="section-note">Additional illustrative transmission controls. These do not affect the existing animations or baseline benchmark metrics.</p>
       <div class="controls" aria-label="Network flow controls">
         <div class="control-group">
-          <label for="txSlider">Data Transmit Rate <output id="txVal" for="txSlider">300 Mb/s</output></label>
+          <label for="txSlider">Data Transmit Rate <output id="txVal" for="txSlider">300 Tb/s</output></label>
           <input type="range" id="txSlider" min="0" max="1000" value="300" />
         </div>
         <div class="control-group">
-          <label for="rxSlider">Data Receive Rate <output id="rxVal" for="rxSlider">400 Mb/s</output></label>
+          <label for="rxSlider">Data Receive Rate <output id="rxVal" for="rxSlider">400 Tb/s</output></label>
           <input type="range" id="rxSlider" min="0" max="1000" value="400" />
         </div>
         <div class="control-group">
@@ -115,7 +115,7 @@
     <section class="grid" aria-label="Data flow metrics">
       <article class="card">
         <h3>Link Throughput and Load (Illustrative Model)</h3>
-        <div class="metric-row"><div class="metric-label"><span>Total Data Transfer</span><strong id="totalTransfer">700 Mb/s</strong></div><div class="bar-bg"><div id="transferBar" class="bar-fill" style="width:35%;background:#38bdf8;"></div></div></div>
+        <div class="metric-row"><div class="metric-label"><span>Total Data Transfer</span><strong id="totalTransfer">700 Tb/s</strong></div><div class="bar-bg"><div id="transferBar" class="bar-fill" style="width:35%;background:#38bdf8;"></div></div></div>
         <div class="metric-row"><div class="metric-label"><span>Transmission Resistance / Loss</span><strong id="resistanceMetric">20%</strong></div><div class="bar-bg"><div id="resistanceBar" class="bar-fill" style="width:20%;background:#f97316;"></div></div></div>
         <div class="metric-row"><div class="metric-label"><span>Estimated System Load</span><strong id="systemLoad">58%</strong></div><div class="bar-bg"><div id="systemLoadBar" class="bar-fill" style="width:58%;background:#10b981;"></div></div></div>
       </article>
@@ -235,11 +235,11 @@
       const isTripped = systemLoad >= threshold;
       const isWarning = !isTripped && systemLoad >= threshold * 0.8;
 
-      document.getElementById("txVal").textContent = `${tx} Mb/s`;
-      document.getElementById("rxVal").textContent = `${rx} Mb/s`;
+      document.getElementById("txVal").textContent = `${tx} Tb/s`;
+      document.getElementById("rxVal").textContent = `${rx} Tb/s`;
       document.getElementById("resistanceVal").textContent = `${resistance}%`;
       document.getElementById("thresholdVal").textContent = `${threshold}%`;
-      document.getElementById("totalTransfer").textContent = `${totalTransfer.toLocaleString("pl-PL")} Mb/s`;
+      document.getElementById("totalTransfer").textContent = `${totalTransfer.toLocaleString("pl-PL")} Tb/s`;
       document.getElementById("transferBar").style.width = `${Math.min(100, transferLoad)}%`;
       document.getElementById("resistanceMetric").textContent = `${resistance}%`;
       document.getElementById("resistanceBar").style.width = `${resistance}%`;
